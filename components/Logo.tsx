@@ -11,7 +11,7 @@ const logoString = `
 
 export const Logo = () => {
   return (
-    <CappedText as="pre" lineHeight={1}>
+    <CappedText as="pre" lineHeight={1} overflowX="scroll">
       {logoString}
     </CappedText>
   );

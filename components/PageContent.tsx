@@ -96,7 +96,7 @@ export const PageContent = () => {
       {!account && (
         <>
           <NewLine />
-          <AsciiText>// connect wallet to see available vaults</AsciiText>
+          <AsciiText>// connect wallet to see vaults</AsciiText>
         </>
       )}
       {account?.address && (
