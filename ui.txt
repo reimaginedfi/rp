@@ -1,0 +1,47 @@
+# REFI Pro
+
+[connect button]
+
+# vault
+- asset name
+- cap
+- aum
+- epoch
+- epoch timestamp
+- historical gain
+---
+## your balance
+- deposit value
+- pending deposit
+- total asset deposited
+- total asset withdrawn
+---
+## deposit asset
+- asset balance
+> deposit input
+* approval < deposit input
+** [approve]
+** [approve max]
+* approval >= deposit input
+** [deposit]
+- entry fee tooltip
+---
+## withdrawal
+* no pending withdrawal
+** - pending unlock next epoch
+** > unlock input
+** [unlock next epoch]
+* pending withdrawal
+** - withdrawable asset
+** [withdraw]
+---
+## admin functions (account == farmer)
+* epoch == 0
+** > start vault AUM input
+** [start vault]
+* epoch > 0
+** > external asset end of epoch
+** - preview delta
+** - preview fee
+** [progress to next epoch]
+- fee options
