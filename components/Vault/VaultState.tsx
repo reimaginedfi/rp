@@ -1,6 +1,7 @@
 import { useDisclosure } from "@chakra-ui/react";
 import { FetchTokenResult } from "@wagmi/core";
 import { BigNumber } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
 import { useContractRead, useToken } from "wagmi";
 import { StableVaultType } from "../../contracts";
 import { AsciiText } from "../AsciiText";
@@ -14,11 +15,15 @@ export const VaultState = ({ vault }: { vault: StableVaultType }) => {
   const { data: assetToken } = useToken({
     address: assetAddress?.toString(),
   });
-  const { data: aumB } = useContractRead(vault, "aum");
+  const { data: aumB } = useContractRead(vault, "aum", {
+    watch: true,
+  });
   const aum = BigNumber.isBigNumber(aumB)
     ? BigNumber.from(aumB).toString()
     : "0";
-  const { data: epochB } = useContractRead(vault, "epoch");
+  const { data: epochB } = useContractRead(vault, "epoch", {
+    watch: true,
+  });
   const epoch = BigNumber.isBigNumber(epochB)
     ? BigNumber.from(epochB).toString()
     : "0";
@@ -41,7 +46,7 @@ export const VaultState = ({ vault }: { vault: StableVaultType }) => {
           <AsciiText padStart={2}>asset: {assetToken?.symbol}</AsciiText>
           <AsciiText padStart={2}>cap: infinite</AsciiText>
           <AsciiText padStart={2}>
-            aum: {aum} {assetToken?.symbol}
+            aum: {formatUnits(aumB ?? 0)} {assetToken?.symbol}
           </AsciiText>
           <AsciiText padStart={2}>epoch: {epoch}</AsciiText>
           <AsciiText padStart={2}>last epoch performance: +0%</AsciiText>

@@ -79,7 +79,7 @@
 //   );
 // };
 
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import { RINKEBY_STABLE_VAULT } from "../contracts";
 import { AsciiConnectButton } from "./AsciiConnectButton";
 import { AsciiText, NewLine } from "./AsciiText";
@@ -87,12 +87,13 @@ import { Vault } from "./Vault";
 
 export const PageContent = () => {
   const { data: account } = useAccount();
+  const { data: network } = useNetwork();
 
   return (
     <>
       <AsciiConnectButton />
       <NewLine />
-      <AsciiText>// ███████ Vaults ██████████████</AsciiText>
+      <AsciiText opacity={0.5}>// ███████ Vaults ██████████████</AsciiText>
       {!account && (
         <>
           <NewLine />
@@ -105,6 +106,12 @@ export const PageContent = () => {
           vault={RINKEBY_STABLE_VAULT}
           chainName="rinkeby"
         />
+      )}
+      {account?.address && network?.name !== "Rinkeby" && (
+        <>
+          <AsciiText opacity={0.5}>//</AsciiText>
+          <AsciiText opacity={0.5}>// No vaults found in this chain</AsciiText>
+        </>
       )}
     </>
   );

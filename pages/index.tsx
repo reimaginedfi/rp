@@ -16,7 +16,7 @@ const AdminPage = () => {
       <VisuallyHidden>
         <Heading>REFI Pro</Heading>
       </VisuallyHidden>
-      <Stack as="main" minH="100vh" spacing={2}>
+      <Stack as="main" minH="100vh" spacing={0}>
         <Logo />
         {!isSSR && <PageContent />}
       </Stack>

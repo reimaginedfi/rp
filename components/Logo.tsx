@@ -1,7 +1,8 @@
 import { CappedText } from "@gvrs/chakra-capsize";
 
+import { Text } from "@chakra-ui/react";
 const logoString = `
-// ██████  ███████ ███████ ██     ██████  ██████   ██████  
+// ██████  ███████ ███████ ██     ██████  ██████   ██████   beta
 // ██   ██ ██      ██      ██     ██   ██ ██   ██ ██    ██ 
 // ██████  █████   █████   ██     ██████  ██████  ██    ██ 
 // ██   ██ ██      ██      ██     ██      ██   ██ ██    ██ 
@@ -11,8 +12,8 @@ const logoString = `
 
 export const Logo = () => {
   return (
-    <CappedText as="pre" lineHeight={1} overflowX="scroll">
+    <Text as="pre" lineHeight={1} overflow="hidden" fontFamily={"body"}>
       {logoString}
-    </CappedText>
+    </Text>
   );
 };
