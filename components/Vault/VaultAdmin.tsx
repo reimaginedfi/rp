@@ -38,7 +38,7 @@ export const VaultAdmin = ({ vault }: { vault: StableVaultType }) => {
     <>
       <NewLine />
       <AsciiText padStart={2} background="yellow">
-        // admin functions (only visible to farmer)
+        // admin functions below
       </AsciiText>
       <HStack spacing={0} m={0} p={0}>
         <AsciiText padStart={2}>external AUM:{"\u00a0"}</AsciiText>
@@ -86,9 +86,6 @@ export const VaultAdmin = ({ vault }: { vault: StableVaultType }) => {
           </InlineButton>
         </AsciiText>
       )}
-      <AsciiText padStart={2} background="yellow">
-        // end of admin functions
-      </AsciiText>
     </>
   );
 };

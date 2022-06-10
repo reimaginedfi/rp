@@ -6,6 +6,7 @@ import { InlineButton, InlineTag } from "../InlineButton";
 import { VaultAdmin } from "./VaultAdmin";
 import { VaultDeposit } from "./VaultDeposit";
 import { VaultState } from "./VaultState";
+import { VaultUnlock } from "./VaultUnlock";
 import { VaultUserState } from "./VaultUserState";
 
 export const Vault = ({
@@ -49,6 +50,7 @@ export const Vault = ({
       {isOpen && <VaultState vault={vault} />}
       {isOpen && <VaultUserState vault={vault} />}
       {isOpen && <VaultDeposit vault={vault} />}
+      {isOpen && <VaultUnlock vault={vault} />}
       {isOpen && isFarmer && <VaultAdmin vault={vault} />}
 
       <AsciiText>{"}"}</AsciiText>

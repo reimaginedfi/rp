@@ -87,7 +87,7 @@ import { Vault } from "./Vault";
 
 export const PageContent = () => {
   const { data: account } = useAccount();
-  const { data: network } = useNetwork();
+  const { activeChain } = useNetwork();
 
   return (
     <>
@@ -107,7 +107,7 @@ export const PageContent = () => {
           chainName="rinkeby"
         />
       )}
-      {account?.address && network?.name !== "Rinkeby" && (
+      {account?.address && activeChain?.name !== "Rinkeby" && (
         <>
           <AsciiText opacity={0.5}>//</AsciiText>
           <AsciiText opacity={0.5}>// No vaults found in this chain</AsciiText>

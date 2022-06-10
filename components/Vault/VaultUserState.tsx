@@ -1,6 +1,7 @@
+import { formatUnits } from "ethers/lib/utils";
 import { useAccount, useContractRead, useToken } from "wagmi";
 import { StableVaultType } from "../../contracts";
-import { AsciiText } from "../AsciiText";
+import { AsciiText, NewLine } from "../AsciiText";
 
 export const VaultUserState = ({ vault }: { vault: StableVaultType }) => {
   // data
@@ -17,13 +18,29 @@ export const VaultUserState = ({ vault }: { vault: StableVaultType }) => {
       watch: true,
     }
   );
+  const { data: user } = useContractRead(vault, "vaultUsers", {
+    watch: true,
+    args: [account?.address],
+  });
+  const [
+    assetsDepositedB,
+    epochLastDepositedB,
+    vaultSharesB,
+    userSharesToRedeemB,
+    epochToRedeemB,
+  ] = user ?? [0, 0, 0, 0, 0];
+  const { data: previewResult } = useContractRead(vault, "previewRedeem", {
+    args: [vaultSharesB],
+  });
   return (
     <>
       <AsciiText padStart={1} />
       <AsciiText padStart={2} opacity={0.5}>
-        // your stats
+        // ## your stats
       </AsciiText>
-      <AsciiText padStart={2}>stored value: 0 {assetToken?.symbol}</AsciiText>
+      <AsciiText padStart={2}>
+        stored value: {formatUnits(previewResult ?? 0)} {assetToken?.symbol}
+      </AsciiText>
       <AsciiText padStart={2}>
         has pending deposit: {hasPendingDeposit ? "true" : "false"}
       </AsciiText>

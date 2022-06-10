@@ -6,7 +6,7 @@ export const AsciiText = ({
   ...props
 }: CappedTextProps & { padStart?: number }) => {
   return (
-    <Text {...props} lineHeight={1}>
+    <Text width="fit-content" {...props} lineHeight={1}>
       {`\u00a0`.repeat(padStart)}
       {props.children}
     </Text>

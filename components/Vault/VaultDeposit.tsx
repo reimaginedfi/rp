@@ -76,7 +76,7 @@ export const VaultDeposit = ({ vault }: { vault: StableVaultType }) => {
     <>
       <NewLine />
       <AsciiText padStart={2} opacity={0.5}>
-        // deposit
+        // ## deposit
       </AsciiText>
       <AsciiText
         cursor={"pointer"}
@@ -119,7 +119,12 @@ export const VaultDeposit = ({ vault }: { vault: StableVaultType }) => {
         </NumberInput>
       </HStack>
       {!isAllowed && (
-        <AsciiText padStart={2}>
+        <AsciiText
+          padStart={2}
+          textColor={"yellow.900"}
+          background={"yellow.200"}
+          opacity={0.5}
+        >
           // allow contract to use your {assetToken?.symbol}
         </AsciiText>
       )}
