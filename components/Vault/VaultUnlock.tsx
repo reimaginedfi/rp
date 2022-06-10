@@ -7,9 +7,9 @@ import {
   NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
-import { formatUnits } from "ethers/lib/utils";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { useState } from "react";
-import { useAccount, useContractRead } from "wagmi";
+import { useAccount, useContractRead, useContractWrite } from "wagmi";
 import { StableVaultType } from "../../contracts";
 import { AsciiText, NewLine } from "../AsciiText";
 import { InlineButton } from "../InlineButton";
@@ -19,7 +19,7 @@ export const VaultUnlock = ({ vault }: { vault: StableVaultType }) => {
   const { data: account } = useAccount();
   const { data: hasPendingWithdrawal } = useContractRead(
     vault,
-    "userHasPendingWithdrawal",
+    "userHasPendingRedeem",
     {
       watch: true,
       args: [account?.address],
@@ -39,6 +39,10 @@ export const VaultUnlock = ({ vault }: { vault: StableVaultType }) => {
   ] = user ?? [0, 0, 0, 0, 0];
 
   const [unlockAmount, setUnlockAmount] = useState("0");
+
+  const { write: unlock } = useContractWrite(vault, "unlockShareForRedeem", {
+    args: [parseUnits(unlockAmount)],
+  });
   return (
     <>
       <NewLine />
@@ -106,16 +110,16 @@ export const VaultUnlock = ({ vault }: { vault: StableVaultType }) => {
                 </NumberInput>
               </HStack>
               {!hasPendingWithdrawal && (
-                <AsciiText
-                  padStart={2}
-                  textColor={"yellow.900"}
-                  background={"yellow.200"}
-                  opacity={0.5}
-                >
+                <AsciiText padStart={2} opacity={0.5}>
                   // VT unlocking is irreversible
                 </AsciiText>
               )}
-              <AsciiText onClick={() => {}} padStart={2}>
+              <AsciiText
+                onClick={() => {
+                  unlock();
+                }}
+                padStart={2}
+              >
                 //{" "}
                 <InlineButton color={"blue"}>
                   [Unlock {unlockAmount} VT]
