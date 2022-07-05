@@ -1,4 +1,5 @@
 import { useDisclosure } from "@chakra-ui/react";
+import { BigNumber } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 import {
   etherscanBlockExplorers,
@@ -35,7 +36,17 @@ export const Vault = ({
   const { address } = useAccount();
   const { asset, assetToken, aum, epoch, farmer, aumCap, vaultName } =
     useVaultMeta(contractConfig);
+  const vaultState = useContractRead({
+    ...contractConfig,
+    functionName: "vaultStates",
+    args: [BigNumber.from(epoch.data ?? 0)],
+    watch: true,
+  });
 
+  const pendingDeposit = formatUnits(
+    vaultState.data?.assetsToDeposit,
+    assetToken.data?.decimals
+  );
   const isFarmer = address === farmer.data?.toString();
 
   return (
@@ -75,16 +86,16 @@ export const Vault = ({
                 asset: {assetToken?.data?.symbol}
               </AsciiText>
 
-              <AsciiText padStart={2}>farmer: {farmer.data}</AsciiText>
+              {/* <AsciiText padStart={2}>farmer: {farmer.data}</AsciiText> */}
 
               <AsciiText padStart={2}>
                 AUM:{" "}
-                {formatUnits(aum.data ?? 0, assetToken.data?.decimals ?? 0)}{" "}
-                {assetToken?.data?.symbol}
-              </AsciiText>
-              <AsciiText padStart={2}>
-                cap:{" "}
-                {formatUnits(aumCap.data ?? 0, assetToken.data?.decimals ?? 0)}{" "}
+                {formatUnits(aum.data ?? 0, assetToken.data?.decimals ?? 0)}(+
+                {pendingDeposit}){"/"}
+                {formatUnits(
+                  aumCap.data ?? 0,
+                  assetToken.data?.decimals ?? 0
+                )}{" "}
                 {assetToken?.data?.symbol}
               </AsciiText>
 

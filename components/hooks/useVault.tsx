@@ -54,7 +54,6 @@ export const useVaultMeta = (contractConfig: ContractConfig) => {
     functionName: "name",
   });
 
-  console.log(assetToken.data);
   return {
     asset,
     assetToken,
