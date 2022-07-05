@@ -9,7 +9,13 @@ import {
 import { BigNumber } from "ethers";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { useEffect, useState } from "react";
-import { useContractRead, useContractWrite, useToken } from "wagmi";
+import {
+  erc20ABI,
+  useAccount,
+  useContractRead,
+  useContractWrite,
+  useToken,
+} from "wagmi";
 import { ContractConfig } from "../../contracts";
 import { AsciiText, NewLine } from "../AsciiText";
 import { useVaultMeta } from "../hooks/useVault";
@@ -22,9 +28,11 @@ export const VaultAdmin = ({
 }) => {
   // react
   const [externalAUM, setExternalAUM] = useState("0");
+  const [newAumCap, setNewAumCap] = useState("0");
   const [onceTrue, setOnce] = useState(true);
 
   // contract reads
+  const { address } = useAccount();
   const { asset, assetToken, aum, epoch, farmer, aumCap, vaultName } =
     useVaultMeta(contractConfig);
 
@@ -47,12 +55,19 @@ export const VaultAdmin = ({
   const { isLoading: isStartingVault, write: startVault } = useContractWrite({
     ...contractConfig,
     functionName: "startVault",
-    args: [parseUnits(externalAUM), parseUnits("1000")],
+    args: [parseUnits(externalAUM), parseUnits(newAumCap)],
   });
   const { isLoading: isProgressing, write: progressEpoch } = useContractWrite({
     ...contractConfig,
     functionName: "progressEpoch",
     args: [parseUnits(externalAUM)],
+  });
+  const assetBalance = useContractRead({
+    addressOrName: asset.data?.toString() ?? "",
+    contractInterface: erc20ABI,
+    functionName: "balanceOf",
+    args: [address],
+    watch: true,
   });
   return (
     <>
@@ -77,6 +92,7 @@ export const VaultAdmin = ({
           value={`${externalAUM} ${assetToken.data?.symbol}`}
           precision={1}
           step={1}
+          max={+(assetBalance.data?.toString() ?? 0)}
           min={0}
           allowMouseWheel
         >
@@ -94,6 +110,38 @@ export const VaultAdmin = ({
           </NumberInputStepper>
         </NumberInput>
       </HStack>
+      {BigNumber.from(epoch.data ?? 0).eq(0) && (
+        <HStack spacing={0} m={0} p={0}>
+          <AsciiText padStart={2}>initial AUM cap:{"\u00a0"}</AsciiText>
+          <NumberInput
+            isDisabled={isStartingVault}
+            m={0}
+            size={"xs"}
+            maxW="sm"
+            onChange={(value) =>
+              value ? setNewAumCap(value.replace(/[^0-9\.]/g, "")) : 0
+            }
+            value={`${newAumCap} ${assetToken.data?.symbol}`}
+            precision={1}
+            step={1}
+            min={0}
+            allowMouseWheel
+          >
+            <NumberInputField
+              border={"none"}
+              fontSize={"unset"}
+              background={"blackAlpha.50"}
+              p={0}
+              display="inline"
+              lineHeight={"unset"}
+            />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+        </HStack>
+      )}
       {BigNumber.from(epoch.data ?? 0).eq(0) && (
         <AsciiText onClick={() => startVault()} padStart={2}>
           //{" "}
@@ -122,9 +170,6 @@ export const VaultAdmin = ({
               assetToken.data?.symbol
             }`}
       </AsciiText>
-      {/* <AsciiText padStart={2}>
-        // which will start next epoch at {formatUnits()}
-      </AsciiText> */}
     </>
   );
 };
