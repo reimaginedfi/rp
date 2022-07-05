@@ -146,7 +146,7 @@ export const useVaultDeposit = (
     functionName: "storeAssetForDeposit",
     args: [parseUnits(depositAmount)],
     overrides: {
-      gasLimit: 150000,
+      gasLimit: 300000,
     },
   });
 

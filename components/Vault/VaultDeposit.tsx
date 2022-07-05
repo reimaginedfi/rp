@@ -113,7 +113,7 @@ export const VaultDeposit = ({
         <AsciiText padStart={2}>// Depositing...</AsciiText>
       )}
       {isAllowed && !isStoring && (
-        <AsciiText onClick={() => storeAsset()} padStart={2}>
+        <AsciiText onClick={() => console.log("deposit paused")} padStart={2}>
           //{" "}
           <InlineButton color={"blue"}>
             [Deposit {depositAmount} {asset?.symbol}]
