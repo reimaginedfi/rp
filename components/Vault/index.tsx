@@ -87,10 +87,21 @@ export const Vault = ({
               <AsciiText padStart={2}>
                 epoch: {epoch.data?.toString()}
               </AsciiText>
+
               <AsciiText padStart={2}>last epoch performance: n/a</AsciiText>
             </>
           )}
         </>
+      )}
+      {epoch.data?.toString() === "0" && (
+        <AsciiText
+          padStart={2}
+          textColor={"red.900"}
+          background={"red.200"}
+          opacity={0.5}
+        >
+          // contract is not yet initialized
+        </AsciiText>
       )}
       {isOpen && (
         <VaultUserState
