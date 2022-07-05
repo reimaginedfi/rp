@@ -186,7 +186,9 @@ export const VaultAdmin = ({
         <>
           <NewLine />
           <AsciiText padStart={2} opacity={0.5}>
-            current AUM Cap: {aumCap.data?.toString()}
+            current AUM Cap:{" "}
+            {formatUnits(aumCap.data ?? 0, assetToken.data?.decimals)}{" "}
+            {assetToken.data?.symbol}
           </AsciiText>
           <HStack spacing={0} m={0} p={0}>
             <AsciiText padStart={2}>update AUM cap:{"\u00a0"}</AsciiText>
