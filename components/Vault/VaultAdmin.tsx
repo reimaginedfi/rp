@@ -47,7 +47,7 @@ export const VaultAdmin = ({
   const delta = useContractRead({
     ...contractConfig,
     functionName: "previewProgress",
-    args: [parseUnits(externalAUM)],
+    args: [parseUnits(externalAUM, 6)],
     watch: true,
   });
 
@@ -55,12 +55,12 @@ export const VaultAdmin = ({
   const { isLoading: isStartingVault, write: startVault } = useContractWrite({
     ...contractConfig,
     functionName: "startVault",
-    args: [parseUnits(externalAUM), parseUnits(newAumCap)],
+    args: [parseUnits(externalAUM, 6), parseUnits(newAumCap, 6)],
   });
   const { isLoading: isProgressing, write: progressEpoch } = useContractWrite({
     ...contractConfig,
     functionName: "progressEpoch",
-    args: [parseUnits(externalAUM)],
+    args: [parseUnits(externalAUM, 6)],
   });
   const assetBalance = useContractRead({
     addressOrName: asset.data?.toString() ?? "",
