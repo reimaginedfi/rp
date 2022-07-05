@@ -38,7 +38,7 @@ export const VaultAdmin = ({
 
   useEffect(() => {
     if (onceTrue) {
-      setExternalAUM(formatUnits(aum.data ?? 0));
+      setExternalAUM(formatUnits(aum.data ?? 0, assetToken.data?.decimals));
       setOnce(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,7 +47,7 @@ export const VaultAdmin = ({
   const delta = useContractRead({
     ...contractConfig,
     functionName: "previewProgress",
-    args: [parseUnits(externalAUM, 6)],
+    args: [parseUnits(externalAUM, assetToken.data?.decimals)],
     watch: true,
   });
 
@@ -55,13 +55,24 @@ export const VaultAdmin = ({
   const { isLoading: isStartingVault, write: startVault } = useContractWrite({
     ...contractConfig,
     functionName: "startVault",
-    args: [parseUnits(externalAUM, 6), parseUnits(newAumCap, 6)],
+    args: [
+      parseUnits(externalAUM, assetToken.data?.decimals),
+      parseUnits(newAumCap, assetToken.data?.decimals),
+    ],
   });
   const { isLoading: isProgressing, write: progressEpoch } = useContractWrite({
     ...contractConfig,
     functionName: "progressEpoch",
-    args: [parseUnits(externalAUM, 6)],
+    args: [parseUnits(externalAUM, assetToken.data?.decimals)],
   });
+
+  const { isLoading: isChangingAumCap, write: updateAumCap } = useContractWrite(
+    {
+      ...contractConfig,
+      functionName: "updateAumCap",
+      args: [parseUnits(newAumCap, assetToken.data?.decimals)],
+    }
+  );
   const assetBalance = useContractRead({
     addressOrName: asset.data?.toString() ?? "",
     contractInterface: erc20ABI,
@@ -166,10 +177,55 @@ export const VaultAdmin = ({
               delta.data && delta.data[0]
                 ? "an inflow to farm"
                 : "an outflow from farm"
-            } of ${formatUnits(delta.data && delta.data[1])} ${
-              assetToken.data?.symbol
-            }`}
+            } of ${formatUnits(
+              delta.data && delta.data[1],
+              assetToken.data?.decimals ?? 0
+            )} ${assetToken.data?.symbol}`}
       </AsciiText>
+      {BigNumber.from(epoch.data ?? 0).gt(0) && (
+        <>
+          <NewLine />
+          <AsciiText padStart={2} opacity={0.5}>
+            current AUM Cap: {aumCap.data?.toString()}
+          </AsciiText>
+          <HStack spacing={0} m={0} p={0}>
+            <AsciiText padStart={2}>update AUM cap:{"\u00a0"}</AsciiText>
+            <NumberInput
+              m={0}
+              size={"xs"}
+              maxW="sm"
+              onChange={(value) =>
+                value ? setNewAumCap(value.replace(/[^0-9\.]/g, "")) : 0
+              }
+              isDisabled={isChangingAumCap}
+              value={`${newAumCap} ${assetToken.data?.symbol}`}
+              precision={1}
+              step={1}
+              min={0}
+              allowMouseWheel
+            >
+              <NumberInputField
+                border={"none"}
+                fontSize={"unset"}
+                background={"blackAlpha.50"}
+                p={0}
+                display="inline"
+                lineHeight={"unset"}
+              />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </HStack>
+          <AsciiText onClick={() => updateAumCap()} padStart={2}>
+            //{" "}
+            <InlineButton color={"blue"}>
+              [Update AUM Cap to {newAumCap} {assetToken.data?.symbol}]
+            </InlineButton>
+          </AsciiText>
+        </>
+      )}
     </>
   );
 };

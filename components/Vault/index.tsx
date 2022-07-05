@@ -78,10 +78,14 @@ export const Vault = ({
               <AsciiText padStart={2}>farmer: {farmer.data}</AsciiText>
 
               <AsciiText padStart={2}>
-                AUM: {formatUnits(aum.data ?? 0)} {assetToken?.data?.symbol}
+                AUM:{" "}
+                {formatUnits(aum.data ?? 0, assetToken.data?.decimals ?? 0)}{" "}
+                {assetToken?.data?.symbol}
               </AsciiText>
               <AsciiText padStart={2}>
-                cap: {formatUnits(aumCap.data ?? 0)} {assetToken?.data?.symbol}
+                cap:{" "}
+                {formatUnits(aumCap.data ?? 0, assetToken.data?.decimals ?? 0)}{" "}
+                {assetToken?.data?.symbol}
               </AsciiText>
 
               <AsciiText padStart={2}>

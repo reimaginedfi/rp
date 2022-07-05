@@ -54,6 +54,7 @@ export const useVaultMeta = (contractConfig: ContractConfig) => {
     functionName: "name",
   });
 
+  console.log(assetToken.data);
   return {
     asset,
     assetToken,
@@ -126,13 +127,16 @@ export const useVaultDeposit = (
 
   const isAllowed =
     BigNumber.isBigNumber(allowance) &&
-    allowance.gte(parseUnits(depositAmount, 6) ?? "0");
+    allowance.gte(parseUnits(depositAmount, assetToken.data?.decimals) ?? "0");
 
   const { write: approve, isLoading: isApproving } = useContractWrite({
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
     functionName: "approve",
-    args: [contractConfig.addressOrName, parseUnits(depositAmount, 6)],
+    args: [
+      contractConfig.addressOrName,
+      parseUnits(depositAmount, assetToken.data?.decimals),
+    ],
   });
 
   const { write: approveMax, isLoading: isApprovingMax } = useContractWrite({
@@ -144,7 +148,7 @@ export const useVaultDeposit = (
   const { write: storeAsset, isLoading: isStoring } = useContractWrite({
     ...contractConfig,
     functionName: "storeAssetForDeposit",
-    args: [parseUnits(depositAmount, 6)],
+    args: [parseUnits(depositAmount, assetToken.data?.decimals)],
     overrides: {
       gasLimit: 300000,
     },
@@ -169,6 +173,7 @@ export const useVaultWithdraw = (
   unlockAmount: string
 ) => {
   const { address } = useAccount();
+  const { assetToken } = useVaultMeta(contractConfig);
   const userHasPendingRedeem = useContractRead({
     ...contractConfig,
     functionName: "userHasPendingRedeem",
@@ -181,7 +186,7 @@ export const useVaultWithdraw = (
   const unlockShares = useContractWrite({
     ...contractConfig,
     functionName: "unlockShareForRedeem",
-    args: [parseUnits(unlockAmount, 6)],
+    args: [parseUnits(unlockAmount, assetToken.data?.decimals)],
   });
   const hasPendingWithdrawal = userHasPendingRedeem.data;
 

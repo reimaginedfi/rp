@@ -2,7 +2,7 @@ import { formatUnits } from "ethers/lib/utils";
 import { useAccount, useContractRead, useToken } from "wagmi";
 import { ContractConfig } from "../../contracts";
 import { AsciiText, NewLine } from "../AsciiText";
-import { useVaultUser } from "../hooks/useVault";
+import { useVaultMeta, useVaultUser } from "../hooks/useVault";
 
 export const VaultUserState = ({
   contractConfig,
@@ -13,6 +13,7 @@ export const VaultUserState = ({
 }) => {
   // data
   const { address } = useAccount();
+  const { assetToken } = useVaultMeta(contractConfig);
   const { user, sharesValue, hasPendingDeposit } = useVaultUser(
     contractConfig,
     address ?? ""
@@ -25,7 +26,9 @@ export const VaultUserState = ({
         // ░░ your stats ░░░░░░░░░░░░░░░
       </AsciiText>
       <AsciiText padStart={2}>
-        stored value: {formatUnits(sharesValue.data ?? 0)} {symbol}
+        stored value:{" "}
+        {formatUnits(sharesValue.data ?? 0, assetToken.data?.decimals ?? 0)}{" "}
+        {symbol}
       </AsciiText>
       <AsciiText padStart={2}>
         has pending deposit: {hasPendingDeposit.data ? "true" : "false"}
@@ -34,7 +37,11 @@ export const VaultUserState = ({
 
       <AsciiText padStart={2} opacity={0.5}>
         // total deposited:{" "}
-        {formatUnits((user.data?.[0] ?? 0) + (sharesValue.data ?? 0))} {symbol}
+        {formatUnits(
+          (user.data?.[0] ?? 0) + (sharesValue.data ?? 0),
+          assetToken.data?.decimals ?? 0
+        )}{" "}
+        {symbol}
       </AsciiText>
       <AsciiText padStart={2} opacity={0.5}>
         // total withdrawn: 0.0 {symbol}

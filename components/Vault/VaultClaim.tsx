@@ -26,7 +26,8 @@ export const VaultClaim = ({
   return (
     <>
       <AsciiText padStart={2}>
-        withdrawable balance: {formatUnits(withdrawable.data ?? 0)}{" "}
+        withdrawable balance:{" "}
+        {formatUnits(withdrawable.data ?? 0, assetToken.data?.decimals ?? 0)}{" "}
         {assetToken.data?.symbol} (before fees)
       </AsciiText>
       <AsciiText padStart={2}>
