@@ -10,39 +10,22 @@ import { BigNumber } from "ethers";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { useState } from "react";
 import { useAccount, useContractRead, useContractWrite } from "wagmi";
-import { StableVaultType } from "../../contracts";
+import { ContractConfig } from "../../contracts";
 import { AsciiText, NewLine } from "../AsciiText";
+import { useVaultWithdraw } from "../hooks/useVault";
 import { InlineButton } from "../InlineButton";
 import { VaultClaim } from "./VaultClaim";
 
-export const VaultUnlock = ({ vault }: { vault: StableVaultType }) => {
-  const { data: account } = useAccount();
-  const { data: hasPendingWithdrawal } = useContractRead(
-    vault,
-    "userHasPendingRedeem",
-    {
-      watch: true,
-      args: [account?.address],
-    }
-  );
-
-  const { data: user } = useContractRead(vault, "vaultUsers", {
-    watch: true,
-    args: [account?.address],
-  });
-  const [
-    assetsDepositedB,
-    epochLastDepositedB,
-    vaultSharesB,
-    userSharesToRedeemB,
-    epochToRedeemB,
-  ] = user ?? [0, 0, 0, 0, 0];
-
+export const VaultUnlock = ({
+  contractConfig,
+}: {
+  contractConfig: ContractConfig;
+}) => {
   const [unlockAmount, setUnlockAmount] = useState("0");
-
-  const { write: unlock } = useContractWrite(vault, "unlockShareForRedeem", {
-    args: [parseUnits(unlockAmount)],
-  });
+  const { hasPendingWithdrawal, user, unlockShares } = useVaultWithdraw(
+    contractConfig,
+    unlockAmount
+  );
   return (
     <>
       <NewLine />
@@ -59,20 +42,21 @@ export const VaultUnlock = ({ vault }: { vault: StableVaultType }) => {
           >
             // you have a pending withdrawal
           </AsciiText>
-          <VaultClaim vault={vault} />
+          <VaultClaim contractConfig={contractConfig} />
         </>
       )}
 
       {!hasPendingWithdrawal && (
         <>
           <AsciiText padStart={2}>
-            your vault tokens: {formatUnits(vaultSharesB)} VT
+            your vault tokens: {formatUnits(user.data?.vaultShares ?? 0)} VT
           </AsciiText>
-          {BigNumber.from(vaultSharesB).gt(0) && (
+          {BigNumber.from(user.data?.vaultShares ?? 0).gt(0) && (
             <>
-              {BigNumber.from(userSharesToRedeemB).gt(0) && (
+              {BigNumber.from(user.data?.sharesToRedeem ?? 0).gt(0) && (
                 <AsciiText padStart={2}>
-                  unlocking next epoch: {formatUnits(userSharesToRedeemB)} VT
+                  unlocking next epoch: {formatUnits(user.data?.sharesToRedeem)}{" "}
+                  VT
                 </AsciiText>
               )}
               <HStack spacing={0} m={0} p={0}>
@@ -89,7 +73,9 @@ export const VaultUnlock = ({ vault }: { vault: StableVaultType }) => {
                   step={1}
                   max={
                     +formatUnits(
-                      BigNumber.from(vaultSharesB).sub(userSharesToRedeemB)
+                      BigNumber.from(user.data?.vaultShares ?? 0).sub(
+                        user.data?.sharesToRedeem ?? 0
+                      )
                     )
                   }
                   min={0}
@@ -116,7 +102,7 @@ export const VaultUnlock = ({ vault }: { vault: StableVaultType }) => {
               )}
               <AsciiText
                 onClick={() => {
-                  unlock();
+                  unlockShares.write();
                 }}
                 padStart={2}
               >
@@ -130,7 +116,7 @@ export const VaultUnlock = ({ vault }: { vault: StableVaultType }) => {
         </>
       )}
 
-      {BigNumber.from(vaultSharesB).eq(0) && (
+      {BigNumber.from(user.data?.vaultShares ?? 0).eq(0) && (
         <AsciiText padStart={2} opacity={0.5}>
           // <InlineButton>[no withdrawable balance]</InlineButton>
         </AsciiText>

@@ -6,72 +6,35 @@ import {
   NumberInputField,
   NumberInputStepper,
 } from "@chakra-ui/react";
-import { BigNumber, constants } from "ethers";
-import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { useState } from "react";
-import {
-  erc20ABI,
-  useAccount,
-  useContractRead,
-  useContractWrite,
-  useToken,
-} from "wagmi";
-import { StableVaultType } from "../../contracts";
+
+import { ContractConfig } from "../../contracts";
 import { AsciiText, NewLine } from "../AsciiText";
 import { InlineButton } from "../InlineButton";
+import { FetchTokenResult } from "@wagmi/core";
+import { useVaultDeposit } from "../hooks/useVault";
 
-export const VaultDeposit = ({ vault }: { vault: StableVaultType }) => {
+export const VaultDeposit = ({
+  contractConfig,
+  asset,
+}: {
+  contractConfig: ContractConfig;
+  asset?: FetchTokenResult;
+}) => {
   // react
   const [depositAmount, setDepositAmount] = useState("0");
 
-  // ethers
-  const { data: account } = useAccount();
-  const { data: assetAddress } = useContractRead(vault, "asset");
-  const { data: assetToken } = useToken({
-    address: assetAddress?.toString(),
-  });
-  const asset = {
-    addressOrName: assetAddress?.toString()!,
-    contractInterface: erc20ABI,
-  };
-  const { data: balanceB } = useContractRead(asset, "balanceOf", {
-    args: [account?.address],
-    watch: true,
-  });
-  // balance 50 DAI == 50_000_000_000_000_000_000
-  const balanceDisplay = BigNumber.isBigNumber(balanceB)
-    ? formatUnits(balanceB)
-    : "0";
-
-  const { data: allowanceB } = useContractRead(asset, "allowance", {
-    args: [account?.address, vault.addressOrName],
-    watch: true,
-  });
-  const isAllowed =
-    BigNumber.isBigNumber(allowanceB) &&
-    allowanceB.gte(parseUnits(depositAmount) ?? "0");
-
-  const { write: approve, isLoading: isApproving } = useContractWrite(
-    asset,
-    "approve",
-    {
-      args: [vault.addressOrName, parseUnits(depositAmount)],
-    }
-  );
-  const { write: approveMax, isLoading: isApprovingMax } = useContractWrite(
-    asset,
-    "approve",
-    {
-      args: [vault.addressOrName, constants.MaxUint256],
-    }
-  );
-  const { write: storeAsset, isLoading: isStoring } = useContractWrite(
-    vault,
-    "storeAssetForDeposit",
-    {
-      args: [parseUnits(depositAmount)],
-    }
-  );
+  // wagmi
+  const {
+    balanceDisplay,
+    isAllowed,
+    isApproving,
+    isApprovingMax,
+    approve,
+    approveMax,
+    isStoring,
+    storeAsset,
+  } = useVaultDeposit(contractConfig, depositAmount);
   return (
     <>
       <NewLine />
@@ -82,22 +45,22 @@ export const VaultDeposit = ({ vault }: { vault: StableVaultType }) => {
         cursor={"pointer"}
         padStart={2}
         onClick={() => {
+          /* remove all except number and point */
           setDepositAmount(balanceDisplay.replace(/[^0-9\.]/g, ""));
         }}
       >
-        wallet balance: {balanceDisplay} {assetToken?.symbol}
+        wallet balance: {balanceDisplay} {asset?.symbol}
       </AsciiText>
       <HStack spacing={0} m={0} p={0}>
         <AsciiText padStart={2}>deposit amount:{"\u00a0"}</AsciiText>
         <NumberInput
-          isDisabled={isApproving || isApprovingMax}
           m={0}
           size={"xs"}
           maxW="sm"
           onChange={(value) =>
             value ? setDepositAmount(value.replace(/[^0-9\.]/g, "")) : 0
           }
-          value={`${depositAmount} ${assetToken?.symbol}`}
+          value={`${depositAmount} ${asset?.symbol}`}
           precision={1}
           step={1}
           max={+balanceDisplay}
@@ -125,7 +88,7 @@ export const VaultDeposit = ({ vault }: { vault: StableVaultType }) => {
           background={"yellow.200"}
           opacity={0.5}
         >
-          // allow contract to use your {assetToken?.symbol}
+          // allow contract to use your {asset?.symbol}
         </AsciiText>
       )}
       {!isAllowed && (isApproving || isApprovingMax) && (
@@ -137,7 +100,7 @@ export const VaultDeposit = ({ vault }: { vault: StableVaultType }) => {
             <AsciiText onClick={() => approve()} padStart={2}>
               //{" "}
               <InlineButton color={"blue"}>
-                [Approve {depositAmount} {assetToken?.symbol}]
+                [Approve {depositAmount} {asset?.symbol}]
               </InlineButton>
             </AsciiText>
           )}
@@ -153,7 +116,7 @@ export const VaultDeposit = ({ vault }: { vault: StableVaultType }) => {
         <AsciiText onClick={() => storeAsset()} padStart={2}>
           //{" "}
           <InlineButton color={"blue"}>
-            [Deposit {depositAmount} {assetToken?.symbol}]
+            [Deposit {depositAmount} {asset?.symbol}]
           </InlineButton>
         </AsciiText>
       )}

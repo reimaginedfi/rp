@@ -1,11 +1,13 @@
 import { VisuallyHidden, Heading, Stack } from "@chakra-ui/react";
 import Head from "next/head";
-import { useSSR } from "../components/hooks/useSSR";
+import dynamic from "next/dynamic";
 import { Logo } from "../components/Logo";
-import { PageContent } from "../components/PageContent";
+
+const PageContent = dynamic(() => import("../components/PageContent"), {
+  ssr: false,
+});
 
 const AdminPage = () => {
-  const isSSR = useSSR();
   return (
     <>
       <Head>
@@ -18,7 +20,7 @@ const AdminPage = () => {
       </VisuallyHidden>
       <Stack as="main" minH="100vh" spacing={0}>
         <Logo />
-        {!isSSR && <PageContent />}
+        <PageContent />
       </Stack>
     </>
   );

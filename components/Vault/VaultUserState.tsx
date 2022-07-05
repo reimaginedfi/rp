@@ -1,37 +1,23 @@
 import { formatUnits } from "ethers/lib/utils";
 import { useAccount, useContractRead, useToken } from "wagmi";
-import { StableVaultType } from "../../contracts";
+import { ContractConfig } from "../../contracts";
 import { AsciiText, NewLine } from "../AsciiText";
+import { useVaultUser } from "../hooks/useVault";
 
-export const VaultUserState = ({ vault }: { vault: StableVaultType }) => {
+export const VaultUserState = ({
+  contractConfig,
+  symbol,
+}: {
+  contractConfig: ContractConfig;
+  symbol: string;
+}) => {
   // data
-  const { data: account } = useAccount();
-  const { data: assetAddress } = useContractRead(vault, "asset");
-  const { data: assetToken } = useToken({
-    address: assetAddress?.toString(),
-  });
-  const { data: hasPendingDeposit } = useContractRead(
-    vault,
-    "userHasPendingUpdate",
-    {
-      args: [account?.address],
-      watch: true,
-    }
+  const { address } = useAccount();
+  const { user, sharesValue, hasPendingDeposit } = useVaultUser(
+    contractConfig,
+    address ?? ""
   );
-  const { data: user } = useContractRead(vault, "vaultUsers", {
-    watch: true,
-    args: [account?.address],
-  });
-  const [
-    assetsDepositedB,
-    epochLastDepositedB,
-    vaultSharesB,
-    userSharesToRedeemB,
-    epochToRedeemB,
-  ] = user ?? [0, 0, 0, 0, 0];
-  const { data: previewResult } = useContractRead(vault, "previewRedeem", {
-    args: [vaultSharesB],
-  });
+
   return (
     <>
       <AsciiText padStart={1} />
@@ -39,22 +25,20 @@ export const VaultUserState = ({ vault }: { vault: StableVaultType }) => {
         // ## your stats
       </AsciiText>
       <AsciiText padStart={2}>
-        stored value: {formatUnits(previewResult ?? 0)} {assetToken?.symbol}
+        stored value: {formatUnits(sharesValue.data ?? 0)} {symbol}
       </AsciiText>
       <AsciiText padStart={2}>
-        has pending deposit: {hasPendingDeposit ? "true" : "false"}
+        has pending deposit: {hasPendingDeposit.data ? "true" : "false"}
       </AsciiText>
-      {/* <AsciiText padStart={2}>
-        has pending deposit: {hasPendingDeposit ? "true" : "false"}
-      </AsciiText>
-      <AsciiText padStart={2}>pending deposit: 0 {symbol}</AsciiText>
+      <AsciiText padStart={2}>pending deposit: 0.0 {symbol}</AsciiText>
 
       <AsciiText padStart={2} opacity={0.5}>
-        // total deposited: 0 {symbol}
+        // total deposited:{" "}
+        {formatUnits((user.data?.[0] ?? 0) + (sharesValue.data ?? 0))} {symbol}
       </AsciiText>
       <AsciiText padStart={2} opacity={0.5}>
-        // total withdrawn: 0 {symbol}
-      </AsciiText> */}
+        // total withdrawn: 0.0 {symbol}
+      </AsciiText>
     </>
   );
 };

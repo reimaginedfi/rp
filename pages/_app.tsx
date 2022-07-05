@@ -1,28 +1,27 @@
 import "@rainbow-me/rainbowkit/styles.css";
+
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { withCappedText } from "@gvrs/chakra-capsize/theme";
 import {
   getDefaultWallets,
+  lightTheme,
   RainbowKitProvider,
   Theme,
-  darkTheme,
-  lightTheme,
 } from "@rainbow-me/rainbowkit";
-import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
-import { alchemyProvider } from "wagmi/providers/alchemy";
-import { publicProvider } from "wagmi/providers/public";
 import type { AppProps } from "next/app";
-import { ChakraProvider, extendTheme } from "@chakra-ui/react";
-import merge from "lodash.merge";
-import { withCappedText } from "@gvrs/chakra-capsize/theme";
+import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
+import { publicProvider } from "wagmi/providers/public";
 
 import ibmPlexMono from "@capsizecss/metrics/iBMPlexMono";
 import { Global } from "@emotion/react";
 import { infuraProvider } from "wagmi/providers/infura";
 
-const { chains, provider } = configureChains(
-  [chain.rinkeby, chain.mainnet],
+const { chains, provider, webSocketProvider } = configureChains(
+  process.env.NODE_ENV === "production"
+    ? [chain.mainnet]
+    : [chain.localhost, chain.hardhat, chain.rinkeby, chain.mainnet],
   [
     // alchemyProvider({ alchemyId: process.env.ALCHEMY_ID }),
-
     infuraProvider({ infuraId: "9aa3d95b3bc440fa88ea12eaa4456161" }),
     publicProvider(),
   ]
@@ -37,6 +36,7 @@ const wagmiClient = createClient({
   autoConnect: true,
   connectors,
   provider,
+  webSocketProvider,
 });
 
 const chakraTheme = extendTheme(
