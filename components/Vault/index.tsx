@@ -26,6 +26,10 @@ export const Vault = ({
     defaultIsOpen: true,
   });
 
+  const { onToggle: onToggleMeta, isOpen: isOpenMeta } = useDisclosure({
+    defaultIsOpen: false,
+  });
+
   // data
   const { chain } = useNetwork();
   const { address } = useAccount();
@@ -50,21 +54,21 @@ export const Vault = ({
           [{isOpen ? "hide" : "show"}]
         </InlineButton>
       </AsciiText>
-      {isOpen && (
+      {isOpenMeta && (
         <>
           <AsciiText
             padStart={2}
             as="button"
             width={"fit-content"}
-            onClick={onToggle}
+            onClick={onToggleMeta}
             opacity={0.5}
           >
             //{" "}
             <InlineButton>
-              [{isOpen ? "hide " : "show "}contract details]
+              [{isOpenMeta ? "hide " : "show "}contract details]
             </InlineButton>
           </AsciiText>
-          {isOpen && (
+          {isOpenMeta && (
             <>
               <AsciiText padStart={2}>
                 asset: {assetToken?.data?.symbol}
@@ -82,7 +86,7 @@ export const Vault = ({
               <AsciiText padStart={2}>
                 epoch: {epoch.data?.toString()}
               </AsciiText>
-              <AsciiText padStart={2}>last epoch performance: </AsciiText>
+              <AsciiText padStart={2}>last epoch performance: n/a</AsciiText>
             </>
           )}
         </>

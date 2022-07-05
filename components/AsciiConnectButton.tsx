@@ -69,7 +69,6 @@ export const AsciiConnectButton = () => {
               >
                 // chain:{" "}
                 <InlineButton color={"blue"}>[{chain.name}]</InlineButton>
-                {chain.id}
               </AsciiText>
               <AsciiText width={"fit-content"}>
                 {`// gas: ${
