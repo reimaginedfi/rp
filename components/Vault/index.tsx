@@ -100,7 +100,7 @@ export const Vault = ({
           background={"red.200"}
           opacity={0.5}
         >
-          // contract is not yet initialized
+          // vault is not yet initialized
         </AsciiText>
       )}
       {isOpen && (
