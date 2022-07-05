@@ -30,7 +30,7 @@ export const VaultUnlock = ({
     <>
       <NewLine />
       <AsciiText padStart={2} opacity={0.5}>
-        // ## withdrawal
+        // ░░ withdrawal ░░░░░░░░░░░░░░░
       </AsciiText>
       {hasPendingWithdrawal && (
         <>

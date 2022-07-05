@@ -22,7 +22,7 @@ export const VaultUserState = ({
     <>
       <AsciiText padStart={1} />
       <AsciiText padStart={2} opacity={0.5}>
-        // ## your stats
+        // ░░ your stats ░░░░░░░░░░░░░░░
       </AsciiText>
       <AsciiText padStart={2}>
         stored value: {formatUnits(sharesValue.data ?? 0)} {symbol}

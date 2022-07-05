@@ -43,7 +43,7 @@ export const PageContent = () => {
     <>
       <AsciiConnectButton />
       <NewLine />
-      <AsciiText opacity={0.5}>// ███████ Vaults ██████████████</AsciiText>
+      <AsciiText opacity={0.5}>// ███████ Vaults ████████████████</AsciiText>
       {isConnected ? <VaultList /> : <WalletNotConnectedComponent />}
     </>
   );

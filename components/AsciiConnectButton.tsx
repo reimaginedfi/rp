@@ -1,6 +1,6 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { BigNumber } from "ethers";
-import { formatUnits } from "ethers/lib/utils";
+import { commify, formatUnits } from "ethers/lib/utils";
 import { useFeeData } from "wagmi";
 import { AsciiText } from "./AsciiText";
 import { InlineButton } from "./InlineButton";
@@ -53,9 +53,10 @@ export const AsciiConnectButton = () => {
                 // connected to:{" "}
                 <InlineButton color={"blue"}>
                   [
-                  {`${account.address.slice(0, 4)}...${account.address.slice(
-                    -4
-                  )}`}
+                  {account.ensName ||
+                    `${account.address.slice(0, 4)}...${account.address.slice(
+                      -4
+                    )}`}
                   ]
                 </InlineButton>
               </AsciiText>
@@ -73,7 +74,10 @@ export const AsciiConnectButton = () => {
               <AsciiText width={"fit-content"}>
                 {`// gas: ${
                   fees &&
-                  formatUnits(BigNumber.from(fees.formatted.gasPrice), "gwei")
+                  (+formatUnits(
+                    BigNumber.from(fees.formatted.gasPrice),
+                    "gwei"
+                  )).toFixed(2)
                 }`}{" "}
                 gwei
               </AsciiText>

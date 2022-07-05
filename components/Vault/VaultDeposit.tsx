@@ -39,7 +39,7 @@ export const VaultDeposit = ({
     <>
       <NewLine />
       <AsciiText padStart={2} opacity={0.5}>
-        // ## deposit
+        // ░░ deposit ░░░░░░░░░░░░░░░░░░
       </AsciiText>
       <AsciiText
         cursor={"pointer"}

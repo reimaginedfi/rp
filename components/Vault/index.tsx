@@ -54,7 +54,7 @@ export const Vault = ({
           [{isOpen ? "hide" : "show"}]
         </InlineButton>
       </AsciiText>
-      {isOpenMeta && (
+      {isOpen && (
         <>
           <AsciiText
             padStart={2}
@@ -63,10 +63,11 @@ export const Vault = ({
             onClick={onToggleMeta}
             opacity={0.5}
           >
-            //{" "}
+            // ░░{" "}
             <InlineButton>
               [{isOpenMeta ? "hide " : "show "}contract details]
-            </InlineButton>
+            </InlineButton>{" "}
+            ░░
           </AsciiText>
           {isOpenMeta && (
             <>
