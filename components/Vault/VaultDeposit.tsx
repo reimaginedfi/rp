@@ -13,6 +13,7 @@ import { AsciiText, NewLine } from "../AsciiText";
 import { InlineButton } from "../InlineButton";
 import { FetchTokenResult } from "@wagmi/core";
 import { useVaultDeposit } from "../hooks/useVault";
+import { AsciiNumberInput } from "../AsciiNumberInput";
 
 export const VaultDeposit = ({
   contractConfig,
@@ -51,36 +52,18 @@ export const VaultDeposit = ({
       >
         wallet balance: {balanceDisplay} {asset?.symbol}
       </AsciiText>
-      <HStack spacing={0} m={0} p={0}>
-        <AsciiText padStart={2}>deposit amount:{"\u00a0"}</AsciiText>
-        <NumberInput
-          m={0}
-          size={"xs"}
-          maxW="sm"
-          onChange={(value) =>
-            value ? setDepositAmount(value.replace(/[^0-9\.]/g, "")) : 0
-          }
-          value={`${depositAmount} ${asset?.symbol}`}
-          precision={1}
-          step={1}
-          max={+balanceDisplay}
-          min={0}
-          allowMouseWheel
-        >
-          <NumberInputField
-            border={"none"}
-            fontSize={"unset"}
-            background={"blackAlpha.50"}
-            p={0}
-            display="inline"
-            lineHeight={"unset"}
-          />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-      </HStack>
+
+      <AsciiNumberInput
+        label={`deposit amount:${"\u00a0".repeat(1)}`}
+        onChange={(value) =>
+          value ? setDepositAmount(value.replace(/[^0-9\.]/g, "")) : 0
+        }
+        value={`${depositAmount} ${asset?.symbol}`}
+        precision={1}
+        step={1}
+        max={+balanceDisplay}
+        min={0}
+      />
       {!isAllowed && (
         <AsciiText
           padStart={2}

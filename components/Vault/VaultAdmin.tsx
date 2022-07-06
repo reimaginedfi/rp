@@ -17,6 +17,7 @@ import {
   useToken,
 } from "wagmi";
 import { ContractConfig } from "../../contracts";
+import { AsciiNumberInput } from "../AsciiNumberInput";
 import { AsciiText, NewLine } from "../AsciiText";
 import { useVaultMeta } from "../hooks/useVault";
 import { InlineButton } from "../InlineButton";
@@ -87,71 +88,33 @@ export const VaultAdmin = ({
         // admin functions below
       </AsciiText>
       <NewLine />
-      <AsciiText padStart={2} opacity={0.5}>
+      <AsciiText padStart={2} background="yellow">
         // aum management
       </AsciiText>
-      <HStack spacing={0} m={0} p={0}>
-        <AsciiText padStart={2}>external AUM:{"\u00a0"}</AsciiText>
-        <NumberInput
-          isDisabled={isStartingVault}
-          m={0}
-          size={"xs"}
-          maxW="sm"
+      <AsciiNumberInput
+        label={`external AUM:${"\u00a0".repeat(1)}`}
+        onChange={(value) =>
+          value ? setExternalAUM(value.replace(/[^0-9\.]/g, "")) : 0
+        }
+        value={`${externalAUM} ${assetToken.data?.symbol}`}
+        precision={1}
+        step={1}
+        max={+(assetBalance.data?.toString() ?? 0)}
+        min={0}
+      />
+
+      {BigNumber.from(epoch.data ?? 0).eq(0) && (
+        <AsciiNumberInput
+          label={`initial AUM cap:${"\u00a0".repeat(1)}`}
           onChange={(value) =>
-            value ? setExternalAUM(value.replace(/[^0-9\.]/g, "")) : 0
+            value ? setNewAumCap(value.replace(/[^0-9\.]/g, "")) : 0
           }
-          value={`${externalAUM} ${assetToken.data?.symbol}`}
+          value={`${newAumCap} ${assetToken.data?.symbol}`}
           precision={1}
           step={1}
           max={+(assetBalance.data?.toString() ?? 0)}
           min={0}
-          allowMouseWheel
-        >
-          <NumberInputField
-            border={"none"}
-            fontSize={"unset"}
-            background={"blackAlpha.50"}
-            p={0}
-            display="inline"
-            lineHeight={"unset"}
-          />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-      </HStack>
-      {BigNumber.from(epoch.data ?? 0).eq(0) && (
-        <HStack spacing={0} m={0} p={0}>
-          <AsciiText padStart={2}>initial AUM cap:{"\u00a0"}</AsciiText>
-          <NumberInput
-            isDisabled={isStartingVault}
-            m={0}
-            size={"xs"}
-            maxW="sm"
-            onChange={(value) =>
-              value ? setNewAumCap(value.replace(/[^0-9\.]/g, "")) : 0
-            }
-            value={`${newAumCap} ${assetToken.data?.symbol}`}
-            precision={1}
-            step={1}
-            min={0}
-            allowMouseWheel
-          >
-            <NumberInputField
-              border={"none"}
-              fontSize={"unset"}
-              background={"blackAlpha.50"}
-              p={0}
-              display="inline"
-              lineHeight={"unset"}
-            />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </HStack>
+        />
       )}
       {BigNumber.from(epoch.data ?? 0).eq(0) && (
         <AsciiText onClick={() => startVault()} padStart={2}>
@@ -161,15 +124,7 @@ export const VaultAdmin = ({
           </InlineButton>
         </AsciiText>
       )}
-      {BigNumber.from(epoch.data ?? 0).gt(0) && (
-        <AsciiText onClick={() => progressEpoch()} padStart={2}>
-          //{" "}
-          <InlineButton color={"blue"}>
-            [End current epoch at {externalAUM} {assetToken.data?.symbol}]
-          </InlineButton>
-        </AsciiText>
-      )}
-      <AsciiText padStart={2}>
+      <AsciiText padStart={2} opacity={0.5}>
         // this results in{" "}
         {BigNumber.from((delta.data && delta.data[1]) ?? 0).eq(0)
           ? "no change to the farm."
@@ -183,43 +138,33 @@ export const VaultAdmin = ({
             )} ${assetToken.data?.symbol}`}
       </AsciiText>
       {BigNumber.from(epoch.data ?? 0).gt(0) && (
+        <AsciiText onClick={() => progressEpoch()} padStart={2}>
+          <InlineButton color={"blue"}>
+            [End epoch {epoch.data?.toString()} at {externalAUM}{" "}
+            {assetToken.data?.symbol}]
+          </InlineButton>
+        </AsciiText>
+      )}
+
+      {BigNumber.from(epoch.data ?? 0).gt(0) && (
         <>
           <NewLine />
           <AsciiText padStart={2} opacity={0.5}>
-            current AUM Cap:{" "}
+            // current AUM Cap:{" "}
             {formatUnits(aumCap.data ?? 0, assetToken.data?.decimals)}{" "}
             {assetToken.data?.symbol}
           </AsciiText>
-          <HStack spacing={0} m={0} p={0}>
-            <AsciiText padStart={2}>update AUM cap:{"\u00a0"}</AsciiText>
-            <NumberInput
-              m={0}
-              size={"xs"}
-              maxW="sm"
-              onChange={(value) =>
-                value ? setNewAumCap(value.replace(/[^0-9\.]/g, "")) : 0
-              }
-              isDisabled={isChangingAumCap}
-              value={`${newAumCap} ${assetToken.data?.symbol}`}
-              precision={1}
-              step={1}
-              min={0}
-              allowMouseWheel
-            >
-              <NumberInputField
-                border={"none"}
-                fontSize={"unset"}
-                background={"blackAlpha.50"}
-                p={0}
-                display="inline"
-                lineHeight={"unset"}
-              />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-          </HStack>
+          <AsciiNumberInput
+            label={`update AUM cap:${"\u00a0".repeat(1)}`}
+            onChange={(value) =>
+              value ? setNewAumCap(value.replace(/[^0-9\.]/g, "")) : 0
+            }
+            value={`${newAumCap} ${assetToken.data?.symbol}`}
+            precision={1}
+            step={1}
+            min={0}
+          />
+
           <AsciiText onClick={() => updateAumCap()} padStart={2}>
             //{" "}
             <InlineButton color={"blue"}>
