@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@capsizecss/metrics": "^0.2.0",
+    "@chakra-ui/icons": "^2.0.2",
     "@chakra-ui/react": "^2.2.0",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",

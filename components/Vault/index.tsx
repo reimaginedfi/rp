@@ -14,6 +14,7 @@ import { useVaultMeta, useVaultUser } from "../hooks/useVault";
 import { InlineButton, InlineTag } from "../InlineButton";
 import { VaultAdmin } from "./VaultAdmin";
 import { VaultDeposit } from "./VaultDeposit";
+import { VaultFeeSettings } from "./VaultFeeSettings";
 import { VaultUnlock } from "./VaultUnlock";
 import { VaultUserState } from "./VaultUserState";
 
@@ -129,6 +130,10 @@ export const Vault = ({
       )}
       {isOpen && <VaultUnlock contractConfig={contractConfig} />}
       {isOpen && isFarmer && <VaultAdmin contractConfig={contractConfig} />}
+
+      {isOpen && isFarmer && (
+        <VaultFeeSettings contractConfig={contractConfig} />
+      )}
       {/* }
       {isOpen && <VaultDeposit vault={vault} />}
       {isOpen && <VaultUnlock vault={vault} />}
