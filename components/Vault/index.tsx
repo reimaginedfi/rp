@@ -44,7 +44,7 @@ export const Vault = ({
   });
 
   const pendingDeposit = formatUnits(
-    vaultState.data?.assetsToDeposit,
+    vaultState.data?.assetsToDeposit ?? 0,
     assetToken.data?.decimals
   );
   const isFarmer = address === farmer.data?.toString();
