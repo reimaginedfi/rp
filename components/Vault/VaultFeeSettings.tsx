@@ -25,7 +25,7 @@ export const VaultFeeSettings = ({
   return (
     <>
       <NewLine />
-      <AsciiText padStart={2} opacity={0.5}>
+      <AsciiText padStart={2} background={"yellow"}>
         // fee management (in BPS)
       </AsciiText>
       <HStack spacing={0} m={0} p={0}>
