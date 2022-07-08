@@ -13,7 +13,7 @@ import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 
 import ibmPlexMono from "@capsizecss/metrics/iBMPlexMono";
-import { Global } from "@emotion/react";
+import { Global } from "@emotion/react"; 
 import { infuraProvider } from "wagmi/providers/infura";
 
 const { chains, provider, webSocketProvider } = configureChains(
