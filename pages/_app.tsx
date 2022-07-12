@@ -15,7 +15,6 @@ import { publicProvider } from "wagmi/providers/public";
 import ibmPlexMono from "@capsizecss/metrics/iBMPlexMono";
 import { Global } from "@emotion/react"; 
 import { infuraProvider } from "wagmi/providers/infura";
-import theme from "../theme";
 
 const { chains, provider, webSocketProvider } = configureChains(
   process.env.NODE_ENV === "production"
@@ -67,7 +66,7 @@ const rainbowTheme: Theme = lightTheme({
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider theme={theme} resetCSS>
+    <ChakraProvider theme={chakraTheme} resetCSS>
       <WagmiConfig client={wagmiClient}>
         <RainbowKitProvider
           chains={chains}
