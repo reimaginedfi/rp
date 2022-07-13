@@ -8,6 +8,12 @@ const PageContent = dynamic(() => import("../components/PageContent"), {
 });
 
 const AdminPage = () => {
+  const OldContent = () => <><VisuallyHidden>
+    <Heading>REFI Pro</Heading>
+  </VisuallyHidden><Stack as="main" minH="100vh" spacing={0}>
+      <Logo />
+      <PageContent />
+    </Stack></> 
   return (
     <>
       <Head>
@@ -15,13 +21,7 @@ const AdminPage = () => {
         <meta name="description" content="REFI Pro" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <VisuallyHidden>
-        <Heading>REFI Pro</Heading>
-      </VisuallyHidden>
-      <Stack as="main" minH="100vh" spacing={0}>
-        <Logo />
-        <PageContent />
-      </Stack>
+      {/* <OldContent /> */}
     </>
   );
 };

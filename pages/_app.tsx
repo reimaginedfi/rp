@@ -13,8 +13,9 @@ import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 
 import ibmPlexMono from "@capsizecss/metrics/iBMPlexMono";
-import { Global } from "@emotion/react"; 
+import { Global } from "@emotion/react";
 import { infuraProvider } from "wagmi/providers/infura";
+import Layout from "../components/Layout";
 
 const { chains, provider, webSocketProvider } = configureChains(
   process.env.NODE_ENV === "production"
@@ -77,7 +78,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             styles={`
             @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;1,300&display=swap');            `}
           />
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </RainbowKitProvider>
       </WagmiConfig>
     </ChakraProvider>
