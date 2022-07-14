@@ -66,6 +66,20 @@ const rainbowTheme: Theme = lightTheme({
   borderRadius: "small",
 });
 
+export const Fonts = () => (
+  <Global
+    styles={`
+    @font-face {
+      font-family: "Clash Display";
+      src: url("./fonts/ClashDisplay/ClashDisplay-Variable.ttf") format("ttf"),
+      url("./fonts/ClashDisplay/ClashDisplay-Variable.woff") format("woff"),
+      url("./fonts/ClashDisplay/ClashDisplay-Variable.woff2") format("woff2"),
+      url("./fonts/ClashDisplay/ClashDisplay-Variable.eot") format("eot");
+      font-display: fallback;
+    }`}
+  />
+);
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme} resetCSS>
@@ -75,10 +89,11 @@ function MyApp({ Component, pageProps }: AppProps) {
           theme={rainbowTheme}
           showRecentTransactions={true}
         >
-          <Global
+                        <Fonts />
+{ /*         <Global
             styles={`
             @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;1,300&display=swap');            `}
-          />
+  />*/}
           <Layout>
             <Component {...pageProps} />
           </Layout>

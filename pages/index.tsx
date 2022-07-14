@@ -39,7 +39,7 @@ const AdminPage = () => {
     return (
       <>
         {vaults[chain.id].map((contractConfig) => (
-          <Grid mx="5%" my="20%" templateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(3, 1fr)" }}>
+          <Grid mx="5%" my="15%" templateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(3, 1fr)" }}>
             <Vault
               key={contractConfig.addressOrName}
               contractConfig={contractConfig}
@@ -57,15 +57,6 @@ const AdminPage = () => {
         <meta name="description" content="REFI Pro" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {/* <OldContent /> */}
-
-{/*      <Grid templateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(3, 1fr)" }}>
-        {[1, 2, 3].map((i) => (
-          <GridItem key={i}>
-            <VaultComp />
-          </GridItem>
-        ))}
-        </Grid>*/}
     </>
   );
 };
