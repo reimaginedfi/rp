@@ -10,10 +10,15 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import { Logo } from "../components/Logo";
 import VaultComp from "../components/VaultComp";
+import { useAccount, useNetwork } from "wagmi";
+import { vaults } from "../contracts";
+import { Vault } from "../components/Vault";
 
 const PageContent = dynamic(() => import("../components/PageContent"), {
   ssr: false,
 });
+
+
 
 const AdminPage = () => {
   const OldContent = () => (
@@ -27,6 +32,24 @@ const AdminPage = () => {
       </Stack>
     </>
   );
+
+  const { chain } = useNetwork();
+
+  if (chain && chain?.id in vaults) {
+    return (
+      <>
+        {vaults[chain.id].map((contractConfig) => (
+          <Grid mx="5%" my="20%" templateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(3, 1fr)" }}>
+            <Vault
+              key={contractConfig.addressOrName}
+              contractConfig={contractConfig}
+            />
+          </Grid>
+        ))}
+      </>
+    );
+  }
+
   return (
     <>
       <Head>
@@ -36,13 +59,13 @@ const AdminPage = () => {
       </Head>
       {/* <OldContent /> */}
 
-      <Grid templateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(3, 1fr)" }}>
+{/*      <Grid templateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(3, 1fr)" }}>
         {[1, 2, 3].map((i) => (
           <GridItem key={i}>
             <VaultComp />
           </GridItem>
         ))}
-      </Grid>
+        </Grid>*/}
     </>
   );
 };
