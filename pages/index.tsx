@@ -13,12 +13,11 @@ import VaultComp from "../components/VaultComp";
 import { useAccount, useNetwork } from "wagmi";
 import { vaults } from "../contracts";
 import { Vault } from "../components/Vault";
+import { CCarousel, CCarouselItem } from "@coreui/react";
 
 const PageContent = dynamic(() => import("../components/PageContent"), {
   ssr: false,
 });
-
-
 
 const AdminPage = () => {
   const OldContent = () => (
@@ -38,14 +37,27 @@ const AdminPage = () => {
   if (chain && chain?.id in vaults) {
     return (
       <>
-        {vaults[chain.id].map((contractConfig) => (
-          <Grid mx="5%" my="15%" templateColumns={{ base: "repeat(1, 1fr)", lg: "repeat(3, 1fr)" }}>
-            <Vault
-              key={contractConfig.addressOrName}
-              contractConfig={contractConfig}
-            />
-          </Grid>
-        ))}
+        <CCarousel controls>
+          {vaults[chain.id].map((contractConfig) => {
+            return (
+              <CCarouselItem key={contractConfig.addressOrName}>
+                <Grid
+                  mx="5%"
+                  my="15%"
+                  templateColumns={{
+                    base: "repeat(1, 1fr)",
+                    lg: "repeat(3, 1fr)",
+                  }}
+                >
+                  <Vault
+                    key={contractConfig.addressOrName}
+                    contractConfig={contractConfig}
+                  />
+                </Grid>
+              </CCarouselItem>
+            );
+          })}
+        </CCarousel>
       </>
     );
   }

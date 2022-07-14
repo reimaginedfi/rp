@@ -1,5 +1,5 @@
-import { 
-  Accordion, 
+import {
+  Accordion,
   AccordionItem,
   AccordionButton,
   AccordionPanel,
@@ -7,62 +7,128 @@ import {
   Flex,
   Progress,
   Button,
-  Text, 
+  Text,
   Heading,
-  useColorMode 
+  useColorMode,
+  Box,
+  Spacer,
+  Grid,
+  GridItem,
+  Image,
 } from "@chakra-ui/react";
 
 type VaultProps = {
-  vaultName: string,
-  asset: string | undefined,
-  currentAum: string,
-  aumCap: string,
-  epoch: string | undefined
-}
+  vaultName: string;
+  asset: string | undefined;
+  currentAum: string;
+  aumCap: string;
+  epoch: string | undefined;
+};
 
 const VaultComp = ({
   vaultName,
   asset,
   currentAum,
   aumCap,
-  epoch
+  epoch,
 }: VaultProps) => {
   const { colorMode } = useColorMode();
-  console.log(vaultName)
+  console.log(vaultName);
 
   return (
     <Accordion allowToggle>
-          <AccordionItem border="1px solid #232323" borderRadius="0.5rem">
-            <AccordionButton 
-            _focus={{ borderSize: "0px", borderX: "none", borderTop: "none", borderBottom: "1px solid #232323" }}>
-            <Flex w="full" justify="space-between" alignItems="center">
-              <Flex direction="row" alignItems="center"><Heading variant="large">{vaultName! || "Vault"}</Heading><Text ml="0.5rem" variant="medium">({asset})</Text></Flex>
-              <AccordionIcon/>
+      <AccordionItem border="1px solid #232323" borderRadius="0.5rem">
+        <AccordionButton
+          _focus={{
+            borderSize: "0px",
+            borderX: "none",
+            borderTop: "none",
+            borderBottom: "1px solid #232323",
+          }}
+        >
+          <Flex w="full" justify="space-between" alignItems="center">
+            <Flex direction="row" alignItems="center">
+              <Heading variant="large">{vaultName! || "Vault"}</Heading>
+              <Text ml="0.5rem" variant="medium">
+                ({asset})
+              </Text>
             </Flex>
-            </AccordionButton>
-            <AccordionPanel>
+            <AccordionIcon />
+          </Flex>
+        </AccordionButton>
 
-            <Flex justifySelf="center" w="full" px="1rem">
-            <Button variant="primary">Deposit</Button>
-            <Button variant="ghost">Withdraw</Button>
-            </Flex>
+        <AccordionPanel>
+          <Grid
+            mb="2rem"
+            gap={6}
+            templateColumns="repeat(2, 1fr)"
+            fontFamily={"Inter"}
+            w="full"
+          >
+            <GridItem textAlign="center">
+              <Text fontSize="32px" fontWeight={600}>
+                +25%
+              </Text>
+              <Text fontSize="24px">+125k USDC</Text>
+              <Text
+                style={{
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  WebkitBackgroundClip: "text",
+                }}
+                bg="radial-gradient(136.45% 135.17% at 9.91% 100%, #FF3F46 0%, #FF749E 57.68%, #FFE3AB 100%)"
+                fontSize="24px"
+                fontWeight={700}
+              >
+                EPOCH 2
+              </Text>
+            </GridItem>
 
+            <GridItem  textAlign="center">
+              <Image
+                m="auto"
+                w="8rem"
+                h="8rem"
+                src="/usdc-logo.png"
+                alt="USDC"
+              />
+            </GridItem>
+            <GridItem alignItems='center'>
+              <Button w="full" variant="primary">
+                Deposit
+              </Button>
+            </GridItem>
+            <GridItem>
+              <Button w="full" variant="ghost">
+                Withdraw
+              </Button>
+            </GridItem>
+          </Grid>
+          <Flex my={2} alignItems="center">
+            <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#C51E25" />
+            <Text variant="large">AUM</Text>
+            <Spacer />
+            <Text variant="large">
+              {currentAum} / {aumCap}
+            </Text>
+          </Flex>
 
-            <Flex justify="space-between">
-              <Text variant="large">AUM</Text>
-              <Text variant="large">{currentAum} / {aumCap}</Text>
-            </Flex>
-
-            <Progress 
-                borderRadius="1rem"
-                value={parseInt(currentAum)} 
-                max={parseInt(aumCap)} 
-                size='md' 
-                colorScheme='red' />
-
-            </AccordionPanel>
-          </AccordionItem>
-      </Accordion>
+          <Progress
+            borderRadius="1rem"
+            value={parseInt(currentAum)}
+            max={parseInt(aumCap)}
+            size="md"
+            colorScheme="red"
+          />
+          <Flex my={2} alignItems={"center"}>
+            <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#E9A9AB" />
+            <Text variant="medium">Pending Deposits</Text>
+            <Spacer />
+            <Text variant="medium">20k USDC</Text>
+          </Flex>
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
   );
 };
 

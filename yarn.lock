@@ -769,6 +769,11 @@
     stream-browserify "^3.0.0"
     util "^0.12.4"
 
+"@coreui/react@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@coreui/react/-/react-4.3.0.tgz#c565bf18e0b3bb90cd57b53d86612b0c04787012"
+  integrity sha512-g4QUOqrwAgRNMg/I90/b5DYkjWqZYFiaNFrcxT6zuzHT5GmAlYrdlJUt4gqo3uAI2SkzbzT3y1Bwrp43bVukug==
+
 "@ctrl/tinycolor@^3.4.0":
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-3.4.1.tgz#75b4c27948c81e88ccd3a8902047bcd797f38d32"
