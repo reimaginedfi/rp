@@ -17,6 +17,8 @@ import { Global } from "@emotion/react";
 import { infuraProvider } from "wagmi/providers/infura";
 import Layout from "../components/Layout";
 import theme from "../theme";
+import "@fontsource/inter/variable-full.css";
+import "@fontsource/inter";
 
 const { chains, provider, webSocketProvider } = configureChains(
   process.env.NODE_ENV === "production"

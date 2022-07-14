@@ -1248,6 +1248,11 @@
     "@ethersproject/properties" "^5.6.0"
     "@ethersproject/strings" "^5.6.1"
 
+"@fontsource/inter@^4.5.11":
+  version "4.5.11"
+  resolved "https://registry.yarnpkg.com/@fontsource/inter/-/inter-4.5.11.tgz#3c45014821e8c82b247a291f1944dd2764a2d1ed"
+  integrity sha512-toizzQkfXL8YJcG/f8j3EYXYGQe4OxiDEItThSigvHU+cYNDw8HPp3wLYQX745hddsnHqOGCM4exitFSBOU8+w==
+
 "@gvrs/chakra-capsize@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@gvrs/chakra-capsize/-/chakra-capsize-1.3.0.tgz#9a4834beb001b0861ff53228f11ee7077201a54f"

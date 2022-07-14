@@ -38,16 +38,19 @@ const AdminPage = () => {
     return (
       <>
         <Grid
-          templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}
+          templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(auto-fit, 500px)" }}
+          alignItems="center"
+          justifyContent="center"
+          m="auto"
         >
-          {[1, 2, 3].map(i => vaults[chain.id].map((contractConfig) => (
+          {vaults[chain.id].map((contractConfig) => (
             <GridItem key={contractConfig.addressOrName} mx="5%" my="15%">
               <Vault
                 key={contractConfig.addressOrName}
                 contractConfig={contractConfig}
               />
             </GridItem>
-          )))}
+          ))}
         </Grid>
         <UserStat />
       </>

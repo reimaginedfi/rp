@@ -17,6 +17,8 @@ import {
   Image,
 } from "@chakra-ui/react";
 
+import VaultProgressBar from "./VaultProgressBar"
+
 type VaultProps = {
   vaultName: string;
   asset: string | undefined;
@@ -33,17 +35,13 @@ const VaultComp = ({
   epoch,
 }: VaultProps) => {
   const { colorMode } = useColorMode();
-  console.log(vaultName);
 
   return (
-    <Accordion bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle borderWidth='2px' borderColor='#373737' borderRadius='1rem'>
+    <Accordion bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle borderWidth='1px' borderColor='#232323' borderRadius='1rem'>
       <AccordionItem border="1px solid #232323" borderRadius="0.5rem">
         <AccordionButton
           _focus={{
-            borderSize: "0px",
-            borderX: "none",
-            borderTop: "none",
-            borderBottom: "1px solid #232323",
+            borderBottom: "1px solid #232323"
           }}
         >
           <Flex w="full" justify="space-between" alignItems="center">
@@ -69,7 +67,7 @@ const VaultComp = ({
               <Text fontSize="32px" fontWeight={600}>
                 +25%
               </Text>
-              <Text fontSize="24px">+125k USDC</Text>
+              <Text fontSize="24px">+125k {asset}</Text>
               <Text
                 style={{
                   backgroundClip: "text",
@@ -113,19 +111,25 @@ const VaultComp = ({
             </Text>
           </Flex>
 
-          <Progress
+          <VaultProgressBar
+            currentAum={parseInt(currentAum)}
+            aumCap={parseInt(aumCap)}
+            remainingDeposits="500"
+          />
+          <Flex alignItems={"center"}>
+            <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#E9A9AB" />
+            <Text variant="medium">Pending Deposits</Text>
+            <Spacer />
+            <Text variant="medium">500 USDC</Text>
+          </Flex>
+          {/* <Progress
             borderRadius="1rem"
             value={parseInt(currentAum)}
             max={parseInt(aumCap)}
             size="md"
             colorScheme="red"
-          />
-          <Flex my={2} alignItems={"center"}>
-            <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#E9A9AB" />
-            <Text variant="medium">Pending Deposits</Text>
-            <Spacer />
-            <Text variant="medium">20k USDC</Text>
-          </Flex>
+          /> */}
+         
         </AccordionPanel>
       </AccordionItem>
     </Accordion>
