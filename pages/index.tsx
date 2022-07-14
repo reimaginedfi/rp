@@ -13,7 +13,7 @@ import VaultComp from "../components/VaultComp";
 import { useAccount, useNetwork } from "wagmi";
 import { vaults } from "../contracts";
 import { Vault } from "../components/Vault";
-import { CCarousel, CCarouselItem } from "@coreui/react";
+import UserStat from "../components/UserStat";
 
 const PageContent = dynamic(() => import("../components/PageContent"), {
   ssr: false,
@@ -37,27 +37,19 @@ const AdminPage = () => {
   if (chain && chain?.id in vaults) {
     return (
       <>
-        <CCarousel controls>
-          {vaults[chain.id].map((contractConfig) => {
-            return (
-              <CCarouselItem key={contractConfig.addressOrName}>
-                <Grid
-                  mx="5%"
-                  my="15%"
-                  templateColumns={{
-                    base: "repeat(1, 1fr)",
-                    lg: "repeat(3, 1fr)",
-                  }}
-                >
-                  <Vault
-                    key={contractConfig.addressOrName}
-                    contractConfig={contractConfig}
-                  />
-                </Grid>
-              </CCarouselItem>
-            );
-          })}
-        </CCarousel>
+        <Grid
+          templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}
+        >
+          {[1, 2, 3].map(i => vaults[chain.id].map((contractConfig) => (
+            <GridItem key={contractConfig.addressOrName} mx="5%" my="15%">
+              <Vault
+                key={contractConfig.addressOrName}
+                contractConfig={contractConfig}
+              />
+            </GridItem>
+          )))}
+        </Grid>
+        <UserStat />
       </>
     );
   }

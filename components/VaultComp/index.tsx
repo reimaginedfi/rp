@@ -36,7 +36,7 @@ const VaultComp = ({
   console.log(vaultName);
 
   return (
-    <Accordion allowToggle>
+    <Accordion bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle borderWidth='2px' borderColor='#373737' borderRadius='1rem'>
       <AccordionItem border="1px solid #232323" borderRadius="0.5rem">
         <AccordionButton
           _focus={{
