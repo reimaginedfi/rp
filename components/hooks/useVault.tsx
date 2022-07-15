@@ -183,16 +183,30 @@ export const useVaultWithdraw = (
 
   const { user } = useVaultUser(contractConfig, address ?? "");
 
-  const unlockShares = useContractWrite({
+  const {write: unlockShares, isLoading: unlockingShares} = useContractWrite({
     ...contractConfig,
     functionName: "unlockShareForRedeem",
     args: [parseUnits(unlockAmount, assetToken.data?.decimals)],
   });
   const hasPendingWithdrawal = userHasPendingRedeem.data;
 
+  const {data: withdrawable} = useContractRead({
+    ...contractConfig,
+    functionName: "previewClaim",
+    args: [address],
+  });
+
+  const { write: claim } = useContractWrite({
+    ...contractConfig,
+    functionName: "claimAsset",
+  });
+
   return {
     hasPendingWithdrawal,
     user,
     unlockShares,
+    unlockingShares,
+    withdrawable,
+    claim,
   };
 };
