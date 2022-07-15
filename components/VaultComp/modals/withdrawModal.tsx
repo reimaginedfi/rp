@@ -31,7 +31,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     <Modal
       isCentered
       scrollBehavior="inside"
-      size="md"
+      size="xl"
       onClose={onClose!}
       isOpen={isOpen!}
     >
@@ -71,7 +71,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
               </Flex>
               <Text variant="large">Max 10.00 VT</Text>
             </Stack>
-            <Button mt={"4rem"} w="80%" m="auto" variant="primary">
+            <Button mt={"4rem"} w="80%"  variant="primary">
               Unlock {amount!}
             </Button>
           </Container>

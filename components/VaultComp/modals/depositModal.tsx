@@ -15,6 +15,7 @@ import {
   useColorMode,
   Flex,
   Stack,
+  VStack,
 } from "@chakra-ui/react";
 //Wagmi
 import { useNetwork } from "wagmi";
@@ -72,9 +73,26 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
           borderTop="solid 1px"
           borderColor={colorMode === "dark" ? "#232323" : "#F3F3F3"}
         >
-          
+          <VStack align="start" gap={2} mx={2} mt={3} mb={6}>
+            <Text variant="large">Wallet Balance</Text>
+            <Text fontWeight={600}>0.01 USDC</Text>
+            <Text variant="large">Deposit Balance</Text>
+            <Flex alignItems="center" gap={6}>
+              <Input
+                fontSize={{ base: "1rem", md: "2rem" }}
+                fontWeight={600}
+                type="number"
+                w={{ base: "5rem", sm: "10rem" }}
+                onChange={(e) => setAmount(e.target.value)}
+                value={amount}
+              />{" "}
+              <Text fontWeight={600}>USDC</Text>
+            </Flex>
 
-          <Button variant="primary">Deposit {amount!}</Button>
+          </VStack>
+          <Button m="auto" minW={"10rem"} variant="primary">
+            Deposit {amount!}
+          </Button>
         </ModalBody>
       </ModalContent>
     </Modal>
