@@ -196,7 +196,7 @@ export const useVaultWithdraw = (
     args: [address],
   });
 
-  const { write: claim } = useContractWrite({
+  const { write: claim, isLoading: claiming } = useContractWrite({
     ...contractConfig,
     functionName: "claimAsset",
   });
@@ -208,5 +208,6 @@ export const useVaultWithdraw = (
     unlockingShares,
     withdrawable,
     claim,
+    claiming
   };
 };

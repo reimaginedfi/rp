@@ -42,27 +42,34 @@ const AdminPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-    {chain && chain?.id in vaults ? (
-    <>
-    <Grid
-      templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(auto-fit, 500px)" }}
-      alignItems="center"
-      justifyContent="center"
-      m="auto"
-    >
-      {vaults[chain!.id].map((contractConfig) => (
-        <GridItem key={contractConfig.addressOrName} mx="5%" my="15%">
-          <Vault
-            key={contractConfig.addressOrName}
-            contractConfig={contractConfig}
-          />
-        </GridItem>
-      ))}
-    </Grid>
-    <UserStat />
-    </>) : <Stack m="20%"><Heading>Connect your wallet first to see your vaults.</Heading></Stack>}
-
-      </>
+      {chain && chain?.id in vaults ? (
+        <>
+          <Grid
+            templateColumns={{
+              base: "repeat(1, 1fr)",
+              md: "repeat(auto-fit, 500px)",
+            }}
+            alignItems="center"
+            justifyContent="center"
+            m="auto"
+          >
+            {vaults[chain!.id].map((contractConfig) => (
+              <GridItem key={contractConfig.addressOrName} mx="5%" my="15%">
+                <Vault
+                  key={contractConfig.addressOrName}
+                  contractConfig={contractConfig}
+                />
+              </GridItem>
+            ))}
+          </Grid>
+          <UserStat />
+        </>
+      ) : (
+        <Stack m="20%">
+          <Heading>Connect your wallet first to see your vaults.</Heading>
+        </Stack>
+      )}
+    </>
   );
 };
 export default AdminPage;

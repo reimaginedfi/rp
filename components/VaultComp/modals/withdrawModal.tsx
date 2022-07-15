@@ -17,6 +17,9 @@ import {
   Input,
   Container,
 } from "@chakra-ui/react";
+import { vaults } from "../../../contracts";
+import { useNetwork } from "wagmi";
+import { useVaultWithdraw } from "../../hooks/useVault";
 
 type ModalProps = {
   onClose?: () => void;
@@ -25,7 +28,38 @@ type ModalProps = {
 
 export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   const { colorMode } = useColorMode();
-  const [amount, setAmount] = useState<string>();
+  const [amount, setAmount] = useState<string>("");
+  const { chain } = useNetwork();
+  const [contractConfig, setContractConfig] = useState<any>();
+
+  const {
+    hasPendingWithdrawal,
+    user,
+    unlockShares,
+    claim,
+    unlockingShares,
+    withdrawable,
+    claiming
+  } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
+
+  useEffect(() => {
+    vaults[chain!.id].map((contract) => {
+      setContractConfig(contract);
+      console.log("contract", contract);
+    });
+  }, [chain, vaults]);
+
+  const handleUnlockShares = async () => {
+    console.log("unlocking shares");
+    await unlockShares();
+  };
+
+  const handleClaim = async () => {
+    if (!withdrawable) {
+      return;
+    }
+    await claim();
+  };
 
   return (
     <Modal
@@ -61,6 +95,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   <Input
                     fontWeight={600}
                     type="number"
+                    min={0}
                     w={{ base: "5rem", sm: "10rem" }}
                     onChange={(e) => setAmount(e.target.value)}
                     value={amount}
@@ -71,9 +106,27 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
               </Flex>
               <Text variant="large">Max 10.00 VT</Text>
             </Stack>
-            <Button mt={"4rem"} w="80%"  variant="primary">
-              Unlock {amount!}
-            </Button>
+            <Flex gap={10} alignItems="center">
+              {!hasPendingWithdrawal && (
+                <Button
+                  isLoading={unlockingShares}
+                  onClick={handleUnlockShares}
+                  mt={"4rem"}
+                  variant="primary"
+                >
+                  Unlock {amount!}
+                </Button>
+              )}
+              {withdrawable && <Button
+                onClick={handleClaim}
+                isLoading={claiming}
+                isDisabled={!withdrawable || !hasPendingWithdrawal}
+                mt={"4rem"}
+                variant="primary"
+              >
+                Withdraw 
+              </Button>}
+            </Flex>
           </Container>
         </ModalBody>
       </ModalContent>
