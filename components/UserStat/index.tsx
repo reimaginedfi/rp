@@ -1,3 +1,4 @@
+import {useEffect, useState} from 'react';
 import {
   Box,
   Flex,
@@ -9,10 +10,28 @@ import {
   useColorMode,
   VStack,
 } from "@chakra-ui/react";
-import { HiCurrencyDollar, HiEye, HiEyeOff, HiSave } from "react-icons/hi";
+import { HiCurrencyDollar, HiSave } from "react-icons/hi";
+import {AiFillBank} from 'react-icons/ai';
+import {useAccount, useNetwork} from "wagmi"
+import { useVaultUser } from "../hooks/useVault";
+import { vaults } from "../../contracts";
+import { BigNumber } from "ethers";
 
 const UserStat = () => {
   const { colorMode } = useColorMode();
+  const { address } = useAccount();
+  const { chain } = useNetwork();
+  const [contractConfig, setContractConfig] = useState<any>();
+
+  useEffect(() => {
+    vaults[chain!.id].map((contract) => setContractConfig(contract));
+  }, [vaults])
+
+  const { sharesValue, user, hasPendingDeposit } =
+  useVaultUser(contractConfig, address ?? '');
+
+  console.log(user)
+
   return (
     <Grid
       templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
@@ -39,14 +58,14 @@ const UserStat = () => {
             />
           </VStack>
           <Stack >
-            <Text variant='medium'>Stored Value</Text>
+            <Text variant='medium'>Shares Value</Text>
             <Text
               fontFamily="Inter"
               fontWeight="500"
               fontSize={"24px"}
               color={colorMode === "dark" ? "#EDEDED" : "#171717"}
             >
-              <span style={{ fontWeight: 'bold'}}>150,000</span> USDC
+              <span style={{ fontWeight: 'bold'}}>{sharesValue.data ? parseInt(sharesValue!.data!._hex!, 16) : 0}</span> USDC
             </Text>
           </Stack>
         </Flex>
@@ -63,7 +82,7 @@ const UserStat = () => {
               m="auto"
               w="1.25rem"
               h="1.25rem"
-              as={HiCurrencyDollar}
+              as={AiFillBank}
               color={colorMode === "dark" ? "#F2555A" : "#DC3D43"}
             />
           </VStack>
@@ -75,7 +94,7 @@ const UserStat = () => {
               fontSize={"24px"}
               color={colorMode === "dark" ? "#EDEDED" : "#171717"}
             >
-              <span style={{ fontWeight: 'bold'}}>125,000</span> USDC
+              <span style={{ fontWeight: 'bold'}}>{user.data && parseInt(user.data!.assetsDeposited, 16)}</span> USDC
             </Text>
           </Stack>
         </Flex>
@@ -97,20 +116,20 @@ const UserStat = () => {
             />
           </VStack>
           <Stack >
-            <Text variant='medium'>Total Withdrawn</Text>
+            <Text variant='medium'>Withdrawable</Text>
             <Text
               fontFamily="Inter"
               fontWeight="500"
               fontSize={"24px"}
               color={colorMode === "dark" ? "#EDEDED" : "#171717"}
             >
-              <span style={{ fontWeight: 'bold'}}>7,500</span> USDC
+              <span style={{ fontWeight: 'bold'}}>{user.data && parseInt(user.data!.sharesToRedeem, 16)}</span> USDC
             </Text>
           </Stack>
         </Flex>
       </GridItem>
       <GridItem>
-        <Flex m='auto' p={5} borderRadius='1rem' alignItems='center' gap={6} w="fit-content" bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}>
+      <Flex p={5} borderRadius='1rem' justify="center" alignItems='center' gap={6} w="full" bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}>
           <Stack textAlign='center'>
             <Text variant='medium'>Pending Deposits</Text>
             <Text
@@ -119,7 +138,7 @@ const UserStat = () => {
               fontSize={"24px"}
               color={'rgba(255, 128, 43, 1)'}
             >
-              False
+              {hasPendingDeposit.data ? "TRUE" : "FALSE"}
             </Text>
           </Stack>
         </Flex>

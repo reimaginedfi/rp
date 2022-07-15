@@ -1,15 +1,17 @@
-import { Box, Flex, Heading, Text, useColorMode } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Text, useColorMode } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useRouter } from "next/router";
 import React from "react";
+
+import { HiSun, HiMoon } from "react-icons/hi";
 
 interface LayoutProps {
   children: JSX.Element;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { colorMode } = useColorMode();
-  
+  const { colorMode, toggleColorMode } = useColorMode();
+
   const router = useRouter();
 
   return (
@@ -40,7 +42,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         >
           REFI Pro
         </Heading>
-        <ConnectButton chainStatus={"none"} showBalance={false} />
+        <Flex gap="1rem">
+        <Button
+          variant="ghost"
+          onClick={toggleColorMode}
+          display={{ base: "none", md: "flex" }}
+        >
+          {colorMode === "dark" ? <HiSun /> : <HiMoon />}
+        </Button>        <ConnectButton chainStatus={"none"} showBalance={false} />
+        </Flex>
       </Flex>
       <Box w='full'>{children}</Box>
     </Box>

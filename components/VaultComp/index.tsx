@@ -37,13 +37,10 @@ const VaultComp = ({
   const { colorMode } = useColorMode();
 
   return (
-    <Accordion bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle borderWidth='1px' borderColor='#232323' borderRadius='1rem'>
-      <AccordionItem border="1px solid #232323" borderRadius="0.5rem">
-        <AccordionButton
-          _focus={{
-            borderBottom: "1px solid #232323"
-          }}
-        >
+    <Accordion  bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle border={colorMode === "dark" ? "1px solid #232323" : "1px solid #F3F3F3"} borderRadius="1rem">
+      <AccordionItem>
+        <>
+        <AccordionButton borderRadius="1rem">
           <Flex w="full" justify="space-between" alignItems="center">
             <Flex direction="row" alignItems="center">
               <Heading variant="large">{vaultName! || "Vault"}</Heading>
@@ -116,21 +113,16 @@ const VaultComp = ({
             aumCap={parseInt(aumCap)}
             remainingDeposits="500"
           />
+          
           <Flex alignItems={"center"}>
             <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#E9A9AB" />
             <Text variant="medium">Pending Deposits</Text>
             <Spacer />
             <Text variant="medium">500 USDC</Text>
           </Flex>
-          {/* <Progress
-            borderRadius="1rem"
-            value={parseInt(currentAum)}
-            max={parseInt(aumCap)}
-            size="md"
-            colorScheme="red"
-          /> */}
-         
+
         </AccordionPanel>
+        </>
       </AccordionItem>
     </Accordion>
   );
