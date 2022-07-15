@@ -8,7 +8,7 @@ import {
   Stack,
   Text,
   useColorMode,
-  VStack,
+  VStack
 } from "@chakra-ui/react";
 import { HiCurrencyDollar, HiSave } from "react-icons/hi";
 import {AiFillBank} from 'react-icons/ai';

@@ -15,9 +15,12 @@ import {
   Grid,
   GridItem,
   Image,
+  useDisclosure
 } from "@chakra-ui/react";
 
 import VaultProgressBar from "./VaultProgressBar"
+import DepositModal from "./modals/depositModal"
+import WithdrawModal from "./modals/withdrawModal"
 
 type VaultProps = {
   vaultName: string;
@@ -35,8 +38,11 @@ const VaultComp = ({
   epoch,
 }: VaultProps) => {
   const { colorMode } = useColorMode();
+  const {isOpen: depositIsOpen, onOpen: onOpenDeposit, onClose: onCloseDeposit} = useDisclosure()
+  const {isOpen: withdrawIsOpen, onOpen: onOpenWithdraw, onClose: onCloseWithdraw} = useDisclosure()
 
   return (
+    <>
     <Accordion  bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle border={colorMode === "dark" ? "1px solid #232323" : "1px solid #F3F3F3"} borderRadius="1rem">
       <AccordionItem>
         <>
@@ -89,12 +95,12 @@ const VaultComp = ({
               />
             </GridItem>
             <GridItem alignItems='center'>
-              <Button w="full" variant="primary">
+              <Button w="full" variant="primary" onClick={onOpenDeposit}>
                 Deposit
               </Button>
             </GridItem>
             <GridItem>
-              <Button w="full" variant="ghost">
+              <Button w="full" variant="ghost" onClick={onOpenWithdraw}>
                 Withdraw
               </Button>
             </GridItem>
@@ -125,6 +131,11 @@ const VaultComp = ({
         </>
       </AccordionItem>
     </Accordion>
+
+    {depositIsOpen && <DepositModal onClose={onCloseDeposit} isOpen={depositIsOpen} />}
+    {withdrawIsOpen && <WithdrawModal onClose={onCloseWithdraw} isOpen={withdrawIsOpen}  />}
+
+    </>
   );
 };
 
