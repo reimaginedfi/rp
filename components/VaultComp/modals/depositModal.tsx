@@ -34,22 +34,32 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
   const { chain } = useNetwork();
 
   const [contractConfig, setContractConfig] = useState<any>();
-  const [amount, setAmount] = useState<string>();
+  const [amount, setAmount] = useState<string>("0");
+
+  const {
+    balanceDisplay,
+    isAllowed,
+    approve,
+    isApproving,
+    storeAsset,
+    isStoring,
+    approveMax,
+    isApprovingMax,
+  } = useVaultDeposit(contractConfig, amount);
 
   useEffect(() => {
-    vaults[chain!.id].map((contract) => setContractConfig(contract));
-  }, [vaults]);
+    vaults[chain!.id].map((contract) => {setContractConfig(contract)
+    console.log('contract', contract)});
 
-  // const {    balance,
-  //     balanceDisplay,
-  //     allowance,
-  //     isAllowed,
-  //     approve,
-  //     isApproving,
-  //     approveMax,
-  //     isApprovingMax,
-  //     storeAsset,
-  //     isStoring} = useVaultDeposit(contractConfig!, amount!);
+  }, [chain, vaults]);
+
+  useEffect(() => {
+    console.log({balanceDisplay})
+  }, [balanceDisplay])
+
+  const handleDeposit = async() => {
+    
+  }
 
   return (
     <Modal
@@ -75,7 +85,7 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
         >
           <VStack align="start" gap={2} mx={2} mt={3} mb={6}>
             <Text variant="large">Wallet Balance</Text>
-            <Text fontWeight={600}>0.01 USDC</Text>
+            <Text fontWeight={600}>{balanceDisplay} USDC</Text>
             <Text variant="large">Deposit Balance</Text>
             <Flex alignItems="center" gap={6}>
               <Input
@@ -88,9 +98,8 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
               />{" "}
               <Text fontWeight={600}>USDC</Text>
             </Flex>
-
           </VStack>
-          <Button m="auto" minW={"10rem"} variant="primary">
+          <Button onClick={handleDeposit} m="auto" minW={"10rem"} variant="primary">
             Deposit {amount!}
           </Button>
         </ModalBody>

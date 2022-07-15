@@ -120,7 +120,7 @@ export const useVaultDeposit = (
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
     functionName: "allowance",
-    args: [address, contractConfig.addressOrName],
+    args: [address, contractConfig?.addressOrName],
     watch: true,
   });
 
@@ -133,7 +133,7 @@ export const useVaultDeposit = (
     contractInterface: erc20ABI,
     functionName: "approve",
     args: [
-      contractConfig.addressOrName,
+      contractConfig?.addressOrName,
       parseUnits(depositAmount, assetToken.data?.decimals),
     ],
   });
@@ -142,8 +142,9 @@ export const useVaultDeposit = (
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
     functionName: "approve",
-    args: [contractConfig.addressOrName, constants.MaxUint256],
+    args: [contractConfig?.addressOrName, constants.MaxUint256],
   });
+  
   const { write: storeAsset, isLoading: isStoring } = useContractWrite({
     ...contractConfig,
     functionName: "storeAssetForDeposit",
