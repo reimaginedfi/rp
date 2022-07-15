@@ -20,6 +20,7 @@ import {
 import { vaults } from "../../../contracts";
 import { useNetwork } from "wagmi";
 import { useVaultWithdraw } from "../../hooks/useVault";
+import { formatUnits } from "ethers/lib/utils";
 
 type ModalProps = {
   onClose?: () => void;
@@ -85,7 +86,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
         >
           <Container>
             <Stack gap={2} mx={2} my={3}>
-              <Text variant="large">Your Vault Tokens</Text>
+              <Text variant="large">Your Vault Tokens: {formatUnits(user.data?.vaultShares ?? 0)} VT</Text>
               <Flex alignItems="center" gap={6}>
                 <Flex
                   fontSize={{ base: "1rem", md: "2rem" }}
