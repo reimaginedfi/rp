@@ -45,21 +45,32 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
     isStoring,
     approveMax,
     isApprovingMax,
-  } = useVaultDeposit(contractConfig, amount);
+  } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
 
   useEffect(() => {
-    vaults[chain!.id].map((contract) => {setContractConfig(contract)
-    console.log('contract', contract)});
-
+    vaults[chain!.id].map((contract) => {
+      setContractConfig(contract);
+      console.log("contract", contract);
+    });
   }, [chain, vaults]);
 
   useEffect(() => {
-    console.log({balanceDisplay})
-  }, [balanceDisplay])
+    console.log({ balanceDisplay });
+  }, [balanceDisplay]);
 
-  const handleDeposit = async() => {
-    
-  }
+  const handleDeposit = async () => {
+    if(!isAllowed) {
+      return
+    }
+  };
+
+  const handleApprove = async () => {
+    await approve()
+  };
+
+  const handleApproveMax = async () => {
+    await approveMax()
+  };
 
   return (
     <Modal
@@ -99,7 +110,19 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
               <Text fontWeight={600}>USDC</Text>
             </Flex>
           </VStack>
-          <Button onClick={handleDeposit} m="auto" minW={"10rem"} variant="primary">
+          {!isAllowed && (
+            <Flex my={7} alignItems="center" w="full" justify="space-around">
+              <Button isDisabled={+amount <= 0} isLoading={isApproving} onClick={handleApprove}>Approve</Button>
+              <Button isDisabled={+amount <= 0} isLoading={isApprovingMax} onClick={handleApproveMax}>Approve Max</Button>
+            </Flex>
+          )}
+          <Button
+            disabled={!isAllowed}
+            onClick={handleDeposit}
+            m="auto"
+            minW={"10rem"}
+            variant="primary"
+          >
             Deposit {amount!}
           </Button>
         </ModalBody>
