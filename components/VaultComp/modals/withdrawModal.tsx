@@ -1,3 +1,5 @@
+import {useState, useEffect} from 'react';
+
 import {
     ModalOverlay,
     ModalCloseButton,
@@ -19,6 +21,7 @@ import {
 
   export default function DepositModal({isOpen, onClose}: ModalProps) {
     const {colorMode} = useColorMode();
+    const [amount, setAmount] = useState<string>();
 
     return (
         <Modal
@@ -41,7 +44,7 @@ import {
               borderTop="solid 1px"
               borderColor={colorMode === "dark" ? "#232323" : "#F3F3F3"}
             >
-                
+                                <Button variant="primary">Unlock {amount!}</Button>
             </ModalBody>
           </ModalContent>
         </Modal>
