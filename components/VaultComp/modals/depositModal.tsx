@@ -62,6 +62,7 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
     if(!isAllowed) {
       return
     }
+    await storeAsset();
   };
 
   const handleApprove = async () => {
@@ -112,12 +113,13 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
           </VStack>
           {!isAllowed && (
             <Flex my={7} alignItems="center" w="full" justify="space-around">
-              <Button isDisabled={+amount <= 0} isLoading={isApproving} onClick={handleApprove}>Approve</Button>
-              <Button isDisabled={+amount <= 0} isLoading={isApprovingMax} onClick={handleApproveMax}>Approve Max</Button>
+              <Button isDisabled={+amount <= 0 || isApprovingMax} isLoading={isApproving} onClick={handleApprove}>Approve</Button>
+              <Button isDisabled={+amount <= 0 || isApproving} isLoading={isApprovingMax} onClick={handleApproveMax}>Approve Max</Button>
             </Flex>
           )}
           <Button
-            disabled={!isAllowed}
+            disabled={!isAllowed || +amount <= 0}
+            isLoading={isStoring}
             onClick={handleDeposit}
             m="auto"
             minW={"10rem"}
