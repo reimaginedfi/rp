@@ -12,7 +12,7 @@ import {
   Grid,
   Text,
   useColorMode,
-  Stack,
+  VStack,
   Flex,
   Input,
   Container,
@@ -40,7 +40,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     claim,
     unlockingShares,
     withdrawable,
-    claiming
+    claiming,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
       <ModalContent>
         <ModalHeader>
           <Heading variant="large" textAlign="center">
-            Withdraw
+            WITHDRAW
           </Heading>
         </ModalHeader>
         <ModalCloseButton _focus={{ boxShadow: "none" }} />
@@ -85,8 +85,11 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
           borderColor={colorMode === "dark" ? "#232323" : "#F3F3F3"}
         >
           <Container>
-            <Stack gap={2} mx={2} my={3}>
-              <Text variant="large">Your Vault Tokens: {formatUnits(user.data?.vaultShares ?? 0)} VT</Text>
+            <VStack align="center" gap={2} mx={2} mt={3} mb={6}>
+              <Heading variant="large">Your Vault Tokens:</Heading>
+              <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>
+                {formatUnits(user.data?.vaultShares ?? 0)} VT
+              </Text>
               <Flex alignItems="center" gap={6}>
                 <Flex
                   fontSize={{ base: "1rem", md: "2rem" }}
@@ -103,12 +106,19 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     bg="#373737"
                     border="none"
                   />
-                  <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>VT</Text>
+                  <Text
+                    fontWeight={600}
+                    fontSize={{ base: "1rem", md: "1.5rem" }}
+                  >
+                    VT
+                  </Text>
                 </Flex>
                 <Text fontWeight={600}>(500 USDC)</Text>
               </Flex>
-              <Text variant="large">Max {formatUnits(user.data?.vaultShares ?? 0)} VT</Text>
-            </Stack>
+              <Text variant="large">
+                Max {formatUnits(user.data?.vaultShares ?? 0)} VT
+              </Text>
+            </VStack>
             <Flex gap={10} alignItems="center">
               {!hasPendingWithdrawal && (
                 <Button
@@ -120,15 +130,17 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   Unlock {amount!}
                 </Button>
               )}
-              {withdrawable && <Button
-                onClick={handleClaim}
-                isLoading={claiming}
-                isDisabled={!withdrawable || !hasPendingWithdrawal}
-                mt={"4rem"}
-                variant="primary"
-              >
-                Withdraw 
-              </Button>}
+              {withdrawable && (
+                <Button
+                  onClick={handleClaim}
+                  isLoading={claiming}
+                  isDisabled={!withdrawable || !hasPendingWithdrawal}
+                  mt={"4rem"}
+                  variant="primary"
+                >
+                  Withdraw
+                </Button>
+              )}
             </Flex>
           </Container>
         </ModalBody>

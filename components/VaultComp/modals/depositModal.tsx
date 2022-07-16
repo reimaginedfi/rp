@@ -34,6 +34,8 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
   const { chain } = useNetwork();
 
   const [contractConfig, setContractConfig] = useState<any>();
+  const [isApproved, setIsApproved] = useState<boolean>();
+
   const [amount, setAmount] = useState<string>("0");
 
   const {
@@ -59,18 +61,24 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
   }, [balanceDisplay]);
 
   const handleDeposit = async () => {
-    if(!isAllowed) {
-      return
+    if (!isAllowed) {
+      return;
     }
     await storeAsset();
   };
 
   const handleApprove = async () => {
-    await approve()
+    try {
+      await approve();
+    } catch(e) {
+      console.log(e)
+    } finally {
+      setIsApproved(true)
+    }
   };
 
   const handleApproveMax = async () => {
-    await approveMax()
+    await approveMax();
   };
 
   return (
@@ -97,7 +105,9 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
         >
           <VStack align="center" gap={2} mx={2} mt={3} mb={6}>
             <Heading variant="medium">Wallet Balance</Heading>
-            <Text fontWeight={600}                 fontSize={{ base: "1rem", md: "1.5rem" }}>{balanceDisplay} USDC</Text>
+            <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>
+              {balanceDisplay} USDC
+            </Text>
             <Text variant="large">Deposit Balance</Text>
             <Flex alignItems="center" gap="1rem">
               <Input
@@ -110,27 +120,39 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
                 bg="#373737"
                 border="none"
               />
-              <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>USDC</Text>
+              <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>
+                USDC
+              </Text>
             </Flex>
-          </VStack>
-          {!isAllowed && (
-            <Flex my={7} alignItems="center" w="full" justify="space-around">
-              <Button isDisabled={+amount <= 0 || isApprovingMax} isLoading={isApproving} onClick={handleApprove}>Approve</Button>
-              <Button isDisabled={+amount <= 0 || isApproving} isLoading={isApprovingMax} onClick={handleApproveMax}>Approve Max</Button>
-            </Flex>
-          )}
-          <Button
-            justifySelf="center"
-            alignSelf="center"
-            disabled={!isAllowed || +amount <= 0}
+
+            <Button
+            disabled={!isApproved}
             isLoading={isStoring}
             onClick={handleDeposit}
-            m="auto"
             minW={"10rem"}
             variant="primary"
           >
-            Deposit {amount!}
+            Deposit<Text fontWeight="light" ml="0.25rem">{amount && `${amount} USDC`}</Text>
           </Button>
+          </VStack>
+          {!isAllowed && (
+            <Flex my={7} alignItems="center" w="full" justify="space-around">
+              <Button
+                isDisabled={+amount <= 0 || isApprovingMax}
+                isLoading={isApproving}
+                onClick={handleApprove}
+              >
+                Approve
+              </Button>
+              <Button
+                isDisabled={+amount <= 0 || isApproving}
+                isLoading={isApprovingMax}
+                onClick={handleApproveMax}
+              >
+                Approve Max
+              </Button>
+            </Flex>
+          )}
         </ModalBody>
       </ModalContent>
     </Modal>
