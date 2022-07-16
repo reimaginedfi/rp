@@ -3,7 +3,7 @@ import {
   Button,
   Flex,
   Heading,
-  Text,
+  Image,
   useColorMode,
 } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -40,15 +40,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         borderBottom="1px solid"
         borderColor={colorMode === "dark" ? "#2E2E2E" : "#E8E8E8"}
         alignItems="center"
-      >
+        >
+        <Flex direction="row">
+        <Image 
+          src={colorMode === "dark" ? "/logo/dark.svg" : "/logo/light.svg"}
+        />
         <Heading
-          fontFamily="Clash Display"
-          variant={"large"}
+          variant="large"
+          fontWeight="light"
           onClick={() => router.push("/")}
           _hover={{ cursor: "pointer" }}
+          ml="0.5rem"
+          color="#BF9209"
         >
-          REFI Pro
+          PRO
         </Heading>
+        </Flex>
         <Flex gap="1rem">
           <Button
             variant="ghost"
@@ -59,7 +66,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </Button>{" "}
           <ConnectButton chainStatus={"none"} showBalance={false} />
         </Flex>
-      </Flex>
+        </Flex>
       <Box w="full">{children}</Box>
     </Box>
   );

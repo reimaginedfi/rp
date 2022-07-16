@@ -95,20 +95,22 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
           borderTop="solid 1px"
           borderColor={colorMode === "dark" ? "#232323" : "#F3F3F3"}
         >
-          <VStack align="start" gap={2} mx={2} mt={3} mb={6}>
-            <Text variant="large">Wallet Balance</Text>
-            <Text fontWeight={600}>{balanceDisplay} USDC</Text>
+          <VStack align="center" gap={2} mx={2} mt={3} mb={6}>
+            <Heading variant="medium">Wallet Balance</Heading>
+            <Text fontWeight={600}                 fontSize={{ base: "1rem", md: "1.5rem" }}>{balanceDisplay} USDC</Text>
             <Text variant="large">Deposit Balance</Text>
-            <Flex alignItems="center" gap={6}>
+            <Flex alignItems="center" gap="1rem">
               <Input
-                fontSize={{ base: "1rem", md: "2rem" }}
+                fontSize={{ base: "1rem", md: "1.5rem" }}
                 fontWeight={600}
                 type="number"
-                w={{ base: "5rem", sm: "10rem" }}
+                w="10rem"
                 onChange={(e) => setAmount(e.target.value)}
                 value={amount}
-              />{" "}
-              <Text fontWeight={600}>USDC</Text>
+                bg="#373737"
+                border="none"
+              />
+              <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>USDC</Text>
             </Flex>
           </VStack>
           {!isAllowed && (
@@ -118,6 +120,8 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
             </Flex>
           )}
           <Button
+            justifySelf="center"
+            alignSelf="center"
             disabled={!isAllowed || +amount <= 0}
             isLoading={isStoring}
             onClick={handleDeposit}

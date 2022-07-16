@@ -91,7 +91,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                 <Flex
                   fontSize={{ base: "1rem", md: "2rem" }}
                   alignItems="center"
-                  gap={3}
+                  gap="1rem"
                 >
                   <Input
                     fontWeight={600}
@@ -100,12 +100,14 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     w={{ base: "5rem", sm: "10rem" }}
                     onChange={(e) => setAmount(e.target.value)}
                     value={amount}
-                  />{" "}
-                  <Text fontWeight={600}>VT</Text>
+                    bg="#373737"
+                    border="none"
+                  />
+                  <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>VT</Text>
                 </Flex>
-                <Text fontWeight={600}>500 USDC</Text>
+                <Text fontWeight={600}>(500 USDC)</Text>
               </Flex>
-              <Text variant="large">Max 10.00 VT</Text>
+              <Text variant="large">Max {formatUnits(user.data?.vaultShares ?? 0)} VT</Text>
             </Stack>
             <Flex gap={10} alignItems="center">
               {!hasPendingWithdrawal && (
