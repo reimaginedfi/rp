@@ -124,7 +124,7 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
                 w="10rem"
                 onChange={(e) => setAmount(e.target.value)}
                 value={amount}
-                bg="#373737"
+                bg={colorMode === 'dark' ? "#373737" : '#F3F3F3'}
                 border="none"
               />
                   <InputRightElement>
