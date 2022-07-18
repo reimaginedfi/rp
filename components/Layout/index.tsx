@@ -9,19 +9,33 @@ import {
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useRouter } from "next/router";
 import React from "react";
+import {
+  lightTheme,
+  darkTheme,
+  RainbowKitProvider,
+} from "@rainbow-me/rainbowkit";
 
 import { HiSun, HiMoon } from "react-icons/hi";
 
 interface LayoutProps {
   children: JSX.Element;
+  chains: any;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   const router = useRouter();
 
   return (
+    <RainbowKitProvider
+    chains={chains}
+    showRecentTransactions={true}
+    theme={colorMode === "light" ? lightTheme({
+      accentColor: "linear-gradient(180deg, #F3484F 0%, #C51E25 100%)"
+    }) : darkTheme({
+      accentColor: "linear-gradient(180deg, #F3484F 0%, #C51E25 100%)"
+    })}>
     <Box
       bg={colorMode === "dark" ? "#161616" : "#FCFCFC"}
       w="100vw"
@@ -69,6 +83,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </Flex>
       <Box w="full">{children}</Box>
     </Box>
+    </RainbowKitProvider>
   );
 };
 

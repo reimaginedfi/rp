@@ -4,9 +4,6 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { withCappedText } from "@gvrs/chakra-capsize/theme";
 import {
   getDefaultWallets,
-  lightTheme,
-  RainbowKitProvider,
-  Theme,
 } from "@rainbow-me/rainbowkit";
 import type { AppProps } from "next/app";
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
@@ -20,13 +17,13 @@ import theme from "../theme";
 import "@fontsource/inter/variable-full.css";
 import "@fontsource/inter";
 
-const { chains, provider, webSocketProvider } = configureChains(
+export const { chains, provider, webSocketProvider } = configureChains(
   process.env.NODE_ENV === "production"
     ? [chain.mainnet]
     : [chain.localhost, chain.hardhat, chain.rinkeby, chain.mainnet],
   [
     // alchemyProvider({ alchemyId: process.env.ALCHEMY_ID }),
-    infuraProvider({ infuraId: "9aa3d95b3bc440fa88ea12eaa4456161" }),
+    infuraProvider({ infuraId: process.env.NEXT_PUBLIC_INFURA_ID }),
     publicProvider(),
   ]
 );
@@ -63,10 +60,6 @@ const chakraTheme = extendTheme(
     },
   })
 );
-const rainbowTheme: Theme = lightTheme({
-  fontStack: "rounded",
-  borderRadius: "small",
-});
 
 export const Fonts = () => (
   <Global
@@ -86,20 +79,14 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme} resetCSS>
       <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider
-          chains={chains}
-          theme={rainbowTheme}
-          showRecentTransactions={true}
-        >
                         <Fonts />
 { /*         <Global
             styles={`
             @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;1,300&display=swap');            `}
   />*/}
-          <Layout>
+          <Layout chains={chains}>
             <Component {...pageProps} />
           </Layout>
-        </RainbowKitProvider>
       </WagmiConfig>
     </ChakraProvider>
   );

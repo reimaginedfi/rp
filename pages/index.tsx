@@ -1,6 +1,7 @@
 import {
   VisuallyHidden,
   Heading,
+  Button,
   Stack,
   Grid,
   GridItem,
@@ -10,10 +11,11 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import { Logo } from "../components/Logo";
 import VaultComp from "../components/VaultComp";
-import { useAccount, useNetwork } from "wagmi";
+import { useSwitchNetwork, useNetwork } from "wagmi";
 import { vaults } from "../contracts";
 import { Vault } from "../components/Vault";
 import UserStat from "../components/UserStat";
+import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 
 const PageContent = dynamic(() => import("../components/PageContent"), {
   ssr: false,
@@ -33,6 +35,8 @@ const AdminPage = () => {
   );
 
   const { chain } = useNetwork();
+  const { chains, error, isLoading, pendingChainId, switchNetwork } =
+  useSwitchNetwork()
 
   return (
     <>
@@ -64,10 +68,18 @@ const AdminPage = () => {
           </Grid>
           <UserStat />
         </>
+      ) : chain && chain.id !== 1 ? (
+        <Stack m="20%" align="center">
+        <Heading>{chain!.name} is not a supported chain.</Heading>
+        <Button variant="primary" onClick={() => switchNetwork?.(1)}>Switch chains</Button>
+      </Stack>
       ) : (
-        <Stack m="20%">
+        <Stack m="20%" align="center">
           <Heading>Connect your wallet first to see your vaults.</Heading>
-        </Stack>
+          <RainbowConnectButton
+                  chainStatus={"none"}
+                  showBalance={false}
+                />        </Stack>
       )}
     </>
   );
