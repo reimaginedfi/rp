@@ -8,7 +8,8 @@ import {
   ModalHeader,
   ModalBody,
   Heading,
-  Input,InputGroup,
+  Input,
+  InputGroup,
   InputRightElement,
   Button,
   Grid,
@@ -17,6 +18,7 @@ import {
   Flex,
   Stack,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 //Wagmi
 import { useNetwork } from "wagmi";
@@ -24,6 +26,7 @@ import { useNetwork } from "wagmi";
 //Vaults
 import { useVaultDeposit } from "../../hooks/useVault";
 import { vaults } from "../../../contracts";
+import { DangerToast } from "../../Toasts";
 
 type ModalProps = {
   onClose?: () => void;
@@ -48,7 +51,66 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
     isStoring,
     approveMax,
     isApprovingMax,
+    approveMaxError,
+    storeAssetError,
+    approveError,
   } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
+
+  const toast = useToast();
+
+  useEffect(() => {
+    console.log("approveMaxError: ", approveMaxError);
+    if (approveMaxError) {
+      toast({
+        variant: "danger",
+        title: approveMaxError?.name,
+        duration: 5000,
+        render: () => (
+          <DangerToast
+            message={approveMaxError
+              ?.toString()
+              .substring(approveMaxError?.toString().indexOf(":"), -1)}
+          />
+        ),
+      });
+    }
+  }, [approveMaxError, toast]);
+
+  useEffect(() => {
+    console.log("storeAssetError: ", storeAssetError);
+    if (storeAssetError) {
+      toast({
+        variant: "danger",
+        title: storeAssetError?.name,
+        duration: 5000,
+        render: () => (
+          <DangerToast
+            message={storeAssetError
+              ?.toString()
+              .substring(storeAssetError?.toString().indexOf(":"), -1)}
+          />
+        ),
+      });
+    }
+  }, [storeAssetError, toast]);
+
+  useEffect(() => {
+    console.log("approveError: ", approveError);
+    if (approveError) {
+      toast({
+        variant: "danger",
+        title: approveError?.name,
+        duration: 5000,
+        render: () => (
+          <DangerToast
+            message={approveError
+              ?.toString()
+              .substring(approveError?.toString().indexOf(":"), -1)}
+          />
+        ),
+      });
+    }
+  }, [approveError, toast]);
 
   useEffect(() => {
     vaults[chain!.id].map((contract) => {
@@ -71,10 +133,9 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
   const handleApprove = async () => {
     try {
       await approve();
-      setIsApproved(true)
-
-    } catch(e) {
-      console.log(e)
+      setIsApproved(true);
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -110,63 +171,73 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
               {balanceDisplay} USDC
             </Text>
             <VStack align="center" gap="1rem" mx={2} mt={3} mb={6}>
-            <Heading variant="medium">Deposit Balance</Heading>
-            <Flex
-                  fontSize={{ base: "1rem", md: "2rem" }}
-                  alignItems="center"
-                  gap="1rem"
-                >
-            <InputGroup w={{ base: "5rem", sm: "10rem" }}>
-            <Input
-                fontSize={{ base: "1rem", md: "1.5rem" }}
-                fontWeight={600}
-                type="number"
-                w="10rem"
-                onChange={(e) => setAmount(e.target.value)}
-                value={amount}
-                bg={colorMode === 'dark' ? "#373737" : '#F3F3F3'}
-                border="none"
-              />
+              <Heading variant="medium">Deposit Balance</Heading>
+              <Flex
+                fontSize={{ base: "1rem", md: "2rem" }}
+                alignItems="center"
+                gap="1rem"
+              >
+                <InputGroup w={{ base: "5rem", sm: "10rem" }}>
+                  <Input
+                    fontSize={{ base: "1rem", md: "1.5rem" }}
+                    fontWeight={600}
+                    type="number"
+                    w="10rem"
+                    onChange={(e) => setAmount(e.target.value)}
+                    value={amount}
+                    bg={colorMode === "dark" ? "#373737" : "#F3F3F3"}
+                    border="none"
+                  />
                   <InputRightElement>
-                    <Button h='1.75rem' mr="0.25rem" size='xs' onClick={() => setAmount(balanceDisplay)}>
+                    <Button
+                      h="1.75rem"
+                      mr="0.25rem"
+                      size="xs"
+                      onClick={() => setAmount(balanceDisplay)}
+                    >
                       MAX
                     </Button>
                   </InputRightElement>
-                  </InputGroup>
-              <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>
-                USDC
-              </Text>
+                </InputGroup>
+                <Text
+                  fontWeight={600}
+                  fontSize={{ base: "1rem", md: "1.5rem" }}
+                >
+                  USDC
+                </Text>
               </Flex>
             </VStack>
-            {!isApproved && amount !== '0' ? (
-            <Flex my={7} alignItems="center" w="full" justify="space-around">
-              <Button
-                isDisabled={+amount <= 0 || isApprovingMax}
-                isLoading={isApproving}
-                onClick={handleApprove}
-              >
-                Approve
-              </Button>
-              <Button
-                isDisabled={+amount <= 0 || isApproving}
-                isLoading={isApprovingMax}
-                onClick={handleApproveMax}
-              >
-                Approve Max
-              </Button>
-            </Flex>
-          ) : null}
+            {!isApproved && amount !== "0" ? (
+              <Flex my={7} alignItems="center" w="full" justify="space-around">
+                <Button
+                  isDisabled={+amount <= 0 || isApprovingMax}
+                  isLoading={isApproving}
+                  onClick={handleApprove}
+                >
+                  Approve
+                </Button>
+                <Button
+                  isDisabled={+amount <= 0 || isApproving}
+                  isLoading={isApprovingMax}
+                  onClick={handleApproveMax}
+                >
+                  Approve Max
+                </Button>
+              </Flex>
+            ) : null}
             <Button
-            disabled={!isApproved || amount === '0'}
-            isLoading={isStoring}
-            onClick={handleDeposit}
-            minW={"10rem"}
-            variant="primary"
-          >
-            Deposit<Text fontWeight="light" ml="0.25rem">{amount && `${amount} USDC`}</Text>
-          </Button>
+              disabled={!isApproved || amount === "0"}
+              isLoading={isStoring}
+              onClick={handleDeposit}
+              minW={"10rem"}
+              variant="primary"
+            >
+              Deposit
+              <Text fontWeight="light" ml="0.25rem">
+                {amount && `${amount} USDC`}
+              </Text>
+            </Button>
           </VStack>
-         
         </ModalBody>
       </ModalContent>
     </Modal>

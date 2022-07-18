@@ -128,7 +128,11 @@ export const useVaultDeposit = (
     BigNumber.isBigNumber(allowance) &&
     allowance.gte(parseUnits(depositAmount, assetToken.data?.decimals) ?? "0");
 
-  const { write: approve, isLoading: isApproving } = useContractWrite({
+  const {
+    write: approve,
+    isLoading: isApproving,
+    error: approveError,
+  } = useContractWrite({
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
     functionName: "approve",
@@ -138,14 +142,22 @@ export const useVaultDeposit = (
     ],
   });
 
-  const { write: approveMax, isLoading: isApprovingMax } = useContractWrite({
+  const {
+    write: approveMax,
+    isLoading: isApprovingMax,
+    error: approveMaxError,
+  } = useContractWrite({
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
     functionName: "approve",
     args: [contractConfig?.addressOrName, constants.MaxUint256],
   });
-  
-  const { write: storeAsset, isLoading: isStoring } = useContractWrite({
+
+  const {
+    write: storeAsset,
+    isLoading: isStoring,
+    error: storeAssetError,
+  } = useContractWrite({
     ...contractConfig,
     functionName: "storeAssetForDeposit",
     args: [parseUnits(depositAmount, assetToken.data?.decimals)],
@@ -165,6 +177,9 @@ export const useVaultDeposit = (
     isApprovingMax,
     storeAsset,
     isStoring,
+    approveError,
+    approveMaxError,
+    storeAssetError,
   };
 };
 
@@ -183,20 +198,28 @@ export const useVaultWithdraw = (
 
   const { user } = useVaultUser(contractConfig, address ?? "");
 
-  const {write: unlockShares, isLoading: unlockingShares} = useContractWrite({
+  const {
+    write: unlockShares,
+    isLoading: unlockingShares,
+    error: unlockingError,
+  } = useContractWrite({
     ...contractConfig,
     functionName: "unlockShareForRedeem",
     args: [parseUnits(unlockAmount, assetToken.data?.decimals)],
   });
   const hasPendingWithdrawal = userHasPendingRedeem.data;
 
-  const {data: withdrawable} = useContractRead({
+  const { data: withdrawable } = useContractRead({
     ...contractConfig,
     functionName: "previewClaim",
     args: [address],
   });
 
-  const { write: claim, isLoading: claiming } = useContractWrite({
+  const {
+    write: claim,
+    isLoading: claiming,
+    error: claimError,
+  } = useContractWrite({
     ...contractConfig,
     functionName: "claimAsset",
   });
@@ -206,8 +229,10 @@ export const useVaultWithdraw = (
     user,
     unlockShares,
     unlockingShares,
+    unlockingError,
     withdrawable,
     claim,
-    claiming
+    claiming,
+    claimError,
   };
 };

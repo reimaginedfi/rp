@@ -17,12 +17,14 @@ import {
   Input,
   Container,
   InputRightElement,
-  InputGroup
+  InputGroup,
+  useToast,
 } from "@chakra-ui/react";
 import { vaults } from "../../../contracts";
 import { useNetwork } from "wagmi";
 import { useVaultWithdraw } from "../../hooks/useVault";
 import { formatUnits } from "ethers/lib/utils";
+import { DangerToast } from "../../Toasts";
 
 type ModalProps = {
   onClose?: () => void;
@@ -43,7 +45,30 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     unlockingShares,
     withdrawable,
     claiming,
+    claimError,
+    unlockingError,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
+
+  const toast = useToast();
+
+  useEffect(() => {
+    console.log("unlockingError: ", unlockingError?.message);
+    if (unlockingError?.name === "Error") {
+      toast({
+        variant: "danger",
+        title: unlockingError?.name,
+        duration: 5000,
+        render: () => (
+          <DangerToast
+            message={unlockingError?.message.substring(
+              0,
+              unlockingError?.message.indexOf(";")
+            )}
+          />
+        ),
+      });
+    }
+  }, [unlockingError, toast]);
 
   useEffect(() => {
     vaults[chain!.id].map((contract) => {
@@ -54,7 +79,9 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
 
   const handleUnlockShares = async () => {
     console.log("unlocking shares");
-    await unlockShares();
+    try {
+      const res = await unlockShares();
+    } catch (error) {}
   };
 
   const handleClaim = async () => {
@@ -88,39 +115,46 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
         >
           <Container>
             <VStack align="center" gap="1rem" mx={2} mt={3} mb={6}>
-            <Heading variant="medium">Your Vault Tokens:</Heading>
+              <Heading variant="medium">Your Vault Tokens:</Heading>
               <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>
                 {formatUnits(user.data?.vaultShares ?? 0)} VT
               </Text>
               <VStack align="center" gap={2} mx={2} mt={3} mb={6}>
-              <Heading variant="medium">Amount to Unlock</Heading>
+                <Heading variant="medium">Amount to Unlock</Heading>
                 <Flex
                   fontSize={{ base: "1rem", md: "2rem" }}
                   alignItems="center"
                   gap="1rem"
                 >
                   <InputGroup w={{ base: "5rem", sm: "10rem" }}>
-                  <Input
-                    fontWeight={600}
-                    type="number"
-                    min={0}
-                    onChange={(e) => setAmount(e.target.value)}
-                    value={amount}
-                    bg={colorMode === 'dark' ? "#373737" : '#F3F3F3'}
-                    border="none"
-                  />
-                  <InputRightElement>
-                    <Button h='1.75rem' mr="0.25rem" size='xs' onClick={() => setAmount(formatUnits(user.data?.vaultShares))}>
-                      MAX
-                    </Button>
-                  </InputRightElement>
+                    <Input
+                      fontWeight={600}
+                      type="number"
+                      min={0}
+                      onChange={(e) => setAmount(e.target.value)}
+                      value={amount}
+                      bg={colorMode === "dark" ? "#373737" : "#F3F3F3"}
+                      border="none"
+                    />
+                    <InputRightElement>
+                      <Button
+                        h="1.75rem"
+                        mr="0.25rem"
+                        size="xs"
+                        onClick={() =>
+                          setAmount(formatUnits(user.data?.vaultShares))
+                        }
+                      >
+                        MAX
+                      </Button>
+                    </InputRightElement>
                   </InputGroup>
 
                   <Text
                     fontWeight={600}
                     fontSize={{ base: "1rem", md: "1.5rem" }}
                   >
-                    VT{" "}(500 USDC)
+                    VT (500 USDC)
                   </Text>
                 </Flex>
               </VStack>
@@ -146,8 +180,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                 </Button>
               )}
             </VStack>
-            <Flex gap={10} alignItems="center">
-            </Flex>
+            <Flex gap={10} alignItems="center"></Flex>
           </Container>
         </ModalBody>
       </ModalContent>
