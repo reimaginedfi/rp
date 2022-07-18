@@ -27,6 +27,7 @@ import { useNetwork } from "wagmi";
 import { useVaultDeposit } from "../../hooks/useVault";
 import { vaults } from "../../../contracts";
 import { DangerToast } from "../../Toasts";
+import getErrorMessage from "../../utils/errors";
 
 type ModalProps = {
   onClose?: () => void;
@@ -127,15 +128,39 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
     if (!isAllowed) {
       return;
     }
-    await storeAsset();
+    try {
+      await storeAsset();
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      toast({
+        variant: "danger",
+        duration: 5000,
+        position: "bottom",
+        render: () => (
+          <DangerToast
+            message={errorMessage}
+          />
+        ),
+      });
+    }
   };
 
   const handleApprove = async () => {
     try {
       await approve();
       setIsApproved(true);
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      toast({
+        variant: "danger",
+        position: "bottom",
+        duration: 5000,
+        render: () => (
+          <DangerToast
+            message={errorMessage}
+          />
+        ),
+      });
     }
   };
 
@@ -226,7 +251,7 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
               </Flex>
             ) : null}
             <Button
-              disabled={!isApproved || amount === "0"}
+              disabled={!isApproved || amount === "0" || isApproving || isApprovingMax}
               isLoading={isStoring}
               onClick={handleDeposit}
               minW={"10rem"}

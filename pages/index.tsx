@@ -69,13 +69,13 @@ const AdminPage = () => {
           <UserStat />
         </>
       ) : chain && chain.id !== 1 ? (
-        <Stack m="20%" align="center">
+        <Stack m="auto" mt="20%" w="full" align="center" gap="0.5rem">
         <Heading>{chain!.name} is not a supported chain.</Heading>
         <Button variant="primary" onClick={() => switchNetwork?.(1)}>Switch chains</Button>
       </Stack>
       ) : (
-        <Stack m="20%" align="center">
-          <Heading>Connect your wallet first to see your vaults.</Heading>
+        <Stack m="auto" mt="20%" w="full" align="center" gap="0.5rem">
+          <Heading variant="big" textAlign="center">Connect your wallet to see your vaults.</Heading>
           <RainbowConnectButton
                   chainStatus={"none"}
                   showBalance={false}

@@ -43,6 +43,8 @@ const VaultComp = ({
   const {isOpen: depositIsOpen, onOpen: onOpenDeposit, onClose: onCloseDeposit} = useDisclosure()
   const {isOpen: withdrawIsOpen, onOpen: onOpenWithdraw, onClose: onCloseWithdraw} = useDisclosure()
 
+
+
   return (
     <>
     <Accordion  bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle border={colorMode === "dark" ? "1px solid #232323" : "1px solid #F3F3F3"} borderRadius="1rem">
@@ -70,9 +72,9 @@ const VaultComp = ({
           >
             <GridItem textAlign="center">
               <Text fontSize="32px" fontWeight={600}>
-                +25%
+                GAIN: 
               </Text>
-              <Text fontSize="24px">+125k {asset}</Text>
+              <Text fontSize="24px">AMOUNT {asset}</Text>
               <Text
                 style={{
                   backgroundClip: "text",
@@ -83,7 +85,7 @@ const VaultComp = ({
                 fontSize="24px"
                 fontWeight={700}
               >
-                EPOCH 2
+                EPOCH {epoch}
               </Text>
             </GridItem>
 
