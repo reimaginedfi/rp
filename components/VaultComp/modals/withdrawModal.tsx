@@ -85,12 +85,13 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
           borderColor={colorMode === "dark" ? "#232323" : "#F3F3F3"}
         >
           <Container>
-            <VStack align="center" gap={2} mx={2} mt={3} mb={6}>
-              <Heading variant="large">Your Vault Tokens:</Heading>
+            <VStack align="center" gap="1rem" mx={2} mt={3} mb={6}>
+            <Heading variant="medium">Your Vault Tokens:</Heading>
               <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>
                 {formatUnits(user.data?.vaultShares ?? 0)} VT
               </Text>
-              <Flex alignItems="center" gap={6}>
+              <VStack align="center" gap={2} mx={2} mt={3} mb={6}>
+              <Heading variant="medium">Amount to Unlock</Heading>
                 <Flex
                   fontSize={{ base: "1rem", md: "2rem" }}
                   alignItems="center"
@@ -110,16 +111,13 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     fontWeight={600}
                     fontSize={{ base: "1rem", md: "1.5rem" }}
                   >
-                    VT
+                    VT{" "}(500 USDC)
                   </Text>
                 </Flex>
-                <Text fontWeight={600}>(500 USDC)</Text>
-              </Flex>
+              </VStack>
               <Text variant="large">
                 Max {formatUnits(user.data?.vaultShares ?? 0)} VT
               </Text>
-            </VStack>
-            <Flex gap={10} alignItems="center">
               {!hasPendingWithdrawal && (
                 <Button
                   isLoading={unlockingShares}
@@ -141,6 +139,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   Withdraw
                 </Button>
               )}
+            </VStack>
+            <Flex gap={10} alignItems="center">
             </Flex>
           </Container>
         </ModalBody>

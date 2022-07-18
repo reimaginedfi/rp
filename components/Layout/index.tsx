@@ -55,15 +55,14 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
         borderColor={colorMode === "dark" ? "#2E2E2E" : "#E8E8E8"}
         alignItems="center"
         >
-        <Flex direction="row">
+        <Flex direction="row"           _hover={{ cursor: "pointer" }}
+ onClick={() => router.push("/")}>
         <Image 
           src={colorMode === "dark" ? "/logo/dark.svg" : "/logo/light.svg"}
         />
         <Heading
           variant="large"
           fontWeight="light"
-          onClick={() => router.push("/")}
-          _hover={{ cursor: "pointer" }}
           ml="0.5rem"
           color="#BF9209"
         >

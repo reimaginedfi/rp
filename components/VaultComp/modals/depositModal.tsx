@@ -70,16 +70,18 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
   const handleApprove = async () => {
     try {
       await approve();
+      setIsApproved(true)
+
     } catch(e) {
       console.log(e)
-    } finally {
-      setIsApproved(true)
     }
   };
 
   const handleApproveMax = async () => {
     await approveMax();
   };
+
+  console.log(amount)
 
   return (
     <Modal
@@ -103,12 +105,12 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
           borderTop="solid 1px"
           borderColor={colorMode === "dark" ? "#232323" : "#F3F3F3"}
         >
-          <VStack align="center" gap={2} mx={2} mt={3} mb={6}>
+          <VStack align="center" gap="1rem" mx={2} mt={3} mb={6}>
             <Heading variant="medium">Wallet Balance</Heading>
             <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>
               {balanceDisplay} USDC
             </Text>
-            <Text variant="large">Deposit Balance</Text>
+            <Heading variant="medium">Deposit Balance</Heading>
             <Flex alignItems="center" gap="1rem">
               <Input
                 fontSize={{ base: "1rem", md: "1.5rem" }}
@@ -124,18 +126,7 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
                 USDC
               </Text>
             </Flex>
-
-            <Button
-            disabled={!isApproved}
-            isLoading={isStoring}
-            onClick={handleDeposit}
-            minW={"10rem"}
-            variant="primary"
-          >
-            Deposit<Text fontWeight="light" ml="0.25rem">{amount && `${amount} USDC`}</Text>
-          </Button>
-          </VStack>
-          {!isAllowed && (
+            {!isApproved && amount !== '0' ? (
             <Flex my={7} alignItems="center" w="full" justify="space-around">
               <Button
                 isDisabled={+amount <= 0 || isApprovingMax}
@@ -152,7 +143,18 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
                 Approve Max
               </Button>
             </Flex>
-          )}
+          ) : null}
+            <Button
+            disabled={!isApproved || amount === '0'}
+            isLoading={isStoring}
+            onClick={handleDeposit}
+            minW={"10rem"}
+            variant="primary"
+          >
+            Deposit<Text fontWeight="light" ml="0.25rem">{amount && `${amount} USDC`}</Text>
+          </Button>
+          </VStack>
+         
         </ModalBody>
       </ModalContent>
     </Modal>

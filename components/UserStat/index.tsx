@@ -30,8 +30,6 @@ const UserStat = () => {
   const { sharesValue, user, hasPendingDeposit } =
   useVaultUser(contractConfig, address ?? '');
 
-  console.log(user)
-
   return (
     <Grid
       templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
