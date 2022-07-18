@@ -32,7 +32,7 @@ export default function VaultProgressBar({
   const progressValues = [
     {
       name: "AUM",
-      value: 25,
+      value: aumPercentage!,
       color: "#C51E25",
       radius: "1rem"
     },

@@ -82,8 +82,6 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
     await approveMax();
   };
 
-  console.log(amount)
-
   return (
     <Modal
       isCentered
