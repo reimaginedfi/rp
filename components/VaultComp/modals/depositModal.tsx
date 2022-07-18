@@ -8,7 +8,8 @@ import {
   ModalHeader,
   ModalBody,
   Heading,
-  Input,
+  Input,InputGroup,
+  InputRightElement,
   Button,
   Grid,
   Text,
@@ -110,9 +111,15 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
             <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>
               {balanceDisplay} USDC
             </Text>
+            <VStack align="center" gap="1rem" mx={2} mt={3} mb={6}>
             <Heading variant="medium">Deposit Balance</Heading>
-            <Flex alignItems="center" gap="1rem">
-              <Input
+            <Flex
+                  fontSize={{ base: "1rem", md: "2rem" }}
+                  alignItems="center"
+                  gap="1rem"
+                >
+            <InputGroup w={{ base: "5rem", sm: "10rem" }}>
+            <Input
                 fontSize={{ base: "1rem", md: "1.5rem" }}
                 fontWeight={600}
                 type="number"
@@ -122,10 +129,17 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
                 bg="#373737"
                 border="none"
               />
+                  <InputRightElement>
+                    <Button h='1.75rem' mr="0.25rem" size='xs' onClick={() => setAmount(balanceDisplay)}>
+                      MAX
+                    </Button>
+                  </InputRightElement>
+                  </InputGroup>
               <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>
                 USDC
               </Text>
-            </Flex>
+              </Flex>
+            </VStack>
             {!isApproved && amount !== '0' ? (
             <Flex my={7} alignItems="center" w="full" justify="space-around">
               <Button

@@ -16,6 +16,8 @@ import {
   Flex,
   Input,
   Container,
+  InputRightElement,
+  InputGroup
 } from "@chakra-ui/react";
 import { vaults } from "../../../contracts";
 import { useNetwork } from "wagmi";
@@ -97,16 +99,22 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   alignItems="center"
                   gap="1rem"
                 >
+                  <InputGroup w={{ base: "5rem", sm: "10rem" }}>
                   <Input
                     fontWeight={600}
                     type="number"
                     min={0}
-                    w={{ base: "5rem", sm: "10rem" }}
-                    onChange={(e) => setAmount(e.target.value)}
                     value={amount}
                     bg="#373737"
                     border="none"
                   />
+                  <InputRightElement>
+                    <Button h='1.75rem' mr="0.25rem" size='xs' onClick={() => setAmount(formatUnits(user.data?.vaultShares))}>
+                      MAX
+                    </Button>
+                  </InputRightElement>
+                  </InputGroup>
+
                   <Text
                     fontWeight={600}
                     fontSize={{ base: "1rem", md: "1.5rem" }}
@@ -115,9 +123,6 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   </Text>
                 </Flex>
               </VStack>
-              <Text variant="large">
-                Max {formatUnits(user.data?.vaultShares ?? 0)} VT
-              </Text>
               {!hasPendingWithdrawal && (
                 <Button
                   isLoading={unlockingShares}
