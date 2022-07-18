@@ -28,6 +28,7 @@ type VaultProps = {
   currentAum: string;
   aumCap: string;
   epoch: string | undefined;
+  pendingDeposit: string;
 };
 
 const VaultComp = ({
@@ -36,6 +37,7 @@ const VaultComp = ({
   currentAum,
   aumCap,
   epoch,
+  pendingDeposit
 }: VaultProps) => {
   const { colorMode } = useColorMode();
   const {isOpen: depositIsOpen, onOpen: onOpenDeposit, onClose: onCloseDeposit} = useDisclosure()
@@ -117,14 +119,14 @@ const VaultComp = ({
           <VaultProgressBar
             currentAum={parseInt(currentAum)}
             aumCap={parseInt(aumCap)}
-            remainingDeposits="500"
+            remainingDeposits={pendingDeposit}
           />
           
           <Flex alignItems={"center"}>
             <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#E9A9AB" />
             <Text variant="medium">Pending Deposits</Text>
             <Spacer />
-            <Text variant="medium">500 USDC</Text>
+            <Text variant="medium">{pendingDeposit} USDC</Text>
           </Flex>
 
         </AccordionPanel>

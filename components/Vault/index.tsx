@@ -62,6 +62,7 @@ export const Vault = ({
         currentAum={formatUnits(aum.data ?? 0, assetToken.data?.decimals ?? 0)}
         aumCap={formatUnits(aumCap.data ?? 0, assetToken.data?.decimals ?? 0)}
         epoch={epoch.data?.toString()}
+        pendingDeposit={pendingDeposit}
       />
     </>
   );
