@@ -265,7 +265,7 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
                 </Text>
               </Flex>
             </VStack>
-            {!isApproved && amount !== "0" && (
+            {!isApproved && +amount > 0 && (
               <Flex my={7} gap={3} alignItems="center" w="full" flexDir='column'>
                 <Button w='full' p={3} borderRadius='xl'
                   variant='ghost'

@@ -47,9 +47,31 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     claiming,
     claimError,
     unlockingError,
+    claimSuccess,
+    unlockingSuccess,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
 
   const toast = useToast();
+
+  useEffect(() => {
+    if(unlockingSuccess) {
+      toast({
+        status: "success",
+        title: 'Asset Unlocked Successfully',
+        duration: 5000,
+      });
+    }
+  }, [unlockingSuccess, toast])
+
+  useEffect(() => {
+    if(claimSuccess) {
+      toast({
+        status: "success",
+        title: 'Asset Claimed Successfully',
+        duration: 5000,
+      });
+    }
+  }, [claimSuccess, toast])
 
   useEffect(() => {
     console.log("unlockingError: ", unlockingError?.message);
@@ -69,6 +91,25 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
       });
     }
   }, [unlockingError, toast]);
+
+  useEffect(() => {
+    console.log("claimError: ", claimError?.message);
+    if (claimError?.name === "Error") {
+      toast({
+        variant: "danger",
+        title: claimError?.name,
+        duration: 5000,
+        render: () => (
+          <DangerToast
+            message={claimError?.message.substring(
+              0,
+              claimError?.message.indexOf(";")
+            )}
+          />
+        ),
+      });
+    }
+  }, [claimError, toast]);
 
   useEffect(() => {
     vaults[chain!.id].map((contract) => {

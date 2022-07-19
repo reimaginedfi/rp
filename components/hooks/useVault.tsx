@@ -208,6 +208,7 @@ export const useVaultWithdraw = (
     write: unlockShares,
     isLoading: unlockingShares,
     error: unlockingError,
+    isSuccess: unlockingSuccess,
   } = useContractWrite({
     ...contractConfig,
     functionName: "unlockShareForRedeem",
@@ -225,6 +226,7 @@ export const useVaultWithdraw = (
     write: claim,
     isLoading: claiming,
     error: claimError,
+    isSuccess: claimSuccess,
   } = useContractWrite({
     ...contractConfig,
     functionName: "claimAsset",
@@ -240,5 +242,7 @@ export const useVaultWithdraw = (
     claim,
     claiming,
     claimError,
+    claimSuccess,
+    unlockingSuccess
   };
 };

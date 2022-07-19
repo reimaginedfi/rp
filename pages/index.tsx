@@ -36,7 +36,7 @@ const AdminPage = () => {
 
   const { chain } = useNetwork();
   const { chains, error, isLoading, pendingChainId, switchNetwork } =
-  useSwitchNetwork()
+    useSwitchNetwork();
 
   return (
     <>
@@ -70,16 +70,18 @@ const AdminPage = () => {
         </>
       ) : chain && chain.id !== 1 ? (
         <Stack m="auto" mt="20%" w="full" align="center" gap="0.5rem">
-        <Heading>{chain!.name} is not a supported chain.</Heading>
-        <Button variant="primary" onClick={() => switchNetwork?.(1)}>Switch chains</Button>
-      </Stack>
+          <Heading>{chain!.name} is not a supported chain.</Heading>
+          <Button variant="primary" onClick={() => switchNetwork?.(1)}>
+            Switch chains
+          </Button>
+        </Stack>
       ) : (
         <Stack m="auto" mt="20%" w="full" align="center" gap="0.5rem">
-          <Heading variant="big" textAlign="center">Connect your wallet to see your vaults.</Heading>
-          <RainbowConnectButton
-                  chainStatus={"none"}
-                  showBalance={false}
-                />        </Stack>
+          <Heading variant="big" textAlign="center">
+            Connect your wallet to see your vaults.
+          </Heading>
+          <RainbowConnectButton chainStatus={"none"} showBalance={false} />{" "}
+        </Stack>
       )}
     </>
   );
