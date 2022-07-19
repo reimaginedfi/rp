@@ -26,7 +26,7 @@ import { useNetwork } from "wagmi";
 //Vaults
 import { useVaultDeposit } from "../../hooks/useVault";
 import { vaults } from "../../../contracts";
-import { DangerToast } from "../../Toasts";
+import { DangerToast, SuccessToast } from "../../Toasts";
 import getErrorMessage from "../../utils/errors";
 
 type ModalProps = {
@@ -55,9 +55,42 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
     approveMaxError,
     storeAssetError,
     approveError,
+    storeAssetSuccess,
+    approveSuccess,
+    approveMaxSuccess
   } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
 
   const toast = useToast();
+
+  useEffect(() => {
+    if(approveMaxSuccess) {
+      toast({
+        status: "success",
+        title: 'Approve Max Success',
+        duration: 5000,
+      });
+    }
+  }, [approveMaxSuccess, toast])
+
+  useEffect(() => {
+    if(approveSuccess) {
+      toast({
+        status: "success",
+        title: 'Approve Success',
+        duration: 5000,
+      });
+    }
+  }, [approveSuccess, toast])
+
+  useEffect(() => {
+    if(storeAssetSuccess) {
+      toast({
+        status: "success",
+        title: 'Asset Stored Successfully',
+        duration: 5000,
+      });
+    }
+  }, [storeAssetSuccess, toast])
 
   useEffect(() => {
     console.log("approveMaxError: ", approveMaxError);
@@ -232,24 +265,26 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
                 </Text>
               </Flex>
             </VStack>
-            {!isApproved && amount !== "0" ? (
-              <Flex my={7} alignItems="center" w="full" justify="space-around">
-                <Button
+            {!isApproved && amount !== "0" && (
+              <Flex my={7} gap={3} alignItems="center" w="full" flexDir='column'>
+                <Button w='full' p={3} borderRadius='xl'
+                  variant='ghost'
                   isDisabled={+amount <= 0 || isApprovingMax}
                   isLoading={isApproving}
                   onClick={handleApprove}
                 >
-                  Approve
+                  Approve to use your USDC
                 </Button>
-                <Button
+                <Button w='full' p={3} borderRadius='xl'
+                variant='secondary'
                   isDisabled={+amount <= 0 || isApproving}
                   isLoading={isApprovingMax}
                   onClick={handleApproveMax}
                 >
-                  Approve Max
+                  Approve Max to use your USDC
                 </Button>
               </Flex>
-            ) : null}
+            )}
             <Button
               disabled={!isApproved || amount === "0" || isApproving || isApprovingMax}
               isLoading={isStoring}

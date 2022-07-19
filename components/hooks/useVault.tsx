@@ -132,6 +132,7 @@ export const useVaultDeposit = (
     write: approve,
     isLoading: isApproving,
     error: approveError,
+    isSuccess: approveSuccess,
   } = useContractWrite({
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
@@ -146,6 +147,7 @@ export const useVaultDeposit = (
     write: approveMax,
     isLoading: isApprovingMax,
     error: approveMaxError,
+    isSuccess: approveMaxSuccess,
   } = useContractWrite({
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
@@ -157,6 +159,7 @@ export const useVaultDeposit = (
     write: storeAsset,
     isLoading: isStoring,
     error: storeAssetError,
+    isSuccess: storeAssetSuccess,
   } = useContractWrite({
     ...contractConfig,
     functionName: "storeAssetForDeposit",
@@ -180,6 +183,9 @@ export const useVaultDeposit = (
     approveError,
     approveMaxError,
     storeAssetError,
+    approveSuccess,
+    approveMaxSuccess,
+    storeAssetSuccess,
   };
 };
 
