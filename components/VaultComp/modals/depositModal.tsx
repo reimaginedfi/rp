@@ -57,44 +57,47 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
     approveError,
     storeAssetSuccess,
     approveSuccess,
-    approveMaxSuccess
+    approveMaxSuccess,
+    approveStatus,
+    approveMaxStatus,
+    storeAssetStatus,
   } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
 
   const toast = useToast();
 
   useEffect(() => {
-    if(approveMaxSuccess) {
+    if(approveMaxSuccess && approveMaxStatus === "success") {
       toast({
         status: "success",
         title: 'Approve Max Success',
         duration: 5000,
       });
     }
-  }, [approveMaxSuccess, toast])
+  }, [approveMaxSuccess, approveMaxStatus, toast])
 
   useEffect(() => {
-    if(approveSuccess) {
+    if(approveSuccess && approveStatus === "success") {
       toast({
         status: "success",
         title: 'Approve Success',
         duration: 5000,
       });
     }
-  }, [approveSuccess, toast])
+  }, [approveSuccess, toast, approveStatus])
 
   useEffect(() => {
-    if(storeAssetSuccess) {
+    if(storeAssetSuccess && storeAssetStatus === "success") {
       toast({
         status: "success",
         title: 'Asset Stored Successfully',
         duration: 5000,
       });
     }
-  }, [storeAssetSuccess, toast])
+  }, [storeAssetSuccess, toast, storeAssetStatus])
 
   useEffect(() => {
     console.log("approveMaxError: ", approveMaxError);
-    if (approveMaxError) {
+    if (approveMaxError && approveMaxStatus === "error") {
       toast({
         variant: "danger",
         title: approveMaxError?.name,
@@ -108,11 +111,11 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
         ),
       });
     }
-  }, [approveMaxError, toast]);
+  }, [approveMaxError,approveMaxStatus, toast]);
 
   useEffect(() => {
     console.log("storeAssetError: ", storeAssetError);
-    if (storeAssetError) {
+    if (storeAssetError && storeAssetStatus === "error") {
       toast({
         variant: "danger",
         title: storeAssetError?.name,
@@ -126,11 +129,11 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
         ),
       });
     }
-  }, [storeAssetError, toast]);
+  }, [storeAssetError, storeAssetStatus, toast]);
 
   useEffect(() => {
     console.log("approveError: ", approveError);
-    if (approveError) {
+    if (approveError && approveStatus === "error") {
       toast({
         variant: "danger",
         title: approveError?.name,
@@ -144,7 +147,7 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
         ),
       });
     }
-  }, [approveError, toast]);
+  }, [approveError, approveStatus, toast]);
 
   useEffect(() => {
     vaults[chain!.id].map((contract) => {
@@ -265,7 +268,7 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
                 </Text>
               </Flex>
             </VStack>
-            {!isApproved && +amount > 0 && (
+            {!isAllowed && +amount > 0 && (
               <Flex my={7} gap={3} alignItems="center" w="full" flexDir='column'>
                 <Button w='full' p={3} borderRadius='xl'
                   variant='ghost'
@@ -286,7 +289,7 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
               </Flex>
             )}
             <Button
-              disabled={!isApproved || amount === "0" || isApproving || isApprovingMax}
+              disabled={!isAllowed || amount === "0" || isApproving || isApprovingMax}
               isLoading={isStoring}
               onClick={handleDeposit}
               minW={"10rem"}

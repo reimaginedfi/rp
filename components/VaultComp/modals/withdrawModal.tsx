@@ -49,33 +49,35 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     unlockingError,
     claimSuccess,
     unlockingSuccess,
+    unlockingStatus,
+    claimStatus,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
 
   const toast = useToast();
 
   useEffect(() => {
-    if(unlockingSuccess) {
+    if (unlockingSuccess && unlockingStatus === "success") {
       toast({
         status: "success",
-        title: 'Asset Unlocked Successfully',
+        title: "Asset Unlocked Successfully",
         duration: 5000,
       });
     }
-  }, [unlockingSuccess, toast])
+  }, [unlockingSuccess, toast, unlockingStatus]);
 
   useEffect(() => {
-    if(claimSuccess) {
+    if (claimSuccess && claimStatus === "success") {
       toast({
         status: "success",
-        title: 'Asset Claimed Successfully',
+        title: "Asset Claimed Successfully",
         duration: 5000,
       });
     }
-  }, [claimSuccess, toast])
+  }, [claimSuccess, claimStatus, toast]);
 
   useEffect(() => {
     console.log("unlockingError: ", unlockingError?.message);
-    if (unlockingError?.name === "Error") {
+    if (unlockingError?.name === "Error" && unlockingStatus === "error") {
       toast({
         variant: "danger",
         title: unlockingError?.name,
@@ -90,11 +92,11 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
         ),
       });
     }
-  }, [unlockingError, toast]);
+  }, [unlockingError, unlockingStatus, toast]);
 
   useEffect(() => {
     console.log("claimError: ", claimError?.message);
-    if (claimError?.name === "Error") {
+    if (claimError?.name === "Error" && claimStatus === "error") {
       toast({
         variant: "danger",
         title: claimError?.name,
@@ -109,7 +111,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
         ),
       });
     }
-  }, [claimError, toast]);
+  }, [claimError, claimStatus, toast]);
 
   useEffect(() => {
     vaults[chain!.id].map((contract) => {
@@ -122,9 +124,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     console.log("unlocking shares");
     try {
       await unlockShares();
-    } catch (error) {
-
-    }
+    } catch (error) {}
   };
 
   const handleClaim = async () => {

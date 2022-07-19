@@ -133,6 +133,7 @@ export const useVaultDeposit = (
     isLoading: isApproving,
     error: approveError,
     isSuccess: approveSuccess,
+    status: approveStatus,
   } = useContractWrite({
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
@@ -148,6 +149,7 @@ export const useVaultDeposit = (
     isLoading: isApprovingMax,
     error: approveMaxError,
     isSuccess: approveMaxSuccess,
+    status: approveMaxStatus,
   } = useContractWrite({
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
@@ -160,6 +162,7 @@ export const useVaultDeposit = (
     isLoading: isStoring,
     error: storeAssetError,
     isSuccess: storeAssetSuccess,
+    status: storeAssetStatus,
   } = useContractWrite({
     ...contractConfig,
     functionName: "storeAssetForDeposit",
@@ -186,6 +189,9 @@ export const useVaultDeposit = (
     approveSuccess,
     approveMaxSuccess,
     storeAssetSuccess,
+    approveStatus,
+    approveMaxStatus,
+    storeAssetStatus,
   };
 };
 
@@ -209,6 +215,7 @@ export const useVaultWithdraw = (
     isLoading: unlockingShares,
     error: unlockingError,
     isSuccess: unlockingSuccess,
+    status: unlockingStatus,
   } = useContractWrite({
     ...contractConfig,
     functionName: "unlockShareForRedeem",
@@ -227,6 +234,7 @@ export const useVaultWithdraw = (
     isLoading: claiming,
     error: claimError,
     isSuccess: claimSuccess,
+    status: claimStatus,
   } = useContractWrite({
     ...contractConfig,
     functionName: "claimAsset",
@@ -243,6 +251,8 @@ export const useVaultWithdraw = (
     claiming,
     claimError,
     claimSuccess,
-    unlockingSuccess
+    unlockingSuccess,
+    claimStatus,
+    unlockingStatus,
   };
 };
