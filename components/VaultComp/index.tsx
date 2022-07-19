@@ -43,13 +43,10 @@ const VaultComp = ({
   const {isOpen: depositIsOpen, onOpen: onOpenDeposit, onClose: onCloseDeposit} = useDisclosure()
   const {isOpen: withdrawIsOpen, onOpen: onOpenWithdraw, onClose: onCloseWithdraw} = useDisclosure()
 
-
-
   return (
     <>
-    <Accordion  bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle border={colorMode === "dark" ? "1px solid #232323" : "1px solid #F3F3F3"} borderRadius="1rem">
-      <AccordionItem>
-        <>
+    <Accordion defaultIndex={[0]} bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle border={colorMode === "dark" ? "1px solid #232323" : "1px solid #F3F3F3"} borderRadius="1rem">
+      <AccordionItem border="none">
         <AccordionButton borderRadius="1rem">
           <Flex w="full" justify="space-between" alignItems="center">
             <Flex direction="row" alignItems="center">
@@ -72,9 +69,9 @@ const VaultComp = ({
           >
             <GridItem textAlign="center">
               <Text fontSize="32px" fontWeight={600}>
-                GAIN: 
+                0%
               </Text>
-              <Text fontSize="24px">AMOUNT {asset}</Text>
+              <Text fontSize="24px">0 {asset}</Text>
               <Text
                 style={{
                   backgroundClip: "text",
@@ -132,7 +129,6 @@ const VaultComp = ({
           </Flex>
 
         </AccordionPanel>
-        </>
       </AccordionItem>
     </Accordion>
 

@@ -80,8 +80,10 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   const handleUnlockShares = async () => {
     console.log("unlocking shares");
     try {
-      const res = await unlockShares();
-    } catch (error) {}
+      await unlockShares();
+    } catch (error) {
+
+    }
   };
 
   const handleClaim = async () => {
@@ -154,7 +156,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     fontWeight={600}
                     fontSize={{ base: "1rem", md: "1.5rem" }}
                   >
-                    VT (500 USDC)
+                    VT
                   </Text>
                 </Flex>
               </VStack>
