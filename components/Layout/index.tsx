@@ -29,59 +29,68 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
 
   return (
     <RainbowKitProvider
-    chains={chains}
-    showRecentTransactions={true}
-    theme={colorMode === "light" ? lightTheme({
-      accentColor: "linear-gradient(180deg, #F3484F 0%, #C51E25 100%)"
-    }) : darkTheme({
-      accentColor: "linear-gradient(180deg, #F3484F 0%, #C51E25 100%)"
-    })}>
-    <Box
-      bg={colorMode === "dark" ? "#161616" : "#FCFCFC"}
-      w="100vw"
-      minH={"100vh"}
-      h="full"
-      color={colorMode === "dark" ? "rgba(255, 255, 255, 0.92)" : "#1A202C"}
+      chains={chains}
+      showRecentTransactions={true}
+      theme={
+        colorMode === "light"
+          ? lightTheme({
+              accentColor: "linear-gradient(180deg, #F3484F 0%, #C51E25 100%)",
+            })
+          : darkTheme({
+              accentColor: "linear-gradient(180deg, #F3484F 0%, #C51E25 100%)",
+            })
+      }
     >
-      <Flex
-        position="sticky"
-        // zIndex="sticky"
-        w="100%"
-        justifyContent="space-between"
-        p="16px"
-        h="56px"
-        bg={{ base: colorMode === "dark" ? "#161616" : "#FCFCFC" }}
-        borderBottom="1px solid"
-        borderColor={colorMode === "dark" ? "#2E2E2E" : "#E8E8E8"}
-        alignItems="center"
+      <Box
+        bg={colorMode === "dark" ? "#161616" : "#FCFCFC"}
+        w="100vw"
+        minH={"100vh"}
+        h="full"
+        color={colorMode === "dark" ? "rgba(255, 255, 255, 0.92)" : "#1A202C"}
+      >
+        <Flex
+          position="sticky"
+          // zIndex="sticky"
+          w="100%"
+          justifyContent="space-between"
+          p="16px"
+          h="56px"
+          bg={{ base: colorMode === "dark" ? "#161616" : "#FCFCFC" }}
+          borderBottom="1px solid"
+          borderColor={colorMode === "dark" ? "#2E2E2E" : "#E8E8E8"}
+          alignItems="center"
         >
-        <Flex direction="row"           _hover={{ cursor: "pointer" }}
- onClick={() => router.push("/")}>
-        <Image 
-          src={colorMode === "dark" ? "/logo/dark.svg" : "/logo/light.svg"}
-        />
-        <Heading
-          variant="large"
-          fontWeight="light"
-          ml="0.5rem"
-          color="#BF9209"
-        >
-          PRO
-        </Heading>
-        </Flex>
-        <Flex gap="1rem">
-          <Button
-            variant="ghost"
-            onClick={toggleColorMode}
-            display={{ base: "none", md: "flex" }}
+          <Flex
+            direction="row"
+            _hover={{ cursor: "pointer" }}
+            onClick={() => router.push("/")}
           >
-            {colorMode === "dark" ? <HiSun /> : <HiMoon />}
-          </Button>{" "}
-          <ConnectButton chainStatus={"none"} showBalance={false} />
+            <Image
+              src={colorMode === "dark" ? "/logo/dark.svg" : "/logo/light.svg"}
+              alt='refi-pro-logo'
+            />
+            <Heading
+              variant="large"
+              fontWeight="light"
+              ml="0.5rem"
+              color="#BF9209"
+            >
+              PRO
+            </Heading>
+          </Flex>
+          <Flex gap="1rem">
+            <Button
+              variant="ghost"
+              onClick={toggleColorMode}
+              display={{ base: "none", md: "flex" }}
+            >
+              {colorMode === "dark" ? <HiSun /> : <HiMoon />}
+            </Button>{" "}
+            <ConnectButton chainStatus={"none"} showBalance={false} />
+          </Flex>
         </Flex>
-        </Flex>
-      <Box w="full">{children}</Box>
-    </Box>
+        <Box w="full">{children}</Box>
+      </Box>
     </RainbowKitProvider>
   );
 };

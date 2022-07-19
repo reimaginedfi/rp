@@ -18,9 +18,7 @@ import "@fontsource/inter/variable-full.css";
 import "@fontsource/inter";
 
 export const { chains, provider, webSocketProvider } = configureChains(
-  process.env.NODE_ENV === "production"
-    ? [chain.mainnet]
-    : [chain.localhost, chain.hardhat, chain.rinkeby, chain.mainnet],
+  [chain.mainnet],
   [
     // alchemyProvider({ alchemyId: process.env.ALCHEMY_ID }),
     infuraProvider({ infuraId: process.env.NEXT_PUBLIC_INFURA_ID }),
