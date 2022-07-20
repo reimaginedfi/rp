@@ -16,6 +16,7 @@ import { vaults } from "../contracts";
 import { Vault } from "../components/Vault";
 import UserStat from "../components/UserStat";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
+import { NextSeo } from "next-seo";
 
 const PageContent = dynamic(() => import("../components/PageContent"), {
   ssr: false,
@@ -37,14 +38,28 @@ const AdminPage = () => {
   const { chain } = useNetwork();
   const { chains, error, isLoading, pendingChainId, switchNetwork } =
     useSwitchNetwork();
-
+    
+    const title = "ReFi";
+    const description = "$REFI is DeFi, reimagined.";
   return (
     <>
-      <Head>
-        <title>REFI Pro</title>
-        <meta name="description" content="REFI Pro" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <NextSeo
+      title={title}
+      description={description}
+      openGraph={{
+        title,
+        description,
+        url: "https://pro.reimagined.fi/",
+        images: [
+          {
+            url: "https://pro.reimagined.fi/OG.jpeg",
+            width: 1024,
+            height: 1024,
+            alt: "Refi",
+          },
+        ],
+      }}
+    />
 
       {chain && chain?.id in vaults ? (
         <>
