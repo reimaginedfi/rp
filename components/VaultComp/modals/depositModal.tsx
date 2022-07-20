@@ -39,8 +39,6 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
   const { chain } = useNetwork();
 
   const [contractConfig, setContractConfig] = useState<any>();
-  const [isApproved, setIsApproved] = useState<boolean>();
-
   const [amount, setAmount] = useState<string>("");
 
   const {
@@ -252,7 +250,7 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
             {amount !== "" && (
               <Flex my={7} gap={3} alignItems="center" w="full" flexDir='column'>
                 <Button w='full' p={3} borderRadius='xl'
-                  variant='ghost'
+                  variant='tertiary'
                   isDisabled={+amount <= 0 || isApproving || isAllowed}
                   isLoading={isApproving}
                   onClick={handleApprove}
@@ -281,6 +279,7 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
                 {amount && `${amount} USDC`}
               </Text>
             </Button>
+            <Text variant="small" color={colorMode === 'dark' ? "#A0A0A0" : "#6F6F6F"}><b>NOTE:</b>{" "}You will need to allow REFI to use your USDC before depositting.</Text>
           </VStack>
         </ModalBody>
       </ModalContent>
