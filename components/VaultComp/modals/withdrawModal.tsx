@@ -47,33 +47,11 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     claiming,
     claimError,
     unlockingError,
-    claimSuccess,
-    unlockingSuccess,
     unlockingStatus,
     claimStatus,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
 
   const toast = useToast();
-
-  useEffect(() => {
-    if (unlockingSuccess && unlockingStatus === "success") {
-      toast({
-        status: "success",
-        title: "Asset Unlocked Successfully",
-        duration: 5000,
-      });
-    }
-  }, [unlockingSuccess, toast, unlockingStatus]);
-
-  useEffect(() => {
-    if (claimSuccess && claimStatus === "success") {
-      toast({
-        status: "success",
-        title: "Asset Claimed Successfully",
-        duration: 5000,
-      });
-    }
-  }, [claimSuccess, claimStatus, toast]);
 
   useEffect(() => {
     console.log("unlockingError: ", unlockingError?.message);

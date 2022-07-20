@@ -132,7 +132,6 @@ export const useVaultDeposit = (
     write: approve,
     isLoading: isApproving,
     error: approveError,
-    isSuccess: approveSuccess,
     status: approveStatus,
   } = useContractWrite({
     addressOrName: assetToken.data?.address ?? "",
@@ -148,7 +147,6 @@ export const useVaultDeposit = (
     write: approveMax,
     isLoading: isApprovingMax,
     error: approveMaxError,
-    isSuccess: approveMaxSuccess,
     status: approveMaxStatus,
   } = useContractWrite({
     addressOrName: assetToken.data?.address ?? "",
@@ -161,7 +159,6 @@ export const useVaultDeposit = (
     write: storeAsset,
     isLoading: isStoring,
     error: storeAssetError,
-    isSuccess: storeAssetSuccess,
     status: storeAssetStatus,
   } = useContractWrite({
     ...contractConfig,
@@ -186,9 +183,6 @@ export const useVaultDeposit = (
     approveError,
     approveMaxError,
     storeAssetError,
-    approveSuccess,
-    approveMaxSuccess,
-    storeAssetSuccess,
     approveStatus,
     approveMaxStatus,
     storeAssetStatus,

@@ -41,7 +41,7 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
   const [contractConfig, setContractConfig] = useState<any>();
   const [isApproved, setIsApproved] = useState<boolean>();
 
-  const [amount, setAmount] = useState<string>("0");
+  const [amount, setAmount] = useState<string>("");
 
   const {
     balanceDisplay,
@@ -55,9 +55,6 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
     approveMaxError,
     storeAssetError,
     approveError,
-    storeAssetSuccess,
-    approveSuccess,
-    approveMaxSuccess,
     approveStatus,
     approveMaxStatus,
     storeAssetStatus,
@@ -66,34 +63,19 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
   const toast = useToast();
 
   useEffect(() => {
-    if(approveMaxSuccess && approveMaxStatus === "success") {
+    if (isAllowed && approveStatus === "success") {
       toast({
-        status: "success",
-        title: 'Approve Max Success',
+        variant: "success",
         duration: 5000,
+        position: "bottom",
+        render: () => (
+          <SuccessToast
+            message={`You have approved ${amount} USDC`}
+          />
+        ),
       });
     }
-  }, [approveMaxSuccess, approveMaxStatus, toast])
-
-  useEffect(() => {
-    if(approveSuccess && approveStatus === "success") {
-      toast({
-        status: "success",
-        title: 'Approve Success',
-        duration: 5000,
-      });
-    }
-  }, [approveSuccess, toast, approveStatus])
-
-  useEffect(() => {
-    if(storeAssetSuccess && storeAssetStatus === "success") {
-      toast({
-        status: "success",
-        title: 'Asset Stored Successfully',
-        duration: 5000,
-      });
-    }
-  }, [storeAssetSuccess, toast, storeAssetStatus])
+  }, [approveStatus, isAllowed])
 
   useEffect(() => {
     console.log("approveMaxError: ", approveMaxError);
@@ -184,7 +166,6 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
   const handleApprove = async () => {
     try {
       await approve();
-      setIsApproved(true);
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       toast({
@@ -268,28 +249,28 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
                 </Text>
               </Flex>
             </VStack>
-            {!isAllowed && +amount > 0 && (
+            {amount !== "" && (
               <Flex my={7} gap={3} alignItems="center" w="full" flexDir='column'>
                 <Button w='full' p={3} borderRadius='xl'
                   variant='ghost'
-                  isDisabled={+amount <= 0 || isApprovingMax}
+                  isDisabled={+amount <= 0 || isApproving || isAllowed}
                   isLoading={isApproving}
                   onClick={handleApprove}
                 >
-                  Approve to use your USDC
+                  Allow REFI to use your USDC
                 </Button>
-                <Button w='full' p={3} borderRadius='xl'
+                {/* <Button w='full' p={3} borderRadius='xl'
                 variant='secondary'
                   isDisabled={+amount <= 0 || isApproving}
                   isLoading={isApprovingMax}
                   onClick={handleApproveMax}
                 >
-                  Approve Max to use your USDC
-                </Button>
+                  Allow REFI to use your MAX USDC
+                </Button> */}
               </Flex>
             )}
             <Button
-              disabled={!isAllowed || amount === "0" || isApproving || isApprovingMax}
+              disabled={!isAllowed || amount === "" || isApproving || isApprovingMax}
               isLoading={isStoring}
               onClick={handleDeposit}
               minW={"10rem"}
