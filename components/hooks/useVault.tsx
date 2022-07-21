@@ -162,7 +162,7 @@ export const useVaultDeposit = (
     status: storeAssetStatus,
   } = useContractWrite({
     ...contractConfig,
-    functionName: "storeAssetForDeposit",
+    functionName: "deposit",
     args: [parseUnits(depositAmount, assetToken.data?.decimals)],
     overrides: {
       gasLimit: 300000,
@@ -212,7 +212,7 @@ export const useVaultWithdraw = (
     status: unlockingStatus,
   } = useContractWrite({
     ...contractConfig,
-    functionName: "unlockShareForRedeem",
+    functionName: "unlock",
     args: [parseUnits(unlockAmount, assetToken.data?.decimals)],
   });
   const hasPendingWithdrawal = userHasPendingRedeem.data;
@@ -231,7 +231,7 @@ export const useVaultWithdraw = (
     status: claimStatus,
   } = useContractWrite({
     ...contractConfig,
-    functionName: "claimAsset",
+    functionName: "withdraw",
   });
 
   return {

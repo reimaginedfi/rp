@@ -20,7 +20,7 @@ export const vaults: ContractsMap = {
         ],
   [chain.mainnet.id]: [
     {
-      addressOrName: "0x00008F4A977ce3324b2b09E3e927F52BCf156E85",
+      addressOrName: "0x00000008786611c72a00909bd8d398b1be195be3",
       contractInterface: vaultContractInterface.abi,
     },
   ],
