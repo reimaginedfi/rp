@@ -84,7 +84,7 @@ export const useVaultUser = (
 
   const hasPendingDeposit = useContractRead({
     ...contractConfig,
-    functionName: "userHasPendingUpdate",
+    functionName: "userHasPendingDeposit",
     args: [vaultUserAddress],
     watch: true,
   });
@@ -93,6 +93,10 @@ export const useVaultUser = (
     user,
     sharesValue,
     hasPendingDeposit,
+    hasPendingDepositValue:
+      hasPendingDeposit.data ||
+      (BigNumber.isBigNumber(user.data?.[1]) &&
+        BigNumber.from(user.data?.[1]).gt(0)),
   };
 };
 
