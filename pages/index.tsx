@@ -52,6 +52,11 @@ const AdminPage = () => {
       <NextSeo
         title={title}
         description={description}
+        twitter={{
+          handle: "@reimaginedfi",
+          site: "@reimaginedfi",
+          cardType: "summary_large_image",
+        }}
         openGraph={{
           title,
           description,
