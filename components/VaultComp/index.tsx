@@ -50,7 +50,7 @@ const VaultComp = ({
 
   return (
     <>
-    <Accordion defaultIndex={[0]} bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle border={colorMode === "dark" ? "1px solid #232323" : "1px solid #F3F3F3"} borderTopRadius="1rem">
+    <Accordion defaultIndex={[0]} bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle border={colorMode === "dark" ? "1px solid #232323" : "1px solid #F3F3F3"} borderRadius="1rem">
       <AccordionItem border="none">
         <AccordionButton borderRadius="1rem">
           <Flex w="full" justify="space-between" alignItems="center">
@@ -138,15 +138,15 @@ const VaultComp = ({
             <Text variant="medium">{pendingDeposit} USDC</Text>
           </Flex>
 
-          <Accordion mt="1rem" allowToggle border="none">
+          <Accordion borderRadius="1rem" mt="1rem" allowToggle border="none">
                   <AccordionItem border="none">
-                    <AccordionButton justifyItems="space-between"  justifyContent="space-between">
+                    <AccordionButton borderRadius="1rem" justifyItems="space-between"  justifyContent="space-between">
                       <Heading variant="medium">
-                      Show User Stats
+                      Show Your Vault Stats
                       </Heading>
                       <AccordionIcon/>
                     </AccordionButton>
-                  <AccordionPanel       bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}>
+                  <AccordionPanel borderRadius="1rem"       bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}>
                   <UserStat contractConfig={contractConfig} />
                   </AccordionPanel>
                   </AccordionItem>

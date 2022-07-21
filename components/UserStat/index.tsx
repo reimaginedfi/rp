@@ -40,33 +40,33 @@ const UserStat = ({ contractConfig }: any) => {
   return (
     <Grid
       templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
-      w="100%"
+      w="full"
       m="auto"
       gap="1rem"
       p={{ base: 1, md: 3 }}
     >
       <GridItem>
-        <Flex p={5} borderRadius="1rem" alignItems="center" gap={6} w="full">
+      <Grid borderRadius="1rem" alignItems="center" justifyItems="center" w="full" templateColumns="1fr 3fr">
           <VStack
             rounded="full"
             bg={colorMode === "dark" ? "#3C181A" : "#FFEFEF"}
-            w="2.5rem"
-            h="2.5rem"
+            w="2.25rem"
+            h="2.25rem"
           >
             <Icon
               m="auto"
-              w="1.25rem"
-              h="1.25rem"
+              w="1rem"
+              h="1rem"
               as={HiCurrencyDollar}
               color={colorMode === "dark" ? "#F2555A" : "#DC3D43"}
             />
           </VStack>
           <Stack>
-            <Text variant="medium">Shares Value</Text>
+            <Text variant="small">Shares Value</Text>
             <Text
               fontFamily="Inter"
               fontWeight="500"
-              fontSize={"24px"}
+              fontSize="1.25rem"
               color={colorMode === "dark" ? "#EDEDED" : "#171717"}
             >
               <span style={{ fontWeight: "bold" }}>
@@ -75,37 +75,30 @@ const UserStat = ({ contractConfig }: any) => {
               USDC
             </Text>
           </Stack>
-        </Flex>
+        </Grid>
       </GridItem>
       <GridItem>
-        <Flex
-          p={5}
-          borderRadius="1rem"
-          alignItems="center"
-          gap={6}
-          w="full"
-          bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
-        >
+      <Grid pt={{base: "1rem", md: "0"}} borderRadius="1rem" alignItems="center" justifyItems="center" w="full" templateColumns="1fr 3fr">
           <VStack
             rounded="full"
             bg={colorMode === "dark" ? "#3C181A" : "#FFEFEF"}
-            w="2.5rem"
-            h="2.5rem"
+            w="2.25rem"
+            h="2.25rem"
           >
             <Icon
               m="auto"
-              w="1.25rem"
-              h="1.25rem"
+              w="1rem"
+              h="1rem"
               as={AiFillBank}
               color={colorMode === "dark" ? "#F2555A" : "#DC3D43"}
             />
           </VStack>
           <Stack>
-            <Text variant="medium">Total Deposited</Text>
+            <Text variant="small">Total Deposited</Text>
             <Text
               fontFamily="Inter"
               fontWeight="500"
-              fontSize={"24px"}
+              fontSize="1.25rem"
               color={colorMode === "dark" ? "#EDEDED" : "#171717"}
             >
               <span style={{ fontWeight: "bold" }}>
@@ -116,37 +109,30 @@ const UserStat = ({ contractConfig }: any) => {
               USDC
             </Text>
           </Stack>
-        </Flex>
+        </Grid>
       </GridItem>
       <GridItem>
-        <Flex
-          p={5}
-          borderRadius="1rem"
-          alignItems="center"
-          gap={6}
-          w="full"
-          bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
-        >
+      <Grid pt="1rem" borderRadius="1rem" alignItems="center" justifyItems="center" w="full" templateColumns="1fr 3fr">
           <VStack
             rounded="full"
             bg={colorMode === "dark" ? "#3C181A" : "#FFEFEF"}
-            w="2.5rem"
-            h="2.5rem"
+            w="2.25rem"
+            h="2.25rem"
           >
             <Icon
               m="auto"
-              w="1.25rem"
-              h="1.25rem"
+              w="1rem"
+              h="1rem"
               as={HiSave}
               color={colorMode === "dark" ? "#F2555A" : "#DC3D43"}
             />
           </VStack>
           <Stack>
-            <Text variant="medium">Withdrawable</Text>
+            <Text variant="small">Withdrawable</Text>
             <Text
               fontFamily="Inter"
               fontWeight="500"
-              fontSize={"24px"}
+              fontSize="1.25rem"
               color={colorMode === "dark" ? "#EDEDED" : "#171717"}
             >
               <span style={{ fontWeight: "bold" }}>
@@ -155,7 +141,7 @@ const UserStat = ({ contractConfig }: any) => {
               USDC
             </Text>
           </Stack>
-        </Flex>
+        </Grid>
       </GridItem>
       <GridItem>
         <Flex
