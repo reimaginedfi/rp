@@ -10,7 +10,7 @@ import {
   Stack,
   Grid,
   GridItem,
-  useColorMode
+  useColorMode,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
@@ -39,7 +39,7 @@ const AdminPage = () => {
     </>
   );
 
-  const {colorMode} = useColorMode();
+  const { colorMode } = useColorMode();
 
   const { chain } = useNetwork();
   const { chains, error, isLoading, pendingChainId, switchNetwork } =
@@ -58,9 +58,9 @@ const AdminPage = () => {
           url: "https://pro.reimagined.fi/",
           images: [
             {
-              url: "https://pro.reimagined.fi/OG.jpeg",
-              width: 1024,
-              height: 1024,
+              url: "https://pro.reimagined.fi/og.png",
+              width: 1200,
+              height: 628,
               alt: "Refi",
             },
           ],
