@@ -39,7 +39,7 @@ const AdminPage = () => {
   const { chains, error, isLoading, pendingChainId, switchNetwork } =
     useSwitchNetwork();
     
-    const title = "ReFi";
+    const title = "REFI Pro";
     const description = "$REFI is DeFi, reimagined.";
   return (
     <>
