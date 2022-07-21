@@ -1,3 +1,5 @@
+import {useState} from 'react'
+
 import {
   Accordion,
   AccordionItem,
@@ -28,6 +30,8 @@ import { ContractConfig } from "../../contracts";
 import { commify } from "ethers/lib/utils";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { useContractRead } from "wagmi";
+
+import Confetti from 'react-confetti'
 
 type VaultProps = {
   vaultName: string;
@@ -71,6 +75,7 @@ const VaultComp = ({
     functionName: "feeDistributor",
     watch: true,
   });
+  const [depositSuccess, setDepositSuccess] = useState<boolean>(false);
 
   return (
     <>
@@ -306,8 +311,10 @@ const VaultComp = ({
         </AccordionItem>
       </Accordion>
 
+      {depositSuccess && <Confetti />}
+
       {depositIsOpen && (
-        <DepositModal onClose={onCloseDeposit} isOpen={depositIsOpen} />
+        <DepositModal onClose={onCloseDeposit} isOpen={depositIsOpen} depositSuccess={depositSuccess!} setDepositSuccess={setDepositSuccess}/>
       )}
       {withdrawIsOpen && (
         <WithdrawModal onClose={onCloseWithdraw} isOpen={withdrawIsOpen} />

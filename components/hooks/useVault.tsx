@@ -9,7 +9,6 @@ import {
   useContractRead,
   useContractWrite,
   useToken,
-  useWaitForTransaction,
 } from "wagmi";
 import vaultContractInterface from "../../abi/vault.abi.json";
 import { ContractConfig } from "../../contracts";
@@ -162,7 +161,6 @@ export const useVaultDeposit = (
     functionName: "approve",
     args: [contractConfig?.addressOrName, constants.MaxUint256],
   });
-  const toast = useToast();
   const {
     write: storeAsset,
     isLoading: isStoring,
@@ -175,21 +173,6 @@ export const useVaultDeposit = (
     args: [parseUnits(depositAmount, assetToken.data?.decimals)],
     overrides: {
       gasLimit: 300000,
-    },
-  });
-
-  const waitForTransaction = useWaitForTransaction({
-    hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
-    enabled: typeof depositData?.hash === "string",
-    onSuccess: (data) => {
-      toast({
-        variant: "success",
-        duration: 5000,
-        position: "bottom",
-        render: () => (
-          <SuccessToast message={`You have deposited ${depositAmount} USDC`} />
-        ),
-      });
     },
   });
 
@@ -210,6 +193,7 @@ export const useVaultDeposit = (
     approveStatus,
     approveMaxStatus,
     storeAssetStatus,
+    depositData
   };
 };
 
