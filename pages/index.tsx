@@ -81,7 +81,7 @@ const AdminPage = () => {
               </GridItem>
             ))}
           </Grid>
-          <UserStat />
+          {/*<UserStat />*/}
         </>
       ) : chain && chain.id !== 1 ? (
         <Stack m="auto" mt="20%" w="full" align="center" gap="0.5rem">

@@ -40,8 +40,8 @@ const VaultComp = ({
   pendingDeposit
 }: VaultProps) => {
   const { colorMode } = useColorMode();
-  const {isOpen: depositIsOpen, onOpen: onOpenDeposit, onClose: onCloseDeposit} = useDisclosure()
-  const {isOpen: withdrawIsOpen, onOpen: onOpenWithdraw, onClose: onCloseWithdraw} = useDisclosure()
+  const {isOpen: depositIsOpen, onOpen: onOpenDeposit, onClose: onCloseDeposit} = useDisclosure();
+  const {isOpen: withdrawIsOpen, onOpen: onOpenWithdraw, onClose: onCloseWithdraw} = useDisclosure();
 
   return (
     <>
@@ -60,14 +60,14 @@ const VaultComp = ({
         </AccordionButton>
 
         <AccordionPanel>
-          <Grid
+        <Grid
             mb="2rem"
             gap={6}
             templateColumns="repeat(2, 1fr)"
             fontFamily={"Inter"}
             w="full"
           >
-            <GridItem textAlign="center">
+            {aumCap === '0.0' ? <Flex justify="center" align="center"><Heading variant="medium" textAlign="center" color="brand" lineHeight="1.5rem">This Vault is being initialized</Heading></Flex> : <GridItem textAlign="center">
               <Text fontSize="32px" fontWeight={600}>
                 0%
               </Text>
@@ -84,7 +84,7 @@ const VaultComp = ({
               >
                 EPOCH {epoch}
               </Text>
-            </GridItem>
+            </GridItem>}
 
             <GridItem  textAlign="center">
               <Image
@@ -96,12 +96,12 @@ const VaultComp = ({
               />
             </GridItem>
             <GridItem alignItems='center'>
-              <Button w="full" variant="primary" onClick={onOpenDeposit}>
+              <Button disabled={aumCap === '0.0'} w="full" variant="primary" onClick={onOpenDeposit}>
                 Deposit
               </Button>
             </GridItem>
             <GridItem>
-              <Button w="full" variant="ghost" onClick={onOpenWithdraw}>
+              <Button disabled={aumCap === '0.0'} w="full" variant="ghost" onClick={onOpenWithdraw}>
                 Withdraw
               </Button>
             </GridItem>
