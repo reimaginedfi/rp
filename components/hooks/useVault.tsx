@@ -173,15 +173,15 @@ export const useVaultDeposit = (
     overrides: {
       gasLimit: 300000,
     },
-    onSuccess: (data) => {
-      toast({
-        title: "Deposit successful!",
-        description: `${etherscanBlockExplorers.mainnet}${data.blockHash}`,
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
-    },
+    // onSuccess: (data) => {
+    //   toast({
+    //     title: "Deposit successful!",
+    //     description: `${etherscanBlockExplorers.mainnet}${data.blockHash}`,
+    //     status: "success",
+    //     duration: 9000,
+    //     isClosable: true,
+    //   });
+    // },
   });
 
   return {
