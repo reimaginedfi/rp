@@ -26,7 +26,7 @@ export default function VaultProgressBar({
 
   useEffect(() => {
     setAumPercentage((100 * currentAum) / aumCap);
-    setDepositPercentage(3);
+    setDepositPercentage((100 * parseInt(remainingDeposits!)) / aumCap);
   }, [aumCap])
 
   const progressValues = [
