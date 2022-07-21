@@ -73,8 +73,8 @@ const AdminPage = () => {
             m="auto"
           >
             {vaults[chain!.id].map((contractConfig) => (
-              <GridItem key={contractConfig.addressOrName} mx="5%" my="15%">
-                <Vault
+              <GridItem key={contractConfig.addressOrName} mx={{base: "5%", md: "2.5%"}} my={{base: "5%", md: "2.5%"}}>
+              <Vault
                   key={contractConfig.addressOrName}
                   contractConfig={contractConfig}
                 />

@@ -43,6 +43,8 @@ const VaultComp = ({
   const {isOpen: depositIsOpen, onOpen: onOpenDeposit, onClose: onCloseDeposit} = useDisclosure();
   const {isOpen: withdrawIsOpen, onOpen: onOpenWithdraw, onClose: onCloseWithdraw} = useDisclosure();
 
+  console.log(epoch)
+
   return (
     <>
     <Accordion defaultIndex={[0]} bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle border={colorMode === "dark" ? "1px solid #232323" : "1px solid #F3F3F3"} borderRadius="1rem">
