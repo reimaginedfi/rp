@@ -1,8 +1,10 @@
+import { useToast } from "@chakra-ui/react";
 import { BigNumber, constants } from "ethers";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { useMemo } from "react";
 import {
   erc20ABI,
+  etherscanBlockExplorers,
   useAccount,
   useContractRead,
   useContractWrite,
@@ -158,7 +160,7 @@ export const useVaultDeposit = (
     functionName: "approve",
     args: [contractConfig?.addressOrName, constants.MaxUint256],
   });
-
+  const toast = useToast();
   const {
     write: storeAsset,
     isLoading: isStoring,
@@ -170,6 +172,15 @@ export const useVaultDeposit = (
     args: [parseUnits(depositAmount, assetToken.data?.decimals)],
     overrides: {
       gasLimit: 300000,
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Deposit successful!",
+        description: `${etherscanBlockExplorers.mainnet}${data.blockHash}`,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
     },
   });
 
