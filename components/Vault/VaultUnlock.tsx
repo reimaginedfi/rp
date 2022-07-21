@@ -102,7 +102,7 @@ export const VaultUnlock = ({
               )}
               <AsciiText
                 onClick={() => {
-                  unlockShares.write();
+                  unlockShares;
                 }}
                 padStart={2}
               >

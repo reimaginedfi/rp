@@ -1,8 +1,10 @@
+import { useToast } from "@chakra-ui/react";
 import { BigNumber, constants } from "ethers";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { useMemo } from "react";
 import {
   erc20ABI,
+  etherscanBlockExplorers,
   useAccount,
   useContractRead,
   useContractWrite,
@@ -10,6 +12,7 @@ import {
 } from "wagmi";
 import vaultContractInterface from "../../abi/vault.abi.json";
 import { ContractConfig } from "../../contracts";
+import { SuccessToast } from "../Toasts";
 
 // export const useVault = (addressOrName: string) => {
 //   const vault = useMemo(() => {
@@ -84,7 +87,7 @@ export const useVaultUser = (
 
   const hasPendingDeposit = useContractRead({
     ...contractConfig,
-    functionName: "userHasPendingUpdate",
+    functionName: "userHasPendingDeposit",
     args: [vaultUserAddress],
     watch: true,
   });
@@ -93,6 +96,10 @@ export const useVaultUser = (
     user,
     sharesValue,
     hasPendingDeposit,
+    hasPendingDepositValue:
+      hasPendingDeposit.data ||
+      (BigNumber.isBigNumber(user.data?.[1]) &&
+        BigNumber.from(user.data?.[1]).gt(0)),
   };
 };
 
@@ -120,7 +127,7 @@ export const useVaultDeposit = (
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
     functionName: "allowance",
-    args: [address, contractConfig.addressOrName],
+    args: [address, contractConfig?.addressOrName],
     watch: true,
   });
 
@@ -128,25 +135,41 @@ export const useVaultDeposit = (
     BigNumber.isBigNumber(allowance) &&
     allowance.gte(parseUnits(depositAmount, assetToken.data?.decimals) ?? "0");
 
-  const { write: approve, isLoading: isApproving } = useContractWrite({
+  const {
+    write: approve,
+    isLoading: isApproving,
+    error: approveError,
+    status: approveStatus,
+  } = useContractWrite({
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
     functionName: "approve",
     args: [
-      contractConfig.addressOrName,
+      contractConfig?.addressOrName,
       parseUnits(depositAmount, assetToken.data?.decimals),
     ],
   });
 
-  const { write: approveMax, isLoading: isApprovingMax } = useContractWrite({
+  const {
+    write: approveMax,
+    isLoading: isApprovingMax,
+    error: approveMaxError,
+    status: approveMaxStatus,
+  } = useContractWrite({
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
     functionName: "approve",
-    args: [contractConfig.addressOrName, constants.MaxUint256],
+    args: [contractConfig?.addressOrName, constants.MaxUint256],
   });
-  const { write: storeAsset, isLoading: isStoring } = useContractWrite({
+  const {
+    write: storeAsset,
+    isLoading: isStoring,
+    error: storeAssetError,
+    status: storeAssetStatus,
+    data: depositData,
+  } = useContractWrite({
     ...contractConfig,
-    functionName: "storeAssetForDeposit",
+    functionName: "deposit",
     args: [parseUnits(depositAmount, assetToken.data?.decimals)],
     overrides: {
       gasLimit: 300000,
@@ -164,6 +187,13 @@ export const useVaultDeposit = (
     isApprovingMax,
     storeAsset,
     isStoring,
+    approveError,
+    approveMaxError,
+    storeAssetError,
+    approveStatus,
+    approveMaxStatus,
+    storeAssetStatus,
+    depositData
   };
 };
 
@@ -182,16 +212,49 @@ export const useVaultWithdraw = (
 
   const { user } = useVaultUser(contractConfig, address ?? "");
 
-  const unlockShares = useContractWrite({
+  const {
+    write: unlockShares,
+    isLoading: unlockingShares,
+    error: unlockingError,
+    isSuccess: unlockingSuccess,
+    status: unlockingStatus,
+  } = useContractWrite({
     ...contractConfig,
-    functionName: "unlockShareForRedeem",
+    functionName: "unlock",
     args: [parseUnits(unlockAmount, assetToken.data?.decimals)],
   });
   const hasPendingWithdrawal = userHasPendingRedeem.data;
+
+  const { data: withdrawable } = useContractRead({
+    ...contractConfig,
+    functionName: "previewClaim",
+    args: [address],
+  });
+
+  const {
+    write: claim,
+    isLoading: claiming,
+    error: claimError,
+    isSuccess: claimSuccess,
+    status: claimStatus,
+  } = useContractWrite({
+    ...contractConfig,
+    functionName: "withdraw",
+  });
 
   return {
     hasPendingWithdrawal,
     user,
     unlockShares,
+    unlockingShares,
+    unlockingError,
+    withdrawable,
+    claim,
+    claiming,
+    claimError,
+    claimSuccess,
+    unlockingSuccess,
+    claimStatus,
+    unlockingStatus,
   };
 };
