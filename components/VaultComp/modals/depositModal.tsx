@@ -198,7 +198,7 @@ export default function DepositModal({ isOpen, onClose, depositSuccess, setDepos
     await approveMax();
   };
 
-  const waitForTransaction = useWaitForTransaction({
+  const  {data, isError, isLoading } = useWaitForTransaction({
     hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
     enabled: typeof depositData?.hash === "string",
     onSuccess: (data) => {setDepositSuccess(true)}
@@ -290,12 +290,12 @@ export default function DepositModal({ isOpen, onClose, depositSuccess, setDepos
             )}
             <Button
               disabled={!isAllowed || amount === "" || isApproving || isApprovingMax}
-              isLoading={isStoring}
+              isLoading={isStoring || isLoading}
               onClick={handleDeposit}
               minW={"10rem"}
               variant="primary"
             >
-              Deposit
+            Deposit
               <Text fontWeight="light" ml="0.25rem">
                 {amount && `${amount} USDC`}
               </Text>
