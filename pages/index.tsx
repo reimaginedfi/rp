@@ -1,11 +1,16 @@
 import {
+  Accordion,
+  AccordionButton,
+  AccordionItem,
+  AccordionPanel,
+  AccordionIcon,
   VisuallyHidden,
   Heading,
   Button,
   Stack,
   Grid,
   GridItem,
-  Text,
+  useColorMode
 } from "@chakra-ui/react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
@@ -14,7 +19,6 @@ import VaultComp from "../components/VaultComp";
 import { useSwitchNetwork, useNetwork } from "wagmi";
 import { vaults } from "../contracts";
 import { Vault } from "../components/Vault";
-import UserStat from "../components/UserStat";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import { NextSeo } from "next-seo";
 
@@ -35,31 +39,33 @@ const AdminPage = () => {
     </>
   );
 
+  const {colorMode} = useColorMode();
+
   const { chain } = useNetwork();
   const { chains, error, isLoading, pendingChainId, switchNetwork } =
     useSwitchNetwork();
-    
-    const title = "REFI Pro";
-    const description = "$REFI is DeFi, reimagined.";
+
+  const title = "REFI Pro";
+  const description = "$REFI is DeFi, reimagined.";
   return (
     <>
       <NextSeo
-      title={title}
-      description={description}
-      openGraph={{
-        title,
-        description,
-        url: "https://pro.reimagined.fi/",
-        images: [
-          {
-            url: "https://pro.reimagined.fi/OG.jpeg",
-            width: 1024,
-            height: 1024,
-            alt: "Refi",
-          },
-        ],
-      }}
-    />
+        title={title}
+        description={description}
+        openGraph={{
+          title,
+          description,
+          url: "https://pro.reimagined.fi/",
+          images: [
+            {
+              url: "https://pro.reimagined.fi/OG.jpeg",
+              width: 1024,
+              height: 1024,
+              alt: "Refi",
+            },
+          ],
+        }}
+      />
 
       {chain && chain?.id in vaults ? (
         <>
@@ -73,15 +79,18 @@ const AdminPage = () => {
             m="auto"
           >
             {vaults[chain!.id].map((contractConfig) => (
-              <GridItem key={contractConfig.addressOrName} mx={{base: "5%", md: "2.5%"}} my={{base: "5%", md: "2.5%"}}>
-              <Vault
+              <GridItem
+                key={contractConfig.addressOrName}
+                mx={{ base: "5%", md: "2.5%" }}
+                my={{ base: "5%", md: "2.5%" }}
+              >
+                <Vault
                   key={contractConfig.addressOrName}
                   contractConfig={contractConfig}
                 />
               </GridItem>
             ))}
           </Grid>
-          {/*<UserStat />*/}
         </>
       ) : chain && chain.id !== 1 ? (
         <Stack m="auto" mt="20%" w="full" align="center" gap="0.5rem">

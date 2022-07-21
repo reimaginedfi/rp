@@ -136,10 +136,6 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
     });
   }, [chain, vaults]);
 
-  useEffect(() => {
-    console.log({ balanceDisplay });
-  }, [balanceDisplay]);
-
   const handleDeposit = async () => {
     if (!isAllowed) {
       return;

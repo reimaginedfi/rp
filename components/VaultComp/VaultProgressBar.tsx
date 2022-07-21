@@ -26,7 +26,7 @@ export default function VaultProgressBar({
 
   useEffect(() => {
     setAumPercentage((100 * currentAum) / aumCap);
-    setDepositPercentage((100 * parseInt(remainingDeposits!)) / aumCap);
+    setDepositPercentage(3);
   }, [aumCap])
 
   const progressValues = [
@@ -53,7 +53,7 @@ export default function VaultProgressBar({
           bgColor={item.color}
           width={item.value + "%"}
           borderRightRadius={item.name === "AUM" && !depositPercentage ? item.radius : depositPercentage && item.name === 'PENDING' ? item.radius : null as any}
-          borderLeftRadius={item.name === "AUM" ? item.radius : null as any}
+          borderLeftRadius={item.name === "AUM" ? item.radius : item.name === 'PENDING' && !aumPercentage ? item.radius : null as any}
           key={i}
         ></Box>
       );
@@ -61,7 +61,7 @@ export default function VaultProgressBar({
   });
 
   return (
-        <Box display="inline-block" w="100%" height="25px" bgColor={colorMode === 'dark' ? "#373434" : "#E8E8E8"} borderRadius="1rem" mb="0" pb="0">
+        <Box  display="inline-block" w="100%" height="25px" bgColor={colorMode === 'dark' ? "#373434" : "#E8E8E8"} borderRadius="1rem" mb="0" pb="0">
           {bars != null ? bars : <Skeleton h="25px" />}
         </Box>
   );

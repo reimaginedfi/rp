@@ -17,15 +17,15 @@ import { useVaultUser } from "../hooks/useVault";
 import { vaults } from "../../contracts";
 import { BigNumber } from "ethers";
 
-const UserStat = () => {
+const UserStat = ({contractConfig}: any) => {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
   const { chain } = useNetwork();
-  const [contractConfig, setContractConfig] = useState<any>();
+  // const [contractConfig, setContractConfig] = useState<any>();
 
-  useEffect(() => {
-    vaults[chain!.id].map((contract) => setContractConfig(contract));
-  }, [vaults])
+  // useEffect(() => {
+  //   vaults[chain!.id].map((contract) => setContractConfig(contract));
+  // }, [vaults])
 
   const { sharesValue, user, hasPendingDeposit } =
   useVaultUser(contractConfig, address ?? '');
@@ -33,14 +33,13 @@ const UserStat = () => {
   return (
     <Grid
       templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
-      w={{ base: "90%", md: "70%", lg: "50%" }}
-      bg={"transparent"}
+      w="100%"
       m="auto"
       gap="1rem"
       p={{ base: 1, md: 3 }}
     >
       <GridItem>
-        <Flex p={5} borderRadius='1rem' alignItems='center' gap={6} w="full" bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}>
+        <Flex p={5} borderRadius='1rem' alignItems='center' gap={6} w="full">
           <VStack
             rounded="full"
             bg={colorMode === "dark" ? "#3C181A" : "#FFEFEF"}

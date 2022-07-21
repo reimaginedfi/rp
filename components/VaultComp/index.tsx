@@ -21,6 +21,9 @@ import {
 import VaultProgressBar from "./VaultProgressBar"
 import DepositModal from "./modals/depositModal"
 import WithdrawModal from "./modals/withdrawModal"
+import UserStat from "../UserStat";
+import { ContractConfig } from "../../contracts";
+
 
 type VaultProps = {
   vaultName: string;
@@ -29,6 +32,7 @@ type VaultProps = {
   aumCap: string;
   epoch: string | undefined;
   pendingDeposit: string;
+  contractConfig: ContractConfig
 };
 
 const VaultComp = ({
@@ -37,17 +41,16 @@ const VaultComp = ({
   currentAum,
   aumCap,
   epoch,
-  pendingDeposit
+  pendingDeposit,
+  contractConfig
 }: VaultProps) => {
   const { colorMode } = useColorMode();
   const {isOpen: depositIsOpen, onOpen: onOpenDeposit, onClose: onCloseDeposit} = useDisclosure();
   const {isOpen: withdrawIsOpen, onOpen: onOpenWithdraw, onClose: onCloseWithdraw} = useDisclosure();
 
-  console.log(epoch)
-
   return (
     <>
-    <Accordion defaultIndex={[0]} bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle border={colorMode === "dark" ? "1px solid #232323" : "1px solid #F3F3F3"} borderRadius="1rem">
+    <Accordion defaultIndex={[0]} bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"} allowToggle border={colorMode === "dark" ? "1px solid #232323" : "1px solid #F3F3F3"} borderTopRadius="1rem">
       <AccordionItem border="none">
         <AccordionButton borderRadius="1rem">
           <Flex w="full" justify="space-between" alignItems="center">
@@ -61,13 +64,14 @@ const VaultComp = ({
           </Flex>
         </AccordionButton>
 
-        <AccordionPanel>
+        <AccordionPanel p="0">
         <Grid
             mb="2rem"
             gap={6}
             templateColumns="repeat(2, 1fr)"
             fontFamily={"Inter"}
             w="full"
+            px="1rem"
           >
             {aumCap === '0.0' ? <Flex justify="center" align="center"><Heading variant="medium" textAlign="center" color="brand" lineHeight="1.5rem">This Vault is being initialized</Heading></Flex> : <GridItem textAlign="center">
               <Text fontSize="32px" fontWeight={600}>
@@ -108,7 +112,8 @@ const VaultComp = ({
               </Button>
             </GridItem>
           </Grid>
-          <Flex my={2} alignItems="center">
+          <Flex             px="1rem"
+ my={2} alignItems="center">
             <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#C51E25" />
             <Text variant="large">AUM</Text>
             <Spacer />
@@ -116,19 +121,36 @@ const VaultComp = ({
               {currentAum} / {aumCap}
             </Text>
           </Flex>
-
-          <VaultProgressBar
+          <Flex             px="1rem"
+>
+<VaultProgressBar
             currentAum={parseInt(currentAum)}
             aumCap={parseInt(aumCap)}
             remainingDeposits={pendingDeposit}
           />
+          </Flex>
+    
           
-          <Flex alignItems={"center"}>
+          <Flex             px="1rem" alignItems={"center"}>
             <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#E9A9AB" />
             <Text variant="medium">Pending Deposits</Text>
             <Spacer />
             <Text variant="medium">{pendingDeposit} USDC</Text>
           </Flex>
+
+          <Accordion mt="1rem" allowToggle border="none">
+                  <AccordionItem border="none">
+                    <AccordionButton justifyItems="space-between"  justifyContent="space-between">
+                      <Heading variant="medium">
+                      Show User Stats
+                      </Heading>
+                      <AccordionIcon/>
+                    </AccordionButton>
+                  <AccordionPanel       bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}>
+                  <UserStat contractConfig={contractConfig} />
+                  </AccordionPanel>
+                  </AccordionItem>
+          </Accordion>
 
         </AccordionPanel>
       </AccordionItem>
