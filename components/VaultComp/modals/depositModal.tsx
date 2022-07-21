@@ -20,8 +20,9 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
+
 //Wagmi
-import { useNetwork } from "wagmi";
+import { useNetwork, useWaitForTransaction } from "wagmi";
 
 //Vaults
 import { useVaultDeposit } from "../../hooks/useVault";
@@ -32,9 +33,11 @@ import getErrorMessage from "../../utils/errors";
 type ModalProps = {
   onClose?: () => void;
   isOpen?: boolean;
+  depositSuccess: boolean;
+  setDepositSuccess: any;
 };
 
-export default function DepositModal({ isOpen, onClose }: ModalProps) {
+export default function DepositModal({ isOpen, onClose, depositSuccess, setDepositSuccess }: ModalProps) {
   const { colorMode } = useColorMode();
   const { chain } = useNetwork();
 
@@ -56,6 +59,7 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
     approveStatus,
     approveMaxStatus,
     storeAssetStatus,
+    depositData
   } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
 
   const toast = useToast();
@@ -136,6 +140,21 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
     });
   }, [chain, vaults]);
 
+  useEffect(() => {
+    if (depositSuccess){
+      toast({
+        variant: "success",
+        duration: 5000,
+        position: "bottom",
+        render: () => (
+          <SuccessToast message={`You have deposited ${amount} USDC`} link={depositData?.hash} />
+        ),
+      });
+    
+      onClose!()
+    }
+  }, [depositSuccess])
+
   const handleDeposit = async () => {
     if (!isAllowed) {
       return;
@@ -178,6 +197,12 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
   const handleApproveMax = async () => {
     await approveMax();
   };
+
+  const waitForTransaction = useWaitForTransaction({
+    hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
+    enabled: typeof depositData?.hash === "string",
+    onSuccess: (data) => {setDepositSuccess(true)}
+  });
 
   return (
     <Modal
@@ -280,5 +305,5 @@ export default function DepositModal({ isOpen, onClose }: ModalProps) {
         </ModalBody>
       </ModalContent>
     </Modal>
-  );
+     );
 }
