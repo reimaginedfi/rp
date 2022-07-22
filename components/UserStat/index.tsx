@@ -105,7 +105,7 @@ const UserStat = ({ contractConfig }: any) => {
               color={colorMode === "dark" ? "#EDEDED" : "#171717"}
             >
               <span style={{ fontWeight: "bold" }}>
-              {BigNumber.isBigNumber(user!.data!.assetsDeposited!)
+              {user.data && BigNumber.isBigNumber(user!.data!.assetsDeposited!)
                   ? truncate(formatUnits((BigNumber.from(user!.data!.assetsDeposited!._hex)), 6), 2)
                   : 0}
               </span>{" "}
