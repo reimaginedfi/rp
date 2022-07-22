@@ -19,34 +19,16 @@ import VaultComp from "../components/VaultComp";
 import { useSwitchNetwork, useNetwork } from "wagmi";
 import { vaults } from "../contracts";
 import { Vault } from "../components/Vault";
-import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import { NextSeo } from "next-seo";
 
 const PageContent = dynamic(() => import("../components/PageContent"), {
   ssr: false,
 });
 
-const AdminPage = () => {
-  const OldContent = () => (
-    <>
-      <VisuallyHidden>
-        <Heading>REFI Pro</Heading>
-      </VisuallyHidden>
-      <Stack as="main" minH="100vh" spacing={0}>
-        <Logo />
-        <PageContent />
-      </Stack>
-    </>
-  );
-
-  const { colorMode } = useColorMode();
-
-  const { chain } = useNetwork();
-  const { chains, error, isLoading, pendingChainId, switchNetwork } =
-    useSwitchNetwork();
-
+const Page = () => {
   const title = "REFI Pro";
   const description = "$REFI is DeFi, reimagined.";
+
   return (
     <>
       <NextSeo
@@ -72,47 +54,8 @@ const AdminPage = () => {
         }}
       />
 
-      {chain && chain?.id in vaults ? (
-        <>
-          <Grid
-            templateColumns={{
-              base: "repeat(1, 1fr)",
-              md: "repeat(auto-fit, 500px)",
-            }}
-            alignItems="center"
-            justifyContent="center"
-            m="auto"
-          >
-            {vaults[chain!.id].map((contractConfig) => (
-              <GridItem
-                key={contractConfig.addressOrName}
-                mx={{ base: "5%", md: "2.5%" }}
-                my={{ base: "5%", md: "2.5%" }}
-              >
-                <Vault
-                  key={contractConfig.addressOrName}
-                  contractConfig={contractConfig}
-                />
-              </GridItem>
-            ))}
-          </Grid>
-        </>
-      ) : chain && chain.id !== 1 ? (
-        <Stack m="auto" mt="20%" w="full" align="center" gap="0.5rem">
-          <Heading>{chain!.name} is not a supported chain.</Heading>
-          <Button variant="primary" onClick={() => switchNetwork?.(1)}>
-            Switch chains
-          </Button>
-        </Stack>
-      ) : (
-        <Stack m="auto" mt="20%" w="full" align="center" gap="0.5rem">
-          <Heading variant="big" textAlign="center">
-            Connect your wallet to see your vaults.
-          </Heading>
-          <RainbowConnectButton chainStatus={"none"} showBalance={false} />{" "}
-        </Stack>
-      )}
+      <PageContent />
     </>
   );
 };
-export default AdminPage;
+export default Page;
