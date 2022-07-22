@@ -57,6 +57,12 @@ export const useVaultMeta = (contractConfig: ContractConfig) => {
     functionName: "name",
   });
 
+  const storedFee = useContractRead({
+    ...contractConfig,
+    functionName: "storedFee",
+    watch: true,
+  });
+
   return {
     asset,
     assetToken,
@@ -65,6 +71,7 @@ export const useVaultMeta = (contractConfig: ContractConfig) => {
     farmer,
     aumCap,
     vaultName,
+    storedFee,
   };
 };
 
@@ -193,7 +200,7 @@ export const useVaultDeposit = (
     approveStatus,
     approveMaxStatus,
     storeAssetStatus,
-    depositData
+    depositData,
   };
 };
 

@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import { useState } from "react";
 
 import {
   Accordion,
@@ -29,10 +29,11 @@ import UserStat from "../UserStat";
 import { ContractConfig } from "../../contracts";
 import { commify } from "ethers/lib/utils";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { useContractRead } from "wagmi";
+import { useAccount, useContractRead } from "wagmi";
 
-import Confetti from 'react-confetti'
-import {truncate} from '../utils/stringsAndNumbers'
+import Confetti from "react-confetti";
+import { truncate } from "../utils/stringsAndNumbers";
+import dynamic from "next/dynamic";
 
 type VaultProps = {
   vaultName: string;
@@ -44,6 +45,13 @@ type VaultProps = {
   contractConfig: ContractConfig;
 };
 
+const FarmerSettingsAccordion = dynamic(
+  () => import("./FarmerSettingsAccordion"),
+  {
+    ssr: false,
+  }
+);
+
 const VaultComp = ({
   vaultName,
   asset,
@@ -54,6 +62,7 @@ const VaultComp = ({
   contractConfig,
 }: VaultProps) => {
   const { colorMode } = useColorMode();
+  const { address } = useAccount();
   const {
     isOpen: depositIsOpen,
     onOpen: onOpenDeposit,
@@ -193,7 +202,9 @@ const VaultComp = ({
               <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#E9A9AB" />
               <Text variant="medium">Pending Deposits</Text>
               <Spacer />
-              <Text variant="medium">{truncate(commify(pendingDeposit!), 2)} USDC</Text>
+              <Text variant="medium">
+                {truncate(commify(pendingDeposit!), 2)} USDC
+              </Text>
             </Flex>
 
             <Accordion borderRadius="1rem" mt="1rem" allowToggle border="none">
@@ -308,6 +319,9 @@ const VaultComp = ({
                 </AccordionPanel>
               </AccordionItem>
             </Accordion>
+            {farmer.data && farmer.data.toString() === address && (
+              <FarmerSettingsAccordion contractConfig={contractConfig} />
+            )}
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
@@ -315,7 +329,12 @@ const VaultComp = ({
       {depositSuccess && <Confetti />}
 
       {depositIsOpen && (
-        <DepositModal onClose={onCloseDeposit} isOpen={depositIsOpen} depositSuccess={depositSuccess!} setDepositSuccess={setDepositSuccess}/>
+        <DepositModal
+          onClose={onCloseDeposit}
+          isOpen={depositIsOpen}
+          depositSuccess={depositSuccess!}
+          setDepositSuccess={setDepositSuccess}
+        />
       )}
       {withdrawIsOpen && (
         <WithdrawModal onClose={onCloseWithdraw} isOpen={withdrawIsOpen} />

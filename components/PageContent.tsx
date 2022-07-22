@@ -38,10 +38,7 @@ export const PageContent = () => {
                 mx={{ base: "5%", md: "2.5%" }}
                 my={{ base: "5%", md: "2.5%" }}
               >
-                <Vault
-                  key={contractConfig.addressOrName}
-                  contractConfig={contractConfig}
-                />
+                <Vault contractConfig={contractConfig} />
               </GridItem>
             ))}
           </Grid>
