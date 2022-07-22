@@ -325,6 +325,15 @@ const VaultComp = ({
                       <Text variant="medium">20%</Text>
                     )}
                   </Flex>
+                  <Flex alignItems={"center"}>
+                    <Text variant="medium">Minimum Size</Text>
+                    <Spacer />
+                    {feeReceiver.isLoading ? (
+                      <SkeletonText />
+                    ) : (
+                      <Text variant="medium">0.01 USDC</Text>
+                    )}
+                  </Flex>
                 </AccordionPanel>
               </AccordionItem>
             </Accordion>
