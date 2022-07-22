@@ -49,9 +49,78 @@ const UserStat = ({ contractConfig }: any) => {
     >
       <GridItem>
         <Grid
+          pt={{ base: "1rem", md: "0" }}
           borderRadius="1rem"
           alignItems="center"
-          justifyItems="center"
+          w="full"
+          templateColumns="1fr 3fr"
+        >
+          <VStack
+            rounded="full"
+            bg={colorMode === "dark" ? "#3C181A" : "#FFEFEF"}
+            w="2.25rem"
+            h="2.25rem"
+          >
+            <Icon
+              m="auto"
+              w="1rem"
+              h="1rem"
+              as={AiFillBank}
+              color={colorMode === "dark" ? "#F2555A" : "#DC3D43"}
+            />
+          </VStack>
+          <Stack>
+            <Text variant="small">Total Deposit Value</Text>
+            <Text
+              fontFamily="Inter"
+              fontWeight="500"
+              fontSize="1.25rem"
+              color={colorMode === "dark" ? "#EDEDED" : "#171717"}
+            >
+              <span style={{ fontWeight: "bold" }}>
+                {user.data &&
+                BigNumber.isBigNumber(user!.data!.assetsDeposited!)
+                  ? truncate(
+                      formatUnits(
+                        BigNumber.from(user!.data!.assetsDeposited!._hex),
+                        6
+                      ),
+                      2
+                    )
+                  : 0}
+              </span>{" "}
+              USDC
+            </Text>
+          </Stack>
+        </Grid>
+      </GridItem>
+      {/* <GridItem>
+        <Flex
+          p={5}
+          borderRadius="1rem"
+          justify="center"
+          alignItems="center"
+          gap={6}
+          w="full"
+          bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
+        >
+          <Stack textAlign={"center"}>
+            <Text variant="medium">Pending Deposits</Text>
+            <Text
+              fontFamily="Inter"
+              fontWeight={600}
+              fontSize={"24px"}
+              color={"rgba(255, 128, 43, 1)"}
+            >
+              {hasPendingDepositValue ? "TRUE" : "FALSE"}
+            </Text>
+          </Stack>
+        </Flex>
+      </GridItem> */}
+      <GridItem>
+        <Grid
+          borderRadius="1rem"
+          alignItems="center"
           w="full"
           templateColumns="1fr 3fr"
         >
@@ -80,65 +149,17 @@ const UserStat = ({ contractConfig }: any) => {
               <span style={{ fontWeight: "bold" }}>
                 {sharesValue.data ? parseInt(sharesValue!.data!._hex!, 16) : 0}
               </span>{" "}
-              USDC
+              VT
             </Text>
           </Stack>
         </Grid>
       </GridItem>
-      <GridItem>
-        <Grid
-          pt={{ base: "1rem", md: "0" }}
-          borderRadius="1rem"
-          alignItems="center"
-          justifyItems="center"
-          w="full"
-          templateColumns="1fr 3fr"
-        >
-          <VStack
-            rounded="full"
-            bg={colorMode === "dark" ? "#3C181A" : "#FFEFEF"}
-            w="2.25rem"
-            h="2.25rem"
-          >
-            <Icon
-              m="auto"
-              w="1rem"
-              h="1rem"
-              as={AiFillBank}
-              color={colorMode === "dark" ? "#F2555A" : "#DC3D43"}
-            />
-          </VStack>
-          <Stack>
-            <Text variant="small">Total Deposited</Text>
-            <Text
-              fontFamily="Inter"
-              fontWeight="500"
-              fontSize="1.25rem"
-              color={colorMode === "dark" ? "#EDEDED" : "#171717"}
-            >
-              <span style={{ fontWeight: "bold" }}>
-                {user.data &&
-                BigNumber.isBigNumber(user!.data!.assetsDeposited!)
-                  ? truncate(
-                      formatUnits(
-                        BigNumber.from(user!.data!.assetsDeposited!._hex),
-                        6
-                      ),
-                      2
-                    )
-                  : 0}
-              </span>{" "}
-              USDC
-            </Text>
-          </Stack>
-        </Grid>
-      </GridItem>
+
       <GridItem>
         <Grid
           pt="1rem"
           borderRadius="1rem"
           alignItems="center"
-          justifyItems="center"
           w="full"
           templateColumns="1fr 3fr"
         >
@@ -171,29 +192,6 @@ const UserStat = ({ contractConfig }: any) => {
             </Text>
           </Stack>
         </Grid>
-      </GridItem>
-      <GridItem>
-        <Flex
-          p={5}
-          borderRadius="1rem"
-          justify="center"
-          alignItems="center"
-          gap={6}
-          w="full"
-          bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
-        >
-          <Stack textAlign="center">
-            <Text variant="medium">Pending Deposits</Text>
-            <Text
-              fontFamily="Inter"
-              fontWeight={600}
-              fontSize={"24px"}
-              color={"rgba(255, 128, 43, 1)"}
-            >
-              {hasPendingDepositValue ? "TRUE" : "FALSE"}
-            </Text>
-          </Stack>
-        </Flex>
       </GridItem>
     </Grid>
   );
