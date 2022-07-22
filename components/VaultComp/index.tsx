@@ -119,11 +119,21 @@ const VaultComp = ({
                     <AccordionIcon />
                   </Flex>
                   {!isExpanded && (
-                    <VaultProgressBar
-                      currentAum={parseInt(currentAum)}
-                      aumCap={parseInt(aumCap)}
-                      remainingDeposits={pendingDeposit}
-                    />
+                    <>
+                      <VaultProgressBar
+                        currentAum={parseInt(currentAum)}
+                        aumCap={parseInt(aumCap)}
+                        remainingDeposits={pendingDeposit}
+                      />
+                      <Flex alignItems={"center"}>
+                        <Text variant="medium">Epoch {epoch}</Text>
+                        <Spacer />
+                        <Text variant="medium">
+                          {truncate(commify(+pendingDeposit! + +currentAum), 2)}
+                          /{truncate(commify(aumCap), 2)} USDC
+                        </Text>
+                      </Flex>
+                    </>
                   )}
                 </Stack>
               </AccordionButton>
@@ -190,7 +200,7 @@ const VaultComp = ({
                   </GridItem>
                   <GridItem>
                     <Button
-                      disabled={aumCap === "0.0"}
+                      disabled
                       w="full"
                       variant="ghost"
                       onClick={onOpenWithdraw}
@@ -325,6 +335,17 @@ const VaultComp = ({
                           <SkeletonText />
                         ) : (
                           <Text variant="medium">0.01 USDC</Text>
+                        )}
+                      </Flex>
+                      <Flex alignItems={"center"}>
+                        <Text variant="medium">Vault Capacity</Text>
+                        <Spacer />
+                        {feeReceiver.isLoading ? (
+                          <SkeletonText />
+                        ) : (
+                          <Text variant="medium">
+                            {truncate(commify(aumCap.toString()), 1)} USDC
+                          </Text>
                         )}
                       </Flex>
 

@@ -64,6 +64,12 @@ export const useVaultMeta = (contractConfig: ContractConfig) => {
     watch: true,
   });
 
+  const maxDeposit = useContractRead({
+    ...contractConfig,
+    functionName: "getMaxDeposit",
+    watch: true,
+  });
+
   return {
     asset,
     assetToken,
@@ -73,6 +79,7 @@ export const useVaultMeta = (contractConfig: ContractConfig) => {
     aumCap,
     vaultName,
     storedFee,
+    maxDeposit,
   };
 };
 
