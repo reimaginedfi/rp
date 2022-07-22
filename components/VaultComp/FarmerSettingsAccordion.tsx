@@ -227,7 +227,7 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              <Stack>
+              <Stack textAlign={"center"}>
                 <Text>
                   This action will{" "}
                   {+aumCap > +aumCapString ? "increase" : "decrease"} Vault
@@ -247,13 +247,14 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
               </Button>
               <Button
                 colorScheme="red"
+                variant={"primary"}
                 isLoading={isUpdatingAumCap}
                 onClick={() => {
                   updateAumCap();
                 }}
                 ml={3}
               >
-                Delete
+                Update
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
