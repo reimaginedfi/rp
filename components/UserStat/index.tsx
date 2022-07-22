@@ -17,7 +17,7 @@ import { useVaultUser } from "../hooks/useVault";
 import { vaults } from "../../contracts";
 import { BigNumber } from "ethers";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
-import {truncate} from '../utils/stringsAndNumbers'
+import { truncate } from "../utils/stringsAndNumbers";
 
 const UserStat = ({ contractConfig }: any) => {
   const { colorMode } = useColorMode();
@@ -39,7 +39,6 @@ const UserStat = ({ contractConfig }: any) => {
   //   watch: true,
   // });
 
-  console.log(user)
   return (
     <Grid
       templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
@@ -49,7 +48,13 @@ const UserStat = ({ contractConfig }: any) => {
       p={{ base: 1, md: 3 }}
     >
       <GridItem>
-      <Grid borderRadius="1rem" alignItems="center" justifyItems="center" w="full" templateColumns="1fr 3fr">
+        <Grid
+          borderRadius="1rem"
+          alignItems="center"
+          justifyItems="center"
+          w="full"
+          templateColumns="1fr 3fr"
+        >
           <VStack
             rounded="full"
             bg={colorMode === "dark" ? "#3C181A" : "#FFEFEF"}
@@ -81,7 +86,14 @@ const UserStat = ({ contractConfig }: any) => {
         </Grid>
       </GridItem>
       <GridItem>
-      <Grid pt={{base: "1rem", md: "0"}} borderRadius="1rem" alignItems="center" justifyItems="center" w="full" templateColumns="1fr 3fr">
+        <Grid
+          pt={{ base: "1rem", md: "0" }}
+          borderRadius="1rem"
+          alignItems="center"
+          justifyItems="center"
+          w="full"
+          templateColumns="1fr 3fr"
+        >
           <VStack
             rounded="full"
             bg={colorMode === "dark" ? "#3C181A" : "#FFEFEF"}
@@ -105,8 +117,15 @@ const UserStat = ({ contractConfig }: any) => {
               color={colorMode === "dark" ? "#EDEDED" : "#171717"}
             >
               <span style={{ fontWeight: "bold" }}>
-              {user.data && BigNumber.isBigNumber(user!.data!.assetsDeposited!)
-                  ? truncate(formatUnits((BigNumber.from(user!.data!.assetsDeposited!._hex)), 6), 2)
+                {user.data &&
+                BigNumber.isBigNumber(user!.data!.assetsDeposited!)
+                  ? truncate(
+                      formatUnits(
+                        BigNumber.from(user!.data!.assetsDeposited!._hex),
+                        6
+                      ),
+                      2
+                    )
                   : 0}
               </span>{" "}
               USDC
@@ -115,7 +134,14 @@ const UserStat = ({ contractConfig }: any) => {
         </Grid>
       </GridItem>
       <GridItem>
-      <Grid pt="1rem" borderRadius="1rem" alignItems="center" justifyItems="center" w="full" templateColumns="1fr 3fr">
+        <Grid
+          pt="1rem"
+          borderRadius="1rem"
+          alignItems="center"
+          justifyItems="center"
+          w="full"
+          templateColumns="1fr 3fr"
+        >
           <VStack
             rounded="full"
             bg={colorMode === "dark" ? "#3C181A" : "#FFEFEF"}
