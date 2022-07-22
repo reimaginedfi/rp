@@ -212,11 +212,9 @@ const VaultComp = ({
                       >
                         <Flex>
                           <AlertIcon />
-                          <AlertTitle fontSize={"sm"}>
-                            Vault is almost full!
-                          </AlertTitle>
-                          <AlertDescription fontSize={"sm"}>
-                            deposits may fail.
+
+                          <AlertDescription fontSize={"xs"}>
+                            Vault is almost full, deposits may fail.
                           </AlertDescription>
                         </Flex>
                         <CloseButton onClick={onClose} />
