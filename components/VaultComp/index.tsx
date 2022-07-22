@@ -262,6 +262,7 @@ const VaultComp = ({
                       <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel
+                      p={{ base: 1, md: 3 }}
                       borderRadius="1rem"
                       bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
                     >
@@ -271,7 +272,7 @@ const VaultComp = ({
                 </Accordion>
                 <Accordion
                   borderRadius="1rem"
-                  mt="1rem"
+                  pt="1rem"
                   allowToggle
                   border="none"
                 >
