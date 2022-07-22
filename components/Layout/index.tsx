@@ -49,7 +49,8 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
         color={colorMode === "dark" ? "rgba(255, 255, 255, 0.92)" : "#1A202C"}
       >
         <Flex
-          position="sticky"
+          position="absolute"
+          top={0}
           // zIndex="sticky"
           w="100%"
           justifyContent="space-between"
@@ -67,7 +68,7 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
           >
             <Image
               src={colorMode === "dark" ? "/logo/dark.svg" : "/logo/light.svg"}
-              alt='refi-pro-logo'
+              alt="refi-pro-logo"
             />
             <Heading
               variant="large"
