@@ -87,7 +87,17 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
             >
               {colorMode === "dark" ? <HiSun /> : <HiMoon />}
             </Button>{" "}
-            <ConnectButton chainStatus={"none"} showBalance={false} />
+            <ConnectButton
+              chainStatus={"none"}
+              showBalance={{
+                smallScreen: false,
+                largeScreen: true,
+              }}
+              accountStatus={{
+                smallScreen: "avatar",
+                largeScreen: "full",
+              }}
+            />
           </Flex>
         </Flex>
         <Box w="full">{children}</Box>
