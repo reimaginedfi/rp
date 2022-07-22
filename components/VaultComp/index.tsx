@@ -32,6 +32,7 @@ import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { useContractRead } from "wagmi";
 
 import Confetti from 'react-confetti'
+import {truncate} from '../utils/stringsAndNumbers'
 
 type VaultProps = {
   vaultName: string;
@@ -192,7 +193,7 @@ const VaultComp = ({
               <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#E9A9AB" />
               <Text variant="medium">Pending Deposits</Text>
               <Spacer />
-              <Text variant="medium">{pendingDeposit} USDC</Text>
+              <Text variant="medium">{truncate(commify(pendingDeposit!), 2)} USDC</Text>
             </Flex>
 
             <Accordion borderRadius="1rem" mt="1rem" allowToggle border="none">

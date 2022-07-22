@@ -17,6 +17,7 @@ import { useVaultUser } from "../hooks/useVault";
 import { vaults } from "../../contracts";
 import { BigNumber } from "ethers";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
+import {truncate} from '../utils/stringsAndNumbers'
 
 const UserStat = ({ contractConfig }: any) => {
   const { colorMode } = useColorMode();
@@ -31,12 +32,14 @@ const UserStat = ({ contractConfig }: any) => {
   const { sharesValue, user, hasPendingDeposit, hasPendingDepositValue } =
     useVaultUser(contractConfig, address ?? "");
 
-  const { data } = useContractRead({
-    ...contractConfig,
-    functionName: "getStoredValue",
-    args: [address],
-    watch: true,
-  });
+  // const { data } = useContractRead({
+  //   ...contractConfig,
+  //   functionName: "getStoredValue",
+  //   args: [address],
+  //   watch: true,
+  // });
+
+  console.log(user)
   return (
     <Grid
       templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
@@ -102,8 +105,8 @@ const UserStat = ({ contractConfig }: any) => {
               color={colorMode === "dark" ? "#EDEDED" : "#171717"}
             >
               <span style={{ fontWeight: "bold" }}>
-                {BigNumber.isBigNumber(data)
-                  ? formatUnits(BigNumber.from(data), 6)
+              {BigNumber.isBigNumber(user!.data!.assetsDeposited)
+                  ? truncate(formatUnits((BigNumber.from(user!.data!.assetsDeposited._hex)), 6), 2)
                   : 0}
               </span>{" "}
               USDC
