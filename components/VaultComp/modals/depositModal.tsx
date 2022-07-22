@@ -37,7 +37,12 @@ type ModalProps = {
   setDepositSuccess: any;
 };
 
-export default function DepositModal({ isOpen, onClose, depositSuccess, setDepositSuccess }: ModalProps) {
+export default function DepositModal({
+  isOpen,
+  onClose,
+  depositSuccess,
+  setDepositSuccess,
+}: ModalProps) {
   const { colorMode } = useColorMode();
   const { chain } = useNetwork();
 
@@ -59,7 +64,7 @@ export default function DepositModal({ isOpen, onClose, depositSuccess, setDepos
     approveStatus,
     approveMaxStatus,
     storeAssetStatus,
-    depositData
+    depositData,
   } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
 
   const toast = useToast();
@@ -71,13 +76,11 @@ export default function DepositModal({ isOpen, onClose, depositSuccess, setDepos
         duration: 5000,
         position: "bottom",
         render: () => (
-          <SuccessToast
-            message={`You have approved ${amount} USDC`}
-          />
+          <SuccessToast message={`You have approved ${amount} USDC`} />
         ),
       });
     }
-  }, [approveStatus, isAllowed])
+  }, [approveStatus, isAllowed]);
 
   useEffect(() => {
     console.log("approveMaxError: ", approveMaxError);
@@ -95,7 +98,7 @@ export default function DepositModal({ isOpen, onClose, depositSuccess, setDepos
         ),
       });
     }
-  }, [approveMaxError,approveMaxStatus, toast]);
+  }, [approveMaxError, approveMaxStatus, toast]);
 
   useEffect(() => {
     console.log("storeAssetError: ", storeAssetError);
@@ -141,19 +144,22 @@ export default function DepositModal({ isOpen, onClose, depositSuccess, setDepos
   }, [chain, vaults]);
 
   useEffect(() => {
-    if (depositSuccess){
+    if (depositSuccess) {
       toast({
         variant: "success",
         duration: 5000,
         position: "bottom",
         render: () => (
-          <SuccessToast message={`You have deposited ${amount} USDC`} link={depositData?.hash} />
+          <SuccessToast
+            message={`You have deposited ${amount} USDC`}
+            link={depositData?.hash}
+          />
         ),
       });
-    
-      onClose!()
+
+      onClose!();
     }
-  }, [depositSuccess])
+  }, [depositSuccess]);
 
   const handleDeposit = async () => {
     if (!isAllowed) {
@@ -167,11 +173,7 @@ export default function DepositModal({ isOpen, onClose, depositSuccess, setDepos
         variant: "danger",
         duration: 5000,
         position: "bottom",
-        render: () => (
-          <DangerToast
-            message={errorMessage}
-          />
-        ),
+        render: () => <DangerToast message={errorMessage} />,
       });
     }
   };
@@ -185,11 +187,7 @@ export default function DepositModal({ isOpen, onClose, depositSuccess, setDepos
         variant: "danger",
         position: "bottom",
         duration: 5000,
-        render: () => (
-          <DangerToast
-            message={errorMessage}
-          />
-        ),
+        render: () => <DangerToast message={errorMessage} />,
       });
     }
   };
@@ -198,10 +196,16 @@ export default function DepositModal({ isOpen, onClose, depositSuccess, setDepos
     await approveMax();
   };
 
-  const  {data, isError, isLoading } = useWaitForTransaction({
+  const { data, isError, isLoading } = useWaitForTransaction({
     hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
     enabled: typeof depositData?.hash === "string",
-    onSuccess: (data) => {setDepositSuccess(true)}
+    // onSuccess never fails
+    //https://github.com/wagmi-dev/wagmi/discussions/428
+    onSuccess: (data) => {
+      if (data.status === 1) {
+        setDepositSuccess(true);
+      }
+    },
   });
 
   return (
@@ -269,9 +273,18 @@ export default function DepositModal({ isOpen, onClose, depositSuccess, setDepos
               </Flex>
             </VStack>
             {amount !== "" && (
-              <Flex my={7} gap={3} alignItems="center" w="full" flexDir='column'>
-                <Button w='full' p={3} borderRadius='xl'
-                  variant='tertiary'
+              <Flex
+                my={7}
+                gap={3}
+                alignItems="center"
+                w="full"
+                flexDir="column"
+              >
+                <Button
+                  w="full"
+                  p={3}
+                  borderRadius="xl"
+                  variant="tertiary"
                   isDisabled={+amount <= 0 || isApproving || isAllowed}
                   isLoading={isApproving}
                   onClick={handleApprove}
@@ -289,21 +302,29 @@ export default function DepositModal({ isOpen, onClose, depositSuccess, setDepos
               </Flex>
             )}
             <Button
-              disabled={!isAllowed || amount === "" || isApproving || isApprovingMax}
+              disabled={
+                !isAllowed || amount === "" || isApproving || isApprovingMax
+              }
               isLoading={isStoring || isLoading}
               onClick={handleDeposit}
               minW={"10rem"}
               variant="primary"
             >
-            Deposit
+              Deposit
               <Text fontWeight="light" ml="0.25rem">
                 {amount && `${amount} USDC`}
               </Text>
             </Button>
-            <Text variant="small" color={colorMode === 'dark' ? "#A0A0A0" : "#6F6F6F"}><b>NOTE:</b>{" "}You will need to allow REFI to use your USDC before depositting.</Text>
+            <Text
+              variant="small"
+              color={colorMode === "dark" ? "#A0A0A0" : "#6F6F6F"}
+            >
+              <b>NOTE:</b> You will need to allow REFI to use your USDC before
+              depositting.
+            </Text>
           </VStack>
         </ModalBody>
       </ModalContent>
     </Modal>
-     );
+  );
 }
