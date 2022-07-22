@@ -204,7 +204,7 @@ const VaultComp = ({
                   isWarningVisible && (
                     <Flex w="full" px={"1rem"}>
                       <Alert
-                        status="warning"
+                        status="error"
                         justifyContent={"space-between"}
                         borderRadius="lg"
                         py={"0.25rem"}
