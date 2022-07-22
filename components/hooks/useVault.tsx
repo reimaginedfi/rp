@@ -1,6 +1,7 @@
 import { useToast } from "@chakra-ui/react";
+import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { BigNumber, constants } from "ethers";
-import { formatUnits, parseUnits } from "ethers/lib/utils";
+import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
 import { useMemo } from "react";
 import {
   erc20ABI,
@@ -116,6 +117,7 @@ export const useVaultDeposit = (
 ) => {
   const { assetToken } = useVaultMeta(contractConfig);
   const { address } = useAccount();
+  const addRecentTransaction = useAddRecentTransaction();
 
   const { data: balance } = useContractRead({
     addressOrName: assetToken.data?.address ?? "",
@@ -155,7 +157,23 @@ export const useVaultDeposit = (
       contractConfig?.addressOrName,
       parseUnits(depositAmount, assetToken.data?.decimals),
     ],
+    onSuccess(data, variables, context) {
+      addRecentTransaction({
+        hash: data?.hash,
+        description: `Approve REFI Pro to spend ${commify(depositAmount)} USDC`,
+        confirmations: 1,
+      });
+    },
   });
+
+  // const approve = async () => {
+  //   rawApprove();
+
+  //     addRecentTransaction({
+  //       hash: approveData?.hash,
+  //     });
+
+  // }
 
   const {
     write: approveMax,
@@ -168,6 +186,7 @@ export const useVaultDeposit = (
     functionName: "approve",
     args: [contractConfig?.addressOrName, constants.MaxUint256],
   });
+
   const {
     write: storeAsset,
     isLoading: isStoring,
@@ -180,6 +199,13 @@ export const useVaultDeposit = (
     args: [parseUnits(depositAmount, assetToken.data?.decimals)],
     overrides: {
       gasLimit: 300000,
+    },
+    onSuccess(data, variables, context) {
+      addRecentTransaction({
+        hash: data?.hash,
+        description: `Deposit ${commify(depositAmount)} USDC`,
+        confirmations: 1,
+      });
     },
   });
 
