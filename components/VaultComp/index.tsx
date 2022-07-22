@@ -299,7 +299,7 @@ const VaultComp = ({
                     )}
                   </Flex>
                   <Flex alignItems={"center"}>
-                    <Text variant="medium">Entry/Exit Fee</Text>
+                    <Text variant="medium">Entry Fee</Text>
                     <Spacer />
                     {feeReceiver.isLoading ? (
                       <SkeletonText />
@@ -308,7 +308,16 @@ const VaultComp = ({
                     )}
                   </Flex>
                   <Flex alignItems={"center"}>
-                    <Text variant="medium">Management Fee</Text>
+                    <Text variant="medium">Exit Fee</Text>
+                    <Spacer />
+                    {feeReceiver.isLoading ? (
+                      <SkeletonText />
+                    ) : (
+                      <Text variant="medium">1%</Text>
+                    )}
+                  </Flex>
+                  <Flex alignItems={"center"}>
+                    <Text variant="medium">Management Fee (of profit)</Text>
                     <Spacer />
                     {feeReceiver.isLoading ? (
                       <SkeletonText />
