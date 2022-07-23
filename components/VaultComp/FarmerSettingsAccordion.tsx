@@ -59,7 +59,7 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
     {
       ...contractConfig,
       functionName: "updateAumCap",
-      args: [parseUnits("10000", meta.assetToken.data?.decimals)],
+      args: [parseUnits(aumCap, meta.assetToken.data?.decimals)],
     }
   );
 
