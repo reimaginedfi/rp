@@ -43,7 +43,6 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
     >
       <Box
         bg={colorMode === "dark" ? "#161616" : "#FCFCFC"}
-        w="100vw"
         minH={"100vh"}
         h="full"
         color={colorMode === "dark" ? "rgba(255, 255, 255, 0.92)" : "#1A202C"}
