@@ -363,7 +363,7 @@ const VaultComp = ({
                               {`${farmer.data?.slice(
                                 0,
                                 6
-                              )}...${farmer.data?.slice(-4)}`}{" "}
+                              )}...${farmer.data?.slice(-2)}`}{" "}
                               <ExternalLinkIcon mx="2px" />
                             </Text>
                           </Link>
@@ -383,7 +383,7 @@ const VaultComp = ({
                               {`${feeReceiver.data?.slice(
                                 0,
                                 6
-                              )}...${feeReceiver.data?.slice(-4)}`}{" "}
+                              )}...${feeReceiver.data?.slice(-2)}`}{" "}
                               <ExternalLinkIcon mx="2px" />
                             </Text>
                           </Link>
