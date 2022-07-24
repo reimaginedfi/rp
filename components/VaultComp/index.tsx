@@ -362,7 +362,7 @@ const VaultComp = ({
                             <Text variant="medium">
                               {`${farmer.data?.slice(
                                 0,
-                                6
+                                8
                               )}...${farmer.data?.slice(-2)}`}{" "}
                               <ExternalLinkIcon mx="2px" />
                             </Text>
@@ -382,7 +382,7 @@ const VaultComp = ({
                             <Text variant="medium">
                               {`${feeReceiver.data?.slice(
                                 0,
-                                6
+                                8
                               )}...${feeReceiver.data?.slice(-2)}`}{" "}
                               <ExternalLinkIcon mx="2px" />
                             </Text>
