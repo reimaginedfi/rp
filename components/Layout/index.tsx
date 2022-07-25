@@ -3,8 +3,15 @@ import {
   Button,
   Flex,
   Heading,
+  Text,
   Image,
+  Link,
+  Menu,
+  MenuList,
+  MenuButton,
+  MenuItem,
   useColorMode,
+  useDisclosure
 } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useRouter } from "next/router";
@@ -14,18 +21,36 @@ import {
   darkTheme,
   RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
+import NextLink from "next/link";
 
-import { HiSun, HiMoon } from "react-icons/hi";
+import { HiSun, HiMoon, HiChevronDown} from "react-icons/hi";
+import { RiArrowRightUpLine } from "react-icons/ri";
 
 interface LayoutProps {
   children: JSX.Element;
   chains: any;
 }
 
+
 const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   const router = useRouter();
+
+  const {
+    isOpen: isRefiLinks,
+    onOpen: openRefiLinks,
+    onClose: closeRefiLinks,
+  } = useDisclosure();
+
+  const refiLinks = [
+    ["REFI Token", "https://reimagined.fi"],
+    ["Blog", "https://reimaginedfi.medium.com/"],
+    [
+      "Smart Contract",
+      "https://etherscan.io/address/0x00000008786611c72a00909bd8d398b1be195be3",
+    ]
+  ];
 
   return (
     <RainbowKitProvider
@@ -77,6 +102,86 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
             >
               PRO
             </Heading>
+          </Flex>
+          <Flex alignSelf={"center"} alignItems="center" justifySelf="center" gap="2rem">
+            <NextLink
+              href="/about"
+            ><Text
+            _hover={{
+              bg: "none",
+              cursor: "pointer",
+              textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
+            }}
+            >About</Text></NextLink>
+            <Link  href="https://refi.gitbook.io/refi-pro/">
+              Docs{" "}<RiArrowRightUpLine style={{ verticalAlign: "middle" }}/>
+            </Link>
+
+            <Menu isOpen={isRefiLinks}>
+              <MenuButton
+              px="0"
+                as={Button}
+                bg="none"
+                fontWeight="400"
+                _hover={{
+                  bg: "none",
+                  cursor: "pointer",
+                  textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
+                }}
+                _active={{
+                  bg: "none",
+                  cursor: "pointer",
+                  textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
+                  boxShadow: "none",
+                }}
+                _focus={{
+                  bg: "none",
+                  cursor: "pointer",
+                  textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
+                  boxShadow: "none",
+                }}
+                target="_blank"
+                rightIcon={<HiChevronDown />}
+                onMouseEnter={openRefiLinks}
+                onMouseLeave={closeRefiLinks}
+              >
+                Links
+              </MenuButton>
+
+              <MenuList
+                onMouseEnter={openRefiLinks}
+                onMouseLeave={closeRefiLinks}
+                bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
+                borderColor={colorMode === "dark" ? "#232323" : "#F3F3F3"}
+              >
+                {" "}
+                {refiLinks.map((refilink, index) => {
+                  return (
+                    <MenuItem
+                      key={index}
+                      as={Link}
+                      href={refilink[1]}
+                      isExternal
+                      _hover={{
+                        bg: "none",
+                        textDecoration: "none",
+                        textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
+                        boxShadow: "none",
+                      }}
+                      _focus={{
+                        bg: "none",
+                        cursor: "pointer",
+                        boxShadow: "none",
+                      }}
+                    >
+                      {refilink[0]}&nbsp;
+                      <RiArrowRightUpLine vertical-align="-10%" />
+                    </MenuItem>
+                  );
+                })}
+              </MenuList>
+            </Menu>
+
           </Flex>
           <Flex gap="1rem">
             <Button

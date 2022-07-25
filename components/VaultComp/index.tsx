@@ -402,8 +402,8 @@ const VaultComp = ({
                             <Text variant="medium">
                               {`${assetToken.data?.address.slice(
                                 0,
-                                6
-                              )}...${assetToken.data?.address.slice(-4)}`}{" "}
+                                8
+                              )}...${assetToken.data?.address.slice(-2)}`}{" "}
                               <ExternalLinkIcon mx="2px" />
                             </Text>
                           </Link>
@@ -422,9 +422,9 @@ const VaultComp = ({
                             <Text variant="medium">
                               {`${contractConfig.addressOrName.slice(
                                 0,
-                                6
+                                8
                               )}...${contractConfig.addressOrName.slice(
-                                -4
+                                -2
                               )}`}{" "}
                               <ExternalLinkIcon mx="2px" />
                             </Text>
