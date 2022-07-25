@@ -43,7 +43,6 @@ import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
 import { truncate } from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useContractWrite } from "wagmi";
-import farmer from "../../pages/farmer";
 import { useVaultMeta } from "../hooks/useVault";
 
 export const FarmerSettingsAccordion = ({ contractConfig }: any) => {

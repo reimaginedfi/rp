@@ -177,7 +177,7 @@ export const FrequentlyAskedQuestions = [
       "When will the vault tokenomics be released (maximum AUM, maximum token supply)?",
     answer: (
       <Text>
-        Max <b>AuM</b> will be at the investment manager's discretion. There is
+        Max <b>AuM</b> will be at the investment {"manager's"} discretion. There is
         no maximum token supply.
       </Text>
     ),
@@ -191,7 +191,7 @@ export const FrequentlyAskedQuestions = [
           The strategy for ReFi Pro capital will differ slightly from the ReFi
           Core Portfolio as the investment managers will focus primarily on{" "}
           <b>low-to-medium risk strategies </b>for ReFi Pro. There will be lower
-          risk tolerance on ReFi Pro, so we're aiming for annualised returns of
+          risk tolerance on ReFi Pro, so {"we're"} aiming for annualised returns of
           35-40%.
         <br/>
           On the other hand, the investment managers will continue to target
