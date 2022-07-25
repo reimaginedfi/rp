@@ -47,7 +47,7 @@ export default function FAQ() {
         variant="medium"
         fontSize="1.25rem"
         fontWeight="600"
-        lineHeight="1rem"
+        lineHeight={{base: "1.5rem", md: "1rem"}}
       >
         Q: {children}
       </Heading>

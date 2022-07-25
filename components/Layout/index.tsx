@@ -103,7 +103,8 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
               PRO
             </Heading>
           </Flex>
-          <Flex alignSelf={"center"} alignItems="center" justifySelf="center" gap="2rem">
+          <Flex         display={{base: "none", md: "flex"}}
+alignSelf={"center"} alignItems="center" justifySelf="center" gap="2rem">
             <NextLink
               href="/about"
             ><Text
