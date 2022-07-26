@@ -17,7 +17,7 @@ import {
   MenuButton,
   MenuItem,
   useColorMode,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useRouter } from "next/router";
@@ -28,9 +28,9 @@ import {
   RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
 import NextLink from "next/link";
-import NextImage from 'next/image';
+import NextImage from "next/image";
 
-import { HiMenu, HiSun, HiMoon, HiChevronDown} from "react-icons/hi";
+import { HiMenu, HiSun, HiMoon, HiChevronDown } from "react-icons/hi";
 import { RiArrowRightUpLine } from "react-icons/ri";
 
 interface LayoutProps {
@@ -44,7 +44,7 @@ const refiLinks = [
   [
     "Smart Contract",
     "https://etherscan.io/address/0x00000008786611c72a00909bd8d398b1be195be3",
-  ]
+  ],
 ];
 
 const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
@@ -93,17 +93,17 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
           borderColor={colorMode === "dark" ? "#2E2E2E" : "#E8E8E8"}
           alignItems="center"
         >
-              <Button
-          display={{ base: "flex", md: "none" }}
-          alignItems="center"
-          variant="ghost"
-          onClick={menuToggle && menuToggle.onOpen}
-          aria-label="hamburger"
-        >
-          <HiMenu />
-        </Button>
+          <Button
+            display={{ base: "flex", md: "none" }}
+            alignItems="center"
+            variant="ghost"
+            onClick={menuToggle && menuToggle.onOpen}
+            aria-label="hamburger"
+          >
+            <HiMenu />
+          </Button>
           <Flex
-            display={{base: 'none', md: "flex"}}
+            display={{ base: "none", md: "flex" }}
             direction="row"
             _hover={{ cursor: "pointer" }}
             onClick={() => router.push("/")}
@@ -121,24 +121,32 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
               PRO
             </Heading>
           </Flex>
-          <Flex         display={{base: "none", md: "flex"}}
-alignSelf={"center"} alignItems="center" justifySelf="center" gap="2rem">
-            <NextLink
-              href="/about"
-            ><Text
-            _hover={{
-              bg: "none",
-              cursor: "pointer",
-              textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
-            }}
-            >About</Text></NextLink>
-            <Link  href="https://refi.gitbook.io/refi-pro/">
-              Docs{" "}<RiArrowRightUpLine style={{ verticalAlign: "middle" }}/>
+          <Flex
+            display={{ base: "none", md: "flex" }}
+            alignSelf={"center"}
+            alignItems="center"
+            justifySelf="center"
+            gap="2rem"
+          >
+          <NextLink href={router.pathname === "/about" ? "/" : "/about"}>
+            <Text
+              p="8px"
+              _hover={{
+                bg: "none",
+                cursor: "pointer",
+                textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
+              }}
+            >
+              {router.pathname === "/about" ? "Home" : "About"}
+            </Text>
+          </NextLink>
+            <Link href="https://refi.gitbook.io/refi-pro/">
+              Docs <RiArrowRightUpLine style={{ verticalAlign: "middle" }} />
             </Link>
 
             <Menu isOpen={isRefiLinks}>
               <MenuButton
-              px="0"
+                px="0"
                 as={Button}
                 bg="none"
                 fontWeight="400"
@@ -205,7 +213,6 @@ alignSelf={"center"} alignItems="center" justifySelf="center" gap="2rem">
             <Button
               variant="ghost"
               onClick={toggleColorMode}
-              display={{ base: "none", md: "flex" }}
             >
               {colorMode === "dark" ? <HiSun /> : <HiMoon />}
             </Button>{" "}
@@ -222,7 +229,7 @@ alignSelf={"center"} alignItems="center" justifySelf="center" gap="2rem">
             />
           </Flex>
         </Flex>
-        <LandingMenu menuToggle={menuToggle}/>
+        <LandingMenu menuToggle={menuToggle} />
 
         <Box w="full">{children}</Box>
       </Box>
@@ -234,6 +241,8 @@ export default Layout;
 
 export function LandingMenu({ menuToggle }: any) {
   const { colorMode } = useColorMode();
+
+  const router = useRouter();
 
   return (
     <Drawer
@@ -263,18 +272,20 @@ export function LandingMenu({ menuToggle }: any) {
               width="150px"
               height="64px"
             >
-  <Image
-              src={colorMode === "dark" ? "/logo/dark.svg" : "/logo/light.svg"}
-              alt="refi-pro-logo"
-            />
-            <Heading
-              variant="large"
-              fontWeight="light"
-              ml="0.5rem"
-              color="#BF9209"
-            >
-              PRO
-            </Heading>
+              <Image
+                src={
+                  colorMode === "dark" ? "/logo/dark.svg" : "/logo/light.svg"
+                }
+                alt="refi-pro-logo"
+              />
+              <Heading
+                variant="large"
+                fontWeight="light"
+                ml="0.5rem"
+                color="#BF9209"
+              >
+                PRO
+              </Heading>
             </Flex>
           </NextLink>
         </DrawerHeader>
@@ -289,7 +300,7 @@ export function LandingMenu({ menuToggle }: any) {
           spacing="12px"
           overflowY="auto"
         >
-                    <Text
+          <Text
             fontWeight="400"
             fontStyle="normal"
             color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
@@ -298,22 +309,26 @@ export function LandingMenu({ menuToggle }: any) {
           >
             REFI Pro Links
           </Text>
-                      <NextLink
-              href="/about"
-            ><Text
+          <NextLink href={router.pathname === "/about" ? "/" : "/about"}>
+            <Text
+              p="8px"
+              _hover={{
+                bg: "none",
+                cursor: "pointer",
+                textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
+              }}
+              fontSize="0.875rem"
+            >
+              {router.pathname === "/about" ? "Home" : "About"}
+            </Text>
+          </NextLink>
+          <Link
             p="8px"
-            _hover={{
-              bg: "none",
-              cursor: "pointer",
-              textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
-            }}
             fontSize="0.875rem"
-            >About</Text></NextLink>
-            <Link               p="8px"
-                fontSize="0.875rem"
-href="https://refi.gitbook.io/refi-pro/">
-              Docs{" "}<RiArrowRightUpLine style={{ verticalAlign: "middle" }}/>
-            </Link>
+            href="https://refi.gitbook.io/refi-pro/"
+          >
+            Docs <RiArrowRightUpLine style={{ verticalAlign: "middle" }} />
+          </Link>
           {refiLinks.map((refilink, index) => (
             <Link key={index} href={refilink[1]} isExternal>
               <Text
