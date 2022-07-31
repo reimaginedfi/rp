@@ -2,45 +2,43 @@ import { useState } from "react";
 
 import {
   Accordion,
-  AccordionItem,
   AccordionButton,
-  AccordionPanel,
   AccordionIcon,
-  Flex,
-  Progress,
-  Button,
-  Text,
-  Heading,
-  useColorMode,
+  AccordionItem,
+  AccordionPanel,
+  Alert,
+  AlertDescription,
+  AlertIcon,
   Box,
-  Spacer,
+  Button,
+  CloseButton,
+  Flex,
   Grid,
   GridItem,
+  Heading,
   Image,
-  useDisclosure,
   Link,
   SkeletonText,
+  Spacer,
   Stack,
-  Alert,
-  AlertIcon,
-  AlertDescription,
-  AlertTitle,
-  CloseButton,
+  Text,
+  useColorMode,
+  useDisclosure,
 } from "@chakra-ui/react";
-
-import VaultProgressBar from "./VaultProgressBar";
+import useWindowSize from "react-use/lib/useWindowSize";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { commify } from "ethers/lib/utils";
+import { useAccount, useContractRead } from "wagmi";
+import { ContractConfig } from "../../contracts";
+import UserStat from "../UserStat";
 import DepositModal from "./modals/depositModal";
 import WithdrawModal from "./modals/withdrawModal";
-import UserStat from "../UserStat";
-import { ContractConfig } from "../../contracts";
-import { commify } from "ethers/lib/utils";
-import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { useAccount, useContractRead } from "wagmi";
+import VaultProgressBar from "./VaultProgressBar";
 
-import Confetti from "react-confetti";
-import { truncate } from "../utils/stringsAndNumbers";
 import dynamic from "next/dynamic";
+import Confetti from "react-confetti";
 import { useVaultMeta } from "../hooks/useVault";
+import { truncate } from "../utils/stringsAndNumbers";
 
 type VaultProps = {
   vaultName: string;
@@ -93,6 +91,7 @@ const VaultComp = ({
   });
   const [depositSuccess, setDepositSuccess] = useState<boolean>(false);
 
+  const { width, height } = useWindowSize();
   return (
     <>
       <Accordion
@@ -443,7 +442,16 @@ const VaultComp = ({
         </AccordionItem>
       </Accordion>
 
-      {depositSuccess && <Confetti />}
+      <Confetti
+        run={depositSuccess}
+        recycle={false}
+        width={width}
+        height={height}
+        numberOfPieces={500}
+        onConfettiComplete={() => {
+          setDepositSuccess(false);
+        }}
+      />
 
       {depositIsOpen && (
         <DepositModal

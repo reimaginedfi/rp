@@ -1,20 +1,22 @@
-import { ArrowForwardIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
   Accordion,
-  AccordionItem,
   AccordionButton,
-  Heading,
   AccordionIcon,
+  AccordionItem,
   AccordionPanel,
-  Flex,
-  Spacer,
-  SkeletonText,
-  useColorMode,
-  Text,
-  Link,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Button,
-  Stack,
-  useDisclosure,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -27,16 +29,12 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  FormControl,
-  FormLabel,
-  HStack,
-  Icon,
+  SkeletonText,
+  Spacer,
+  Stack,
+  Text,
+  useColorMode,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
 import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
@@ -44,6 +42,7 @@ import { truncate } from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useContractWrite } from "wagmi";
 import { useVaultMeta } from "../hooks/useVault";
+import { EndEpochModal } from "./modals/EndEpochModal";
 
 export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
   const { colorMode } = useColorMode();
@@ -53,12 +52,14 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
   const aumCapAlert = useDisclosure();
   const cancelUpdateAumCapRef = useRef(null);
 
+  const endEpoch = useDisclosure();
+
   const [aumCap, setAumCap] = useState("0");
   const { isLoading: isUpdatingAumCap, write: updateAumCap } = useContractWrite(
     {
       ...contractConfig,
       functionName: "updateAumCap",
-      args: [parseUnits(aumCap, meta.assetToken.data?.decimals)],
+      args: [parseUnits(aumCap ?? 0, meta.assetToken.data?.decimals)],
     }
   );
 
@@ -131,13 +132,22 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
               >
                 Update AUM Cap
               </Button>
-              <Button w="full" variant="primary">
+              <Button
+                w="full"
+                variant="primary"
+                onClick={() => {
+                  endEpoch.onToggle();
+                }}
+              >
                 End Epoch {meta.epoch.data && meta.epoch.data.toString()}
               </Button>
             </Stack>
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
+      {endEpoch.isOpen && (
+        <EndEpochModal disclosure={endEpoch} contractConfig={contractConfig} />
+      )}
       <Modal
         isOpen={aumCapModal.isOpen}
         onClose={aumCapModal.onClose}

@@ -37,11 +37,11 @@ export default function About() {
       <Flex
         direction="column"
         m="auto"
-        w={{base: "90%", md: "100%"}}
+        w={{ base: "90%", md: "100%" }}
         alignContent="center"
         justifyContent="center"
         pb="5rem"
-        pt={{base: "5rem", md: "1rem"}}
+        pt={{ base: "5rem", md: "1rem" }}
       >
         <Heading
           textAlign="center"

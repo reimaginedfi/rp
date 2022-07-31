@@ -51,6 +51,7 @@ export const useVaultMeta = (contractConfig: ContractConfig) => {
   const aumCap = useContractRead({
     ...contractConfig,
     functionName: "aumCap",
+    watch: true,
   });
 
   const vaultName = useContractRead({

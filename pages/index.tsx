@@ -1,25 +1,5 @@
-import {
-  Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
-  AccordionIcon,
-  VisuallyHidden,
-  Heading,
-  Button,
-  Stack,
-  Grid,
-  GridItem,
-  useColorMode,
-} from "@chakra-ui/react";
-import Head from "next/head";
-import dynamic from "next/dynamic";
-import { Logo } from "../components/Logo";
-import VaultComp from "../components/VaultComp";
-import { useSwitchNetwork, useNetwork } from "wagmi";
-import { vaults } from "../contracts";
-import { Vault } from "../components/Vault";
 import { NextSeo } from "next-seo";
+import dynamic from "next/dynamic";
 
 const PageContent = dynamic(() => import("../components/PageContent"), {
   ssr: false,

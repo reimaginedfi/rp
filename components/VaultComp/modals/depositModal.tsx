@@ -199,7 +199,7 @@ export default function DepositModal({
     await approveMax();
   };
 
-  const { data, isError, isLoading } = useWaitForTransaction({
+  const { isLoading } = useWaitForTransaction({
     hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
     enabled: typeof depositData?.hash === "string",
     // onSuccess never fails

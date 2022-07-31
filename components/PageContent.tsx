@@ -1,23 +1,13 @@
-import {
-  useColorMode,
-  Grid,
-  GridItem,
-  Stack,
-  Heading,
-  Button,
-} from "@chakra-ui/react";
-import { useNetwork, useSwitchNetwork } from "wagmi";
+import { Button, Grid, GridItem, Heading, Stack } from "@chakra-ui/react";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
+import { useNetwork, useSwitchNetwork } from "wagmi";
 
 import { vaults } from "../contracts";
 import { Vault } from "./Vault";
 
 export const PageContent = () => {
-  const { colorMode } = useColorMode();
-
   const { chain } = useNetwork();
-  const { chains, error, isLoading, pendingChainId, switchNetwork } =
-    useSwitchNetwork();
+  const { switchNetwork } = useSwitchNetwork();
 
   return (
     <>
