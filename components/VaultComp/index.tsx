@@ -24,11 +24,12 @@ import {
   Text,
   useColorMode,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import useWindowSize from "react-use/lib/useWindowSize";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { commify } from "ethers/lib/utils";
-import { useAccount, useContractRead } from "wagmi";
+import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
+import { useAccount, useContractEvent, useContractRead } from "wagmi";
 import { ContractConfig } from "../../contracts";
 import UserStat from "../UserStat";
 import DepositModal from "./modals/depositModal";
@@ -92,6 +93,23 @@ const VaultComp = ({
   const [depositSuccess, setDepositSuccess] = useState<boolean>(false);
 
   const { width, height } = useWindowSize();
+  const toast = useToast();
+  useContractEvent({
+    ...contractConfig,
+    eventName: "UserDeposit",
+    listener: (event) => {
+      console.log(event);
+      toast({
+        status: "success",
+        title: "Someone just deposited",
+        description: `Address ${event[0]} deposited ${commify(
+          truncate(formatUnits(event[1]), 6)
+        )} USDC`,
+        duration: 9000,
+        isClosable: true,
+      });
+    },
+  });
   return (
     <>
       <Accordion
