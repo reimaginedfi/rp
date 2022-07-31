@@ -118,11 +118,11 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
               )}
             </Flex>
             <Stack>
-              <Button w="full" variant="secondary">
+              <Button w="full" variant="secondary" disabled>
                 Claim Fees
               </Button>
 
-              <Button w="full" variant="secondary">
+              <Button w="full" variant="secondary" disabled>
                 Update Fee Settings
               </Button>
               <Button
