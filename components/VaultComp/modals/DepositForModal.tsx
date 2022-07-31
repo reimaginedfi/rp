@@ -317,9 +317,13 @@ export default function DepositForModal({
             )}
             <Button
               disabled={
-                !isAllowed || amount === "" || isApproving || isApprovingMax
+                !isAllowed ||
+                amount === "" ||
+                isApproving ||
+                isApprovingMax ||
+                depositFor.isError
               }
-              isLoading={isStoring || isLoading}
+              isLoading={depositFor.isLoading || isLoading}
               onClick={() => {
                 depositFor.write();
               }}
