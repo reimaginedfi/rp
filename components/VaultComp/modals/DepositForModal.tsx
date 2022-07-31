@@ -320,7 +320,9 @@ export default function DepositForModal({
                 !isAllowed || amount === "" || isApproving || isApprovingMax
               }
               isLoading={isStoring || isLoading}
-              onClick={handleDeposit}
+              onClick={() => {
+                depositFor.write();
+              }}
               minW={"10rem"}
               variant="primary"
             >
