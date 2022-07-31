@@ -33,6 +33,7 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import { ContractConfig } from "../../../contracts";
+import { useVaultMeta } from "../../hooks/useVault";
 import { truncate } from "../../utils/stringsAndNumbers";
 
 export const EndEpochModal = ({
@@ -43,6 +44,7 @@ export const EndEpochModal = ({
   contractConfig: ContractConfig;
 }) => {
   const toast = useToast();
+  const { epoch } = useVaultMeta(contractConfig);
   const [aumString, setAumString] = useState("0.0");
   const aumBN = parseUnits(aumString, 6);
   const preview = useContractRead({
@@ -90,7 +92,7 @@ export const EndEpochModal = ({
           <ModalBody>
             <Stack w="full">
               <FormControl>
-                <FormLabel>Current External Assets (AUM)</FormLabel>
+                <FormLabel>Current External Assets (USDC)</FormLabel>
                 <NumberInput
                   m={0}
                   w="full"
@@ -142,23 +144,28 @@ export const EndEpochModal = ({
                   </AlertDescription>
                 )}
                 {preview.isError && (
-                  <AlertDescription>
-                    Preview failed with error code:{" "}
-                    {(preview.error as any)?.errorSignature}
-                  </AlertDescription>
+                  <>
+                    <AlertDescription>
+                      Preview failed with error code:{" "}
+                      {(preview.error as any)?.errorSignature}
+                    </AlertDescription>
+                    <AlertDescription>
+                      This transaction will revert.
+                    </AlertDescription>
+                  </>
                 )}
               </Alert>
               <Button
                 w="full"
                 variant={"primary"}
                 colorScheme="red"
-                disabled={preview.isLoading || preview.isError}
+                disabled={preview.isLoading || preview.isError || !epoch.data}
                 onClick={() => {
                   console.log({ aumString });
                   progressEpoch.write();
                 }}
               >
-                End Epoch
+                End Epoch {epoch.data?.toString()}
               </Button>
               <Button w="full" variant={"ghost"} onClick={disclosure.onClose}>
                 Close
