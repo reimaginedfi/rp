@@ -103,7 +103,7 @@ const VaultComp = ({
         status: "success",
         title: "Someone just deposited",
         description: `Address ${event[0]} deposited ${commify(
-          truncate(formatUnits(event[1]), 6)
+          truncate(formatUnits(event[1], 6), 2)
         )} USDC`,
         duration: 9000,
         isClosable: true,
