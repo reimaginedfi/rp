@@ -289,9 +289,7 @@ export default function DepositModal({
                   borderRadius="xl"
                   variant="tertiary"
                   isDisabled={
-                    +amount + totalDeposited <= 25000 ||
-                    isApproving ||
-                    isAllowed
+                    +amount + totalDeposited < 25000 || isApproving || isAllowed
                   }
                   isLoading={isApproving}
                   onClick={handleApprove}
