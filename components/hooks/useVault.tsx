@@ -127,7 +127,8 @@ export const useVaultUser = (
 
 export const useVaultDeposit = (
   contractConfig: ContractConfig,
-  depositAmount: string
+  depositAmount: string,
+  _for?: string
 ) => {
   const { assetToken } = useVaultMeta(contractConfig);
   const { address } = useAccount();
@@ -223,6 +224,49 @@ export const useVaultDeposit = (
     },
   });
 
+  const depositFor = useContractWrite({
+    ...contractConfig,
+    contractInterface: [
+      {
+        inputs: [
+          {
+            internalType: "uint256",
+            name: "_assets",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "_for",
+            type: "address",
+          },
+        ],
+        name: "deposit",
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "nonpayable",
+        type: "function",
+      },
+    ],
+    functionName: "deposit",
+    args: [parseUnits(depositAmount, assetToken.data?.decimals), _for],
+    onMutate(variables) {
+      console.log({ variables, name: "depositFor" });
+    },
+    onSettled(data, error, variables, context) {
+      console.log({
+        data,
+        error,
+        variables,
+        context,
+      });
+    },
+  });
+
   return {
     balance,
     balanceDisplay,
@@ -241,6 +285,7 @@ export const useVaultDeposit = (
     approveMaxStatus,
     storeAssetStatus,
     depositData,
+    depositFor,
   };
 };
 

@@ -42,6 +42,7 @@ import { truncate } from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useContractWrite } from "wagmi";
 import { useVaultMeta } from "../hooks/useVault";
+import DepositForModal from "./modals/DepositForModal";
 import { EndEpochModal } from "./modals/EndEpochModal";
 
 export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
@@ -77,6 +78,8 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
     setAumCap(minVaultCap);
   }, [minVaultCap]);
   const aumCapString = formatUnits(meta.aumCap?.data ?? 0, 6).toString();
+
+  const depositFor = useDisclosure();
   return (
     <>
       <Accordion
@@ -128,6 +131,13 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
               <Button
                 w="full"
                 variant="secondary"
+                onClick={depositFor.onToggle}
+              >
+                Deposit For
+              </Button>
+              <Button
+                w="full"
+                variant="secondary"
                 onClick={aumCapModal.onToggle}
               >
                 Update AUM Cap
@@ -147,6 +157,14 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
       </Accordion>
       {endEpoch.isOpen && (
         <EndEpochModal disclosure={endEpoch} contractConfig={contractConfig} />
+      )}
+      {depositFor.isOpen && (
+        <DepositForModal
+          isOpen={depositFor.isOpen}
+          onClose={depositFor.onClose}
+          depositSuccess={false}
+          setDepositSuccess={() => undefined}
+        />
       )}
       <Modal
         isOpen={aumCapModal.isOpen}
