@@ -99,7 +99,7 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
             bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
           >
             <Flex alignItems={"center"}>
-              <Text variant="medium">Stored Fees</Text>
+              <Text variant="medium">Stored Fee</Text>
               <Spacer />
               {meta.storedFee.isLoading ? (
                 <SkeletonText />
@@ -119,7 +119,7 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
             </Flex>
             <Stack>
               <Button w="full" variant="secondary" disabled>
-                Claim Fees
+                Send Fee to Distributor
               </Button>
 
               <Button w="full" variant="secondary" disabled>
