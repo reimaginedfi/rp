@@ -107,6 +107,11 @@ export const useVaultUser = (
     watch: true,
   });
 
+  const totalDeposited =
+    user.data && BigNumber.isBigNumber(user.data.assetsDeposited)
+      ? BigNumber.from(user.data.assetsDeposited).toNumber()
+      : 0;
+
   return {
     user,
     sharesValue,
@@ -115,6 +120,7 @@ export const useVaultUser = (
       hasPendingDeposit.data ||
       (BigNumber.isBigNumber(user.data?.[1]) &&
         BigNumber.from(user.data?.[1]).gt(0)),
+    totalDeposited,
   };
 };
 

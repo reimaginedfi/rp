@@ -29,8 +29,13 @@ const UserStat = ({ contractConfig }: any) => {
   //   vaults[chain!.id].map((contract) => setContractConfig(contract));
   // }, [vaults])
 
-  const { sharesValue, user, hasPendingDeposit, hasPendingDepositValue } =
-    useVaultUser(contractConfig, address ?? "");
+  const {
+    sharesValue,
+    user,
+    hasPendingDeposit,
+    hasPendingDepositValue,
+    totalDeposited,
+  } = useVaultUser(contractConfig, address ?? "");
 
   // const { data } = useContractRead({
   //   ...contractConfig,
@@ -78,16 +83,7 @@ const UserStat = ({ contractConfig }: any) => {
               color={colorMode === "dark" ? "#EDEDED" : "#171717"}
             >
               <span style={{ fontWeight: "bold" }}>
-                {user.data &&
-                BigNumber.isBigNumber(user!.data!.assetsDeposited!)
-                  ? truncate(
-                      formatUnits(
-                        BigNumber.from(user!.data!.assetsDeposited!._hex),
-                        6
-                      ),
-                      2
-                    )
-                  : 0}
+                {truncate(formatUnits(totalDeposited, 6), 2)}
               </span>{" "}
               USDC
             </Text>

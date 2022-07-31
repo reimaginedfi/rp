@@ -22,10 +22,10 @@ import {
 } from "@chakra-ui/react";
 
 //Wagmi
-import { useNetwork, useWaitForTransaction } from "wagmi";
+import { useAccount, useNetwork, useWaitForTransaction } from "wagmi";
 
 //Vaults
-import { useVaultDeposit } from "../../hooks/useVault";
+import { useVaultDeposit, useVaultUser } from "../../hooks/useVault";
 import { vaults } from "../../../contracts";
 import { DangerToast, SuccessToast } from "../../Toasts";
 import getErrorMessage from "../../utils/errors";
@@ -45,6 +45,7 @@ export default function DepositModal({
 }: ModalProps) {
   const { colorMode } = useColorMode();
   const { chain } = useNetwork();
+  const { address } = useAccount();
 
   const [contractConfig, setContractConfig] = useState<any>();
   const [amount, setAmount] = useState<string>("");
@@ -66,6 +67,8 @@ export default function DepositModal({
     storeAssetStatus,
     depositData,
   } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
+
+  const { totalDeposited } = useVaultUser(contractConfig, address ?? "");
 
   const toast = useToast();
 
@@ -285,7 +288,11 @@ export default function DepositModal({
                   p={3}
                   borderRadius="xl"
                   variant="tertiary"
-                  isDisabled={+amount <= 0 || isApproving || isAllowed}
+                  isDisabled={
+                    +amount + totalDeposited <= 25000 ||
+                    isApproving ||
+                    isAllowed
+                  }
                   isLoading={isApproving}
                   onClick={handleApprove}
                 >
