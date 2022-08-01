@@ -93,10 +93,10 @@ export const VaultHeroLeft = () => {
       </Badge>
 
       <Stat mt={"1rem"}>
-        <StatNumber>+0%</StatNumber>
+        <StatNumber>+0.00%</StatNumber>
         <StatHelpText>
           <StatArrow type="increase" />
-          0.00%
+          0.00 USDC
         </StatHelpText>
       </Stat>
       <Text
