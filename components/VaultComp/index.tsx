@@ -241,7 +241,7 @@ const VaultComp = ({
                     >
                       <Heading variant="medium">
                         Your Vault Stats{" "}
-                        {hasPendingDeposit && (
+                        {hasPendingDeposit.data && (
                           <Badge borderRadius={"md"} colorScheme="orange">
                             1
                           </Badge>
@@ -254,7 +254,7 @@ const VaultComp = ({
                       borderRadius="1rem"
                       bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
                     >
-                      {hasPendingDeposit && (
+                      {hasPendingDeposit.data && (
                         <Alert
                           status="warning"
                           borderRadius={"md"}
@@ -262,11 +262,12 @@ const VaultComp = ({
                           px={2}
                         >
                           <AlertIcon boxSize={"1rem"}></AlertIcon>
-                          <AlertTitle fontSize={"xs"}>Pending VT</AlertTitle>
                           <AlertDescription>
                             <Text fontSize={"xs"}>
-                              You can claim it manually or perform another
-                              deposit
+                              You have claimable Vault Tokens. They will be
+                              automatically claimed when you do another deposit,
+                              or you can claim them manually. Unclaimed VT will
+                              still count towards this epoch{"'"}s progressions.
                             </Text>
                           </AlertDescription>
                         </Alert>

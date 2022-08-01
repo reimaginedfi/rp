@@ -155,7 +155,7 @@ const UserStat = () => {
                 )}
               </span>{" "}
               VT{" "}
-              {hasPendingDeposit && (
+              {hasPendingDeposit.data && (
                 <Button
                   size={"xs"}
                   colorScheme="orange"
