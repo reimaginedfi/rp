@@ -181,7 +181,7 @@ const VaultComp = ({
                         <Heading
                           variant="medium"
                           textAlign="center"
-                          color="yellow"
+                          color={colorMode == "dark" ? "yellow" : "black"}
                           lineHeight="1.5rem"
                         >
                           This vault is in validating phase. Farmer can end this
