@@ -18,9 +18,6 @@ export const useContractConfig = () => {
   }
   return contractConfig;
 };
-// export const PortalContext = createContext(null as Ref<null>);
-
-// can useContext(Contract) to get the contract config
 export const Vault = ({
   contractConfig,
 }: {
@@ -47,7 +44,6 @@ export const Vault = ({
     .filter((word: string) => word.toLowerCase() !== "token")
     .join("");
 
-  // const portalRef = useRef(null);
   const toast = useToast();
   useContractEvent({
     ...contractConfig,
@@ -78,7 +74,6 @@ export const Vault = ({
         pendingDeposit={pendingDeposit}
         contractConfig={contractConfig}
       />
-      {/* </PortalContext.Provider> */}
     </Contract.Provider>
   );
 };

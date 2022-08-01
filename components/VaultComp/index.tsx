@@ -41,6 +41,7 @@ import Confetti from "react-confetti";
 import { useVaultMeta, useVaultState } from "../hooks/useVault";
 import { truncate } from "../utils/stringsAndNumbers";
 import { BigNumber } from "ethers";
+import { VaultHeroLeft } from "./VaultHeroLeft";
 
 type VaultProps = {
   vaultName: string;
@@ -157,52 +158,7 @@ const VaultComp = ({
                   w="full"
                   px="1rem"
                 >
-                  {aumCap === "0.0" ? (
-                    <Flex justify="center" align="center">
-                      <Heading
-                        variant="medium"
-                        textAlign="center"
-                        color="brand"
-                        lineHeight="1.5rem"
-                      >
-                        This Vault is being initialized
-                      </Heading>
-                    </Flex>
-                  ) : (
-                    <GridItem textAlign="center">
-                      <Flex justify="center" align="center" py={"2rem"}>
-                        {lastManagementBlock > blockNumber! ? (
-                          <Heading
-                            variant="medium"
-                            textAlign="center"
-                            color={colorMode == "dark" ? "yellow" : "black"}
-                            lineHeight="1.5rem"
-                          >
-                            This vault is in validating phase until block number{" "}
-                            {lastManagementBlock}. Farmer can end this phase
-                            earlier to allow user deposits. Blocks remaining:{" "}
-                            {lastManagementBlock - blockNumber!}
-                          </Heading>
-                        ) : isLoading || vaultState.isLoading ? (
-                          <Spinner />
-                        ) : (
-                          <Heading>+0%</Heading>
-                        )}
-                      </Flex>
-                      <Text
-                        style={{
-                          backgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                          WebkitBackgroundClip: "text",
-                        }}
-                        bg="radial-gradient(136.45% 135.17% at 9.91% 100%, #FF3F46 0%, #FF749E 57.68%, #FFE3AB 100%)"
-                        fontSize="24px"
-                        fontWeight={700}
-                      >
-                        EPOCH {epoch}
-                      </Text>
-                    </GridItem>
-                  )}
+                  <VaultHeroLeft />
                   <GridItem textAlign="center">
                     <Image
                       m="auto"

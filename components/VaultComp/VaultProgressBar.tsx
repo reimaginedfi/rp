@@ -6,12 +6,14 @@ type ProgressBarProps = {
   currentAum: number;
   aumCap: number;
   remainingDeposits: string | undefined;
+  color?: string;
 };
 
 export default function VaultProgressBar({
   currentAum,
   aumCap,
   remainingDeposits,
+  color = "#C51E25",
 }: ProgressBarProps) {
   const { colorMode } = useColorMode();
 
@@ -27,7 +29,7 @@ export default function VaultProgressBar({
     {
       name: "AUM",
       value: aumPercentage!,
-      color: "#C51E25",
+      color,
       radius: "1rem",
     },
     {
