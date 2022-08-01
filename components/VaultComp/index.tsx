@@ -96,7 +96,7 @@ const VaultComp = ({
 
   const vaultState = useVaultState(epoch);
   const lastManagementBlock = BigNumber.from(
-    vaultState.data?.lastManagementBlock
+    vaultState.data?.lastManagementBlock ?? 0
   ).toNumber();
   const { data: blockNumber } = useBlockNumber({
     watch: true,
