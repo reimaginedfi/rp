@@ -21,6 +21,7 @@ import {
   Link,
   SkeletonText,
   Spacer,
+  Spinner,
   Stack,
   Text,
   useColorMode,
@@ -98,10 +99,9 @@ const VaultComp = ({
   const lastManagementBlock = BigNumber.from(
     vaultState.data?.lastManagementBlock ?? 0
   ).toNumber();
-  const { data: blockNumber } = useBlockNumber({
+  const { data: blockNumber, isLoading } = useBlockNumber({
     watch: true,
   });
-  console.log({ lastManagementBlock, blockNumber });
 
   return (
     <>
@@ -183,6 +183,8 @@ const VaultComp = ({
                             earlier to allow user deposits. Blocks remaining:{" "}
                             {lastManagementBlock - blockNumber!}
                           </Heading>
+                        ) : isLoading || vaultState.isLoading ? (
+                          <Spinner />
                         ) : (
                           <Heading>+0%</Heading>
                         )}

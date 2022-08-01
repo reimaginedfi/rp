@@ -255,17 +255,6 @@ export const useVaultDeposit = (
     ],
     functionName: "deposit",
     args: [parseUnits(depositAmount, assetToken.data?.decimals), _for],
-    onMutate(variables) {
-      console.log({ variables, name: "depositFor" });
-    },
-    onSettled(data, error, variables, context) {
-      console.log({
-        data,
-        error,
-        variables,
-        context,
-      });
-    },
   });
 
   return {

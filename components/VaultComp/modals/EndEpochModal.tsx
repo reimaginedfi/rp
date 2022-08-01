@@ -51,9 +51,6 @@ export const EndEpochModal = ({
     ...contractConfig,
     functionName: "previewProgress",
     args: [aumBN],
-    onSettled: (data, error) => {
-      console.log({ data, error });
-    },
   });
 
   const progressEpoch = useContractWrite({
@@ -161,7 +158,6 @@ export const EndEpochModal = ({
                 colorScheme="red"
                 disabled={preview.isLoading || preview.isError || !epoch.data}
                 onClick={() => {
-                  console.log({ aumString });
                   progressEpoch.write();
                 }}
               >
