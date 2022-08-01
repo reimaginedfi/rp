@@ -23,11 +23,10 @@ export const PageContent = () => {
             placeContent={"center"}
             py={16}
           >
-            {vaults[chain!.id].map((contractConfig) => (
+            {vaults[chain.id].map((contractConfig) => (
               <GridItem
                 key={contractConfig.addressOrName}
-                mx={{ base: "5%", md: "2.5%" }}
-                my={{ base: "5%", md: "2.5%" }}
+                m={{ base: "5%", md: "2.5%" }}
               >
                 <Vault contractConfig={contractConfig} />
               </GridItem>
@@ -36,7 +35,7 @@ export const PageContent = () => {
         </>
       ) : chain && chain.id !== 1 ? (
         <Stack m="auto" mt="20%" w="full" align="center" gap="0.5rem">
-          <Heading>{chain!.name} is not a supported chain.</Heading>
+          <Heading>{chain.name} is not a supported chain.</Heading>
           <Button variant="primary" onClick={() => switchNetwork?.(1)}>
             Switch chains
           </Button>

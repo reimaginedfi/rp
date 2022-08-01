@@ -14,6 +14,7 @@ import {
 import vaultContractInterface from "../../abi/vault.abi.json";
 import { ContractConfig } from "../../contracts";
 import { SuccessToast } from "../Toasts";
+import { useContractConfig } from "../Vault";
 
 // export const useVault = (addressOrName: string) => {
 //   const vault = useMemo(() => {
@@ -349,4 +350,15 @@ export const useVaultWithdraw = (
     claimStatus,
     unlockingStatus,
   };
+};
+
+export const useVaultState = (epoch = 0) => {
+  const contractConfig = useContractConfig();
+  const vaultState = useContractRead({
+    ...contractConfig,
+    functionName: "vaultStates",
+    args: [epoch],
+  });
+
+  return vaultState;
 };

@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
   Accordion,
   AccordionButton,
@@ -24,12 +25,10 @@ import {
   Text,
   useColorMode,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
+import { commify } from "ethers/lib/utils";
 import useWindowSize from "react-use/lib/useWindowSize";
-import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
-import { useAccount, useContractEvent, useContractRead } from "wagmi";
+import { useAccount, useBlockNumber, useContractRead } from "wagmi";
 import { ContractConfig } from "../../contracts";
 import UserStat from "../UserStat";
 import DepositModal from "./modals/depositModal";
@@ -38,15 +37,16 @@ import VaultProgressBar from "./VaultProgressBar";
 
 import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
-import { useVaultMeta } from "../hooks/useVault";
+import { useVaultMeta, useVaultState } from "../hooks/useVault";
 import { truncate } from "../utils/stringsAndNumbers";
+import { BigNumber } from "ethers";
 
 type VaultProps = {
   vaultName: string;
   asset: string | undefined;
   currentAum: string;
   aumCap: string;
-  epoch: string | undefined;
+  epoch: number | undefined;
   pendingDeposit: string;
   contractConfig: ContractConfig;
 };
@@ -93,23 +93,16 @@ const VaultComp = ({
   const [depositSuccess, setDepositSuccess] = useState<boolean>(false);
 
   const { width, height } = useWindowSize();
-  const toast = useToast();
-  useContractEvent({
-    ...contractConfig,
-    eventName: "UserDeposit",
-    listener: (event) => {
-      console.log(event);
-      toast({
-        status: "success",
-        title: "Someone just deposited",
-        description: `Address ${event[0]} deposited ${commify(
-          truncate(formatUnits(event[1], 6), 2)
-        )} USDC`,
-        duration: 9000,
-        isClosable: true,
-      });
-    },
+
+  const vaultState = useVaultState(epoch);
+  const lastManagementBlock = BigNumber.from(
+    vaultState.data?.lastManagementBlock
+  ).toNumber();
+  const { data: blockNumber } = useBlockNumber({
+    watch: true,
   });
+  console.log({ lastManagementBlock, blockNumber });
+
   return (
     <>
       <Accordion
@@ -178,15 +171,21 @@ const VaultComp = ({
                   ) : (
                     <GridItem textAlign="center">
                       <Flex justify="center" align="center" py={"2rem"}>
-                        <Heading
-                          variant="medium"
-                          textAlign="center"
-                          color={colorMode == "dark" ? "yellow" : "black"}
-                          lineHeight="1.5rem"
-                        >
-                          This vault is in validating phase. Farmer can end this
-                          phase earlier to allow user deposits.
-                        </Heading>
+                        {lastManagementBlock > blockNumber! ? (
+                          <Heading
+                            variant="medium"
+                            textAlign="center"
+                            color={colorMode == "dark" ? "yellow" : "black"}
+                            lineHeight="1.5rem"
+                          >
+                            This vault is in validating phase until block number{" "}
+                            {lastManagementBlock}. Farmer can end this phase
+                            earlier to allow user deposits. Blocks remaining:{" "}
+                            {lastManagementBlock - blockNumber!}
+                          </Heading>
+                        ) : (
+                          <Heading>+0%</Heading>
+                        )}
                       </Flex>
                       <Text
                         style={{
