@@ -177,7 +177,7 @@ const VaultComp = ({
                     </Flex>
                   ) : (
                     <GridItem textAlign="center">
-                      <Flex justify="center" align="center" pb={"8rem"}>
+                      <Flex justify="center" align="center" py={"2rem"}>
                         <Heading
                           variant="medium"
                           textAlign="center"
