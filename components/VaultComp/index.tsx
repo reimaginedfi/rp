@@ -164,6 +164,16 @@ const VaultComp = ({
                   w="full"
                   px="1rem"
                 >
+                  <Flex justify="center" align="center">
+                    <Heading
+                      variant="medium"
+                      textAlign="center"
+                      color="brand"
+                      lineHeight="1.5rem"
+                    >
+                      This vault is in management phase
+                    </Heading>
+                  </Flex>
                   {aumCap === "0.0" ? (
                     <Flex justify="center" align="center">
                       <Heading
@@ -207,7 +217,7 @@ const VaultComp = ({
 
                   <GridItem alignItems="center">
                     <Button
-                      disabled={aumCap === "0.0"}
+                      disabled={aumCap === "0.0" || true}
                       w="full"
                       variant="primary"
                       onClick={onOpenDeposit}
