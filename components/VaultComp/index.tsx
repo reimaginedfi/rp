@@ -181,10 +181,11 @@ const VaultComp = ({
                         <Heading
                           variant="medium"
                           textAlign="center"
-                          color="brand"
+                          color="yellow"
                           lineHeight="1.5rem"
                         >
-                          This vault is in management phase
+                          This vault is in validating phase. Farmer can end this
+                          phase earlier to allow user deposits.
                         </Heading>
                       </Flex>
                       <Text
