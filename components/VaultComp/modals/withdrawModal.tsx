@@ -21,7 +21,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { vaults } from "../../../contracts";
-import { useNetwork } from "wagmi";
+import { useAccount, useContractWrite, useNetwork } from "wagmi";
 import { useVaultWithdraw } from "../../hooks/useVault";
 import { formatUnits } from "ethers/lib/utils";
 import { DangerToast } from "../../Toasts";
@@ -36,6 +36,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   const [amount, setAmount] = useState<string>("");
   const { chain } = useNetwork();
   const [contractConfig, setContractConfig] = useState<any>();
+  const { address } = useAccount();
 
   const {
     hasPendingWithdrawal,
@@ -49,7 +50,14 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     unlockingError,
     unlockingStatus,
     claimStatus,
+    userHasPendingDeposit,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
+
+  const updatePendingDeposit = useContractWrite({
+    ...contractConfig,
+    functionName: "updatePendingDepositState",
+    args: [address],
+  });
 
   const toast = useToast();
 

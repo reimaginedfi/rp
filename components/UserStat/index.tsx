@@ -1,34 +1,37 @@
 import { useEffect, useState } from "react";
 import {
+  Badge,
   Box,
+  Button,
   Flex,
   Grid,
   GridItem,
   Icon,
   Stack,
+  Tag,
   Text,
   useColorMode,
   VStack,
 } from "@chakra-ui/react";
 import { HiCurrencyDollar, HiSave } from "react-icons/hi";
 import { AiFillBank } from "react-icons/ai";
-import { useAccount, useContractRead, useNetwork } from "wagmi";
+import {
+  useAccount,
+  useContractRead,
+  useContractWrite,
+  useNetwork,
+} from "wagmi";
 import { useVaultUser } from "../hooks/useVault";
 import { vaults } from "../../contracts";
 import { BigNumber } from "ethers";
-import { formatUnits, parseUnits } from "ethers/lib/utils";
+import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
 import { truncate } from "../utils/stringsAndNumbers";
+import { useContractConfig } from "../Vault";
 
-const UserStat = ({ contractConfig }: any) => {
+const UserStat = () => {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
-  const { chain } = useNetwork();
-  // const [contractConfig, setContractConfig] = useState<any>();
-
-  // useEffect(() => {
-  //   vaults[chain!.id].map((contract) => setContractConfig(contract));
-  // }, [vaults])
-
+  const contractConfig = useContractConfig();
   const {
     sharesValue,
     user,
@@ -37,13 +40,11 @@ const UserStat = ({ contractConfig }: any) => {
     totalDeposited,
   } = useVaultUser(contractConfig, address ?? "");
 
-  // const { data } = useContractRead({
-  //   ...contractConfig,
-  //   functionName: "getStoredValue",
-  //   args: [address],
-  //   watch: true,
-  // });
-
+  const updatePendingDeposit = useContractWrite({
+    ...contractConfig,
+    functionName: "updatePendingDepositState",
+    args: [address],
+  });
   return (
     <Grid
       templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
@@ -75,7 +76,7 @@ const UserStat = ({ contractConfig }: any) => {
             />
           </VStack>
           <Stack>
-            <Text variant="small">Total Deposit Value</Text>
+            <Text variant="small">Pending Deposits</Text>
             <Text
               fontFamily="Inter"
               fontWeight="500"
@@ -135,7 +136,8 @@ const UserStat = ({ contractConfig }: any) => {
             />
           </VStack>
           <Stack>
-            <Text variant="small">Shares Value</Text>
+            <Text variant="small">Vault Tokens </Text>
+
             <Text
               fontFamily="Inter"
               fontWeight="500"
@@ -143,9 +145,29 @@ const UserStat = ({ contractConfig }: any) => {
               color={colorMode === "dark" ? "#EDEDED" : "#171717"}
             >
               <span style={{ fontWeight: "bold" }}>
-                {sharesValue.data ? parseInt(sharesValue!.data!._hex!, 16) : 0}
+                {commify(
+                  formatUnits(
+                    sharesValue.data
+                      ? parseInt(sharesValue!.data!._hex!, 16)
+                      : 0,
+                    6
+                  )
+                )}
               </span>{" "}
-              VT
+              VT{" "}
+              {hasPendingDeposit && (
+                <Button
+                  size={"xs"}
+                  colorScheme="orange"
+                  variant={"outline"}
+                  isLoading={updatePendingDeposit.isLoading}
+                  onClick={() => {
+                    updatePendingDeposit.write();
+                  }}
+                >
+                  Claim Pending
+                </Button>
+              )}
             </Text>
           </Stack>
         </Grid>

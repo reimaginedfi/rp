@@ -10,6 +10,7 @@ import {
   Alert,
   AlertDescription,
   AlertIcon,
+  AlertTitle,
   Box,
   Button,
   CloseButton,
@@ -38,7 +39,7 @@ import VaultProgressBar from "./VaultProgressBar";
 
 import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
-import { useVaultMeta, useVaultState } from "../hooks/useVault";
+import { useVaultMeta, useVaultState, useVaultUser } from "../hooks/useVault";
 import { truncate } from "../utils/stringsAndNumbers";
 import { BigNumber } from "ethers";
 import { VaultHeroLeft } from "./VaultHeroLeft";
@@ -95,15 +96,13 @@ const VaultComp = ({
   const [depositSuccess, setDepositSuccess] = useState<boolean>(false);
 
   const { width, height } = useWindowSize();
-
-  const vaultState = useVaultState(epoch);
-  const lastManagementBlock = BigNumber.from(
-    vaultState.data?.lastManagementBlock ?? 0
-  ).toNumber();
-  const { data: blockNumber, isLoading } = useBlockNumber({
-    watch: true,
-  });
-
+  const {
+    sharesValue,
+    user,
+    hasPendingDeposit,
+    hasPendingDepositValue,
+    totalDeposited,
+  } = useVaultUser(contractConfig, address ?? "");
   return (
     <>
       <Accordion
@@ -170,22 +169,12 @@ const VaultComp = ({
                   </GridItem>
 
                   <GridItem alignItems="center">
-                    <Button
-                      disabled={aumCap === "0.0" || true}
-                      w="full"
-                      variant="primary"
-                      onClick={onOpenDeposit}
-                    >
+                    <Button w="full" variant="primary" onClick={onOpenDeposit}>
                       Deposit
                     </Button>
                   </GridItem>
                   <GridItem>
-                    <Button
-                      disabled
-                      w="full"
-                      variant="ghost"
-                      onClick={onOpenWithdraw}
-                    >
+                    <Button w="full" variant="ghost" onClick={onOpenWithdraw}>
                       Withdraw
                     </Button>
                   </GridItem>
@@ -257,7 +246,24 @@ const VaultComp = ({
                       borderRadius="1rem"
                       bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
                     >
-                      <UserStat contractConfig={contractConfig} />
+                      {hasPendingDeposit && (
+                        <Alert
+                          status="warning"
+                          borderRadius={"md"}
+                          py={1}
+                          px={2}
+                        >
+                          <AlertIcon boxSize={"1rem"}></AlertIcon>
+                          <AlertTitle fontSize={"xs"}>Pending VT</AlertTitle>
+                          <AlertDescription>
+                            <Text fontSize={"xs"}>
+                              You can claim it manually or perform another
+                              deposit
+                            </Text>
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                      <UserStat />
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>

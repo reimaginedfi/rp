@@ -67,12 +67,10 @@ export const VaultHeroLeft = () => {
   if (lastManagementBlock > (blockNumber.data ?? 0)) {
     return (
       <GridItem justifyContent={"center"}>
-        <Badge colorScheme="yellow" variant={"outline"}>
+        <Badge colorScheme="orange" variant={"outline"}>
           Validating
         </Badge>
-        <Text mt={4}>
-          Vault will open again at block number {lastManagementBlock}
-        </Text>
+        <Text mt={4}>Vault will reopen at block {lastManagementBlock}</Text>
         <Stack pt={4}>
           <VaultProgressBar
             color="orange"

@@ -291,6 +291,12 @@ export const useVaultWithdraw = (
     watch: true,
     args: [address ?? ""],
   });
+  const userHasPendingDeposit = useContractRead({
+    ...contractConfig,
+    functionName: "userHasPendingDeposit",
+    watch: true,
+    args: [address ?? ""],
+  });
 
   const { user } = useVaultUser(contractConfig, address ?? "");
 
@@ -338,6 +344,8 @@ export const useVaultWithdraw = (
     unlockingSuccess,
     claimStatus,
     unlockingStatus,
+    userHasPendingDeposit,
+    userHasPendingRedeem,
   };
 };
 
