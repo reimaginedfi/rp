@@ -164,16 +164,6 @@ const VaultComp = ({
                   w="full"
                   px="1rem"
                 >
-                  <Flex justify="center" align="center">
-                    <Heading
-                      variant="medium"
-                      textAlign="center"
-                      color="brand"
-                      lineHeight="1.5rem"
-                    >
-                      This vault is in management phase
-                    </Heading>
-                  </Flex>
                   {aumCap === "0.0" ? (
                     <Flex justify="center" align="center">
                       <Heading
@@ -187,10 +177,16 @@ const VaultComp = ({
                     </Flex>
                   ) : (
                     <GridItem textAlign="center">
-                      <Text fontSize="32px" fontWeight={600}>
-                        +0%
-                      </Text>
-                      <Text fontSize="24px">+0 {asset}</Text>
+                      <Flex justify="center" align="center" pb={"8rem"}>
+                        <Heading
+                          variant="medium"
+                          textAlign="center"
+                          color="brand"
+                          lineHeight="1.5rem"
+                        >
+                          This vault is in management phase
+                        </Heading>
+                      </Flex>
                       <Text
                         style={{
                           backgroundClip: "text",
