@@ -11,6 +11,7 @@ import {
   AlertDescription,
   AlertIcon,
   AlertTitle,
+  Badge,
   Box,
   Button,
   CloseButton,
@@ -238,7 +239,14 @@ const VaultComp = ({
                       justifyItems="space-between"
                       justifyContent="space-between"
                     >
-                      <Heading variant="medium">Your Vault Stats</Heading>
+                      <Heading variant="medium">
+                        Your Vault Stats{" "}
+                        {hasPendingDeposit && (
+                          <Badge borderRadius={"md"} colorScheme="orange">
+                            1
+                          </Badge>
+                        )}
+                      </Heading>
                       <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel

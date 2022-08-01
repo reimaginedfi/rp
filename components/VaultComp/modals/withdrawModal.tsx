@@ -146,7 +146,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
             <VStack align="center" gap="1rem" mx={2} mt={3} mb={6}>
               <Heading variant="medium">Your Vault Tokens:</Heading>
               <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>
-                {formatUnits(user.data?.vaultShares ?? 0)} VT
+                {formatUnits(user.data?.vaultShares ?? 0, 6)} VT
               </Text>
               <VStack align="center" gap={2} mx={2} mt={3} mb={6}>
                 <Heading variant="medium">Amount to Unlock</Heading>
@@ -171,7 +171,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         mr="0.25rem"
                         size="xs"
                         onClick={() =>
-                          setAmount(formatUnits(user.data?.vaultShares))
+                          setAmount(formatUnits(user.data?.vaultShares, 6))
                         }
                       >
                         MAX
@@ -194,9 +194,10 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   mt={"4rem"}
                   variant="primary"
                 >
-                  Unlock {amount!}
+                  Unlock {amount!} VT
                 </Button>
               )}
+
               {withdrawable && (
                 <Button
                   onClick={handleClaim}

@@ -309,7 +309,7 @@ export const useVaultWithdraw = (
   } = useContractWrite({
     ...contractConfig,
     functionName: "unlock",
-    args: [parseUnits(unlockAmount, assetToken.data?.decimals)],
+    args: [parseUnits(unlockAmount ?? "0", 6)],
   });
   const hasPendingWithdrawal = userHasPendingRedeem.data;
 

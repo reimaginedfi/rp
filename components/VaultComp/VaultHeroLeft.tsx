@@ -1,14 +1,14 @@
 import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
   Badge,
   Flex,
   GridItem,
   Heading,
-  Progress,
   Spinner,
   Stack,
+  Stat,
+  StatArrow,
+  StatHelpText,
+  StatNumber,
   Text,
   useColorMode,
 } from "@chakra-ui/react";
@@ -88,6 +88,17 @@ export const VaultHeroLeft = () => {
 
   return (
     <GridItem>
+      <Badge colorScheme="green" variant={"outline"}>
+        Running
+      </Badge>
+
+      <Stat mt={"1rem"}>
+        <StatNumber>+0%</StatNumber>
+        <StatHelpText>
+          <StatArrow type="increase" />
+          0.00%
+        </StatHelpText>
+      </Stat>
       <Text
         style={{
           backgroundClip: "text",
