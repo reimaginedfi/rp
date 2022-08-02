@@ -14,7 +14,7 @@ import {
 import vaultContractInterface from "../../abi/vault.abi.json";
 import { ContractConfig } from "../../contracts";
 import { SuccessToast } from "../Toasts";
-import { useContractConfig } from "../Vault";
+import { useContractConfig } from "../Vault/ContractContext";
 
 // export const useVault = (addressOrName: string) => {
 //   const vault = useMemo(() => {
@@ -169,6 +169,7 @@ export const useVaultDeposit = (
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
     functionName: "approve",
+    mode: "recklesslyUnprepared",
     args: [
       contractConfig?.addressOrName,
       parseUnits(depositAmount, assetToken.data?.decimals),
@@ -201,6 +202,7 @@ export const useVaultDeposit = (
     contractInterface: erc20ABI,
     functionName: "approve",
     args: [contractConfig?.addressOrName, constants.MaxUint256],
+    mode: "recklesslyUnprepared",
   });
 
   const {
@@ -223,6 +225,7 @@ export const useVaultDeposit = (
         confirmations: 1,
       });
     },
+    mode: "recklesslyUnprepared",
   });
 
   const depositFor = useContractWrite({
@@ -255,6 +258,7 @@ export const useVaultDeposit = (
     ],
     functionName: "deposit",
     args: [parseUnits(depositAmount, assetToken.data?.decimals), _for],
+    mode: "recklesslyUnprepared",
   });
 
   return {
@@ -310,6 +314,7 @@ export const useVaultWithdraw = (
     ...contractConfig,
     functionName: "unlock",
     args: [parseUnits(unlockAmount ?? "0", 6)],
+    mode: "recklesslyUnprepared",
   });
   const hasPendingWithdrawal = userHasPendingRedeem.data;
 
@@ -328,6 +333,7 @@ export const useVaultWithdraw = (
   } = useContractWrite({
     ...contractConfig,
     functionName: "withdraw",
+    mode: "recklesslyUnprepared",
   });
 
   return {

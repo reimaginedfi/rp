@@ -8,16 +8,8 @@ import { ContractConfig } from "../../contracts";
 import { useVaultMeta } from "../hooks/useVault";
 import { truncate } from "../utils/stringsAndNumbers";
 import VaultComp from "../VaultComp";
+import { Contract } from "./ContractContext";
 
-export const Contract = createContext(null as ContractConfig | null);
-
-export const useContractConfig = () => {
-  const contractConfig = useContext(Contract);
-  if (!contractConfig) {
-    throw new Error("No contract config provided");
-  }
-  return contractConfig;
-};
 export const Vault = ({
   contractConfig,
 }: {
@@ -36,13 +28,6 @@ export const Vault = ({
     vaultState.data?.assetsToDeposit ?? 0,
     assetToken.data?.decimals
   );
-
-  // join words, remove "token" if any
-  // REFI Pro USDC Vault Token -> REFIProUSDCVault
-  const name = vaultName.data
-    ?.split(" ")
-    .filter((word: string) => word.toLowerCase() !== "token")
-    .join("");
 
   const toast = useToast();
   useContractEvent({
@@ -66,8 +51,6 @@ export const Vault = ({
     // <PortalContext.Provider value={portalRef}>
     <Contract.Provider value={contractConfig}>
       <VaultComp
-        vaultName={name}
-        asset={assetToken?.data?.symbol}
         currentAum={formatUnits(aum.data ?? 0, assetToken.data?.decimals ?? 0)}
         aumCap={formatUnits(aumCap.data ?? 0, assetToken.data?.decimals ?? 0)}
         epoch={BigNumber.from(epoch.data ?? 0).toNumber() ?? 0}

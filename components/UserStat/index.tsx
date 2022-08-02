@@ -26,7 +26,7 @@ import { vaults } from "../../contracts";
 import { BigNumber } from "ethers";
 import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
 import { truncate } from "../utils/stringsAndNumbers";
-import { useContractConfig } from "../Vault";
+import { useContractConfig } from "../Vault/ContractContext";
 
 const UserStat = () => {
   const { colorMode } = useColorMode();
@@ -44,6 +44,7 @@ const UserStat = () => {
     ...contractConfig,
     functionName: "updatePendingDepositState",
     args: [address],
+    mode: "recklesslyUnprepared",
   });
   return (
     <Grid

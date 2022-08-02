@@ -44,10 +44,9 @@ import { useVaultMeta, useVaultState, useVaultUser } from "../hooks/useVault";
 import { truncate } from "../utils/stringsAndNumbers";
 import { BigNumber } from "ethers";
 import { VaultHeroLeft } from "./VaultHeroLeft";
+import { VaultTitle } from "./VaultTitle";
 
 type VaultProps = {
-  vaultName: string;
-  asset: string | undefined;
   currentAum: string;
   aumCap: string;
   epoch: number | undefined;
@@ -63,8 +62,6 @@ const FarmerSettingsAccordion = dynamic(
 );
 
 const VaultComp = ({
-  vaultName,
-  asset,
   currentAum,
   aumCap,
   epoch,
@@ -121,12 +118,7 @@ const VaultComp = ({
               <AccordionButton borderRadius="1rem">
                 <Stack w="full">
                   <Flex w="full" justify="space-between" alignItems="center">
-                    <Flex direction="row" alignItems="center">
-                      <Heading variant="large">{vaultName! || "Vault"}</Heading>
-                      <Text ml="0.5rem" variant="medium">
-                        ({asset})
-                      </Text>
-                    </Flex>
+                    <VaultTitle />
                     <AccordionIcon />
                   </Flex>
                   {!isExpanded && (

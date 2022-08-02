@@ -15,7 +15,7 @@ import {
 import { BigNumber } from "ethers";
 import { useBlockNumber } from "wagmi";
 import { useVaultMeta, useVaultState } from "../hooks/useVault";
-import { useContractConfig } from "../Vault";
+import { useContractConfig } from "../Vault/ContractContext";
 import VaultProgressBar from "./VaultProgressBar";
 
 export const VaultHeroLeft = () => {
@@ -88,9 +88,9 @@ export const VaultHeroLeft = () => {
 
   return (
     <GridItem justifySelf="center" textAlign="center">
-                      <Badge colorScheme="green" variant={"outline"}>
-                      Running
-                    </Badge>
+      <Badge colorScheme="green" variant={"outline"}>
+        Running
+      </Badge>
       <Stat mt={"0.5rem"}>
         <StatNumber>+0.00%</StatNumber>
         <StatHelpText>
