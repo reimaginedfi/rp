@@ -10,7 +10,6 @@ import {
   Alert,
   AlertDescription,
   AlertIcon,
-  AlertTitle,
   Badge,
   Box,
   Button,
@@ -23,7 +22,6 @@ import {
   Link,
   SkeletonText,
   Spacer,
-  Spinner,
   Stack,
   Text,
   useColorMode,
@@ -31,7 +29,7 @@ import {
 } from "@chakra-ui/react";
 import { commify } from "ethers/lib/utils";
 import useWindowSize from "react-use/lib/useWindowSize";
-import { useAccount, useBlockNumber, useContractRead } from "wagmi";
+import { useAccount, useContractRead } from "wagmi";
 import { ContractConfig } from "../../contracts";
 import UserStat from "../UserStat";
 import DepositModal from "./modals/depositModal";
@@ -40,11 +38,11 @@ import VaultProgressBar from "./VaultProgressBar";
 
 import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
-import { useVaultMeta, useVaultState, useVaultUser } from "../hooks/useVault";
+import { useVaultMeta, useVaultUser } from "../hooks/useVault";
 import { truncate } from "../utils/stringsAndNumbers";
-import { BigNumber } from "ethers";
 import { VaultHeroLeft } from "./VaultHeroLeft";
 import { VaultTitle } from "./VaultTitle";
+import { VaultTruncated } from "./VaultTruncated";
 
 type VaultProps = {
   currentAum: string;
@@ -121,23 +119,7 @@ const VaultComp = ({
                     <VaultTitle />
                     <AccordionIcon />
                   </Flex>
-                  {!isExpanded && (
-                    <>
-                      <VaultProgressBar
-                        currentAum={parseInt(currentAum)}
-                        aumCap={parseInt(aumCap)}
-                        remainingDeposits={pendingDeposit}
-                      />
-                      <Flex alignItems={"center"}>
-                        <Text variant="medium">Epoch {epoch}</Text>
-                        <Spacer />
-                        <Text variant="medium">
-                          {truncate(commify(+pendingDeposit! + +currentAum), 2)}
-                          /{truncate(commify(aumCap), 2)} USDC
-                        </Text>
-                      </Flex>
-                    </>
-                  )}
+                  {!isExpanded && <VaultTruncated />}
                 </Stack>
               </AccordionButton>
 
