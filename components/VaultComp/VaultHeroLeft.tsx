@@ -87,12 +87,11 @@ export const VaultHeroLeft = () => {
   }
 
   return (
-    <GridItem>
-      <Badge colorScheme="green" variant={"outline"}>
-        Running
-      </Badge>
-
-      <Stat mt={"1rem"}>
+    <GridItem justifySelf="center" textAlign="center">
+                      <Badge colorScheme="green" variant={"outline"}>
+                      Running
+                    </Badge>
+      <Stat mt={"0.5rem"}>
         <StatNumber>+0.00%</StatNumber>
         <StatHelpText>
           <StatArrow type="increase" />

@@ -151,6 +151,7 @@ const VaultComp = ({
 
               <AccordionPanel p="0">
                 <Grid
+                  mt="1rem"
                   mb="2rem"
                   gap={6}
                   templateColumns="repeat(2, 1fr)"

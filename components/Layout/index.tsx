@@ -137,10 +137,16 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
                 textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
               }}
             >
-              {router.pathname === "/about" ? "Home" : "About"}
+              {router.pathname === "/about" ? "Vaults" : "About"}
             </Text>
           </NextLink>
-            <Link href="https://refi.gitbook.io/refi-pro/">
+            <Link href="https://refi.gitbook.io/refi-pro/"
+                            _hover={{
+                              bg: "none",
+                              cursor: "pointer",
+                              textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
+                            }}
+            >
               Docs <RiArrowRightUpLine style={{ verticalAlign: "middle" }} />
             </Link>
 
