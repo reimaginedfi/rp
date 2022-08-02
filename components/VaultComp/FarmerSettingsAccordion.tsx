@@ -277,7 +277,7 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
                 variant={"primary"}
                 isLoading={isUpdatingAumCap}
                 onClick={() => {
-                  updateAumCap();
+                  updateAumCap?.();
                 }}
                 ml={3}
               >

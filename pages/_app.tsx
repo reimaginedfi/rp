@@ -16,7 +16,7 @@ import theme from "../theme";
 export const { chains, provider, webSocketProvider } = configureChains(
   [chain.mainnet],
   [
-    infuraProvider({ infuraId: process.env.NEXT_PUBLIC_INFURA_ID }),
+    infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_ID as string }),
     publicProvider(),
   ]
 );

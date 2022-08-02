@@ -1,28 +1,26 @@
 import {
-  Flex,
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Button,
+  FormControl,
+  FormLabel,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Stack,
-  UseDisclosureReturn,
-  Text,
-  Button,
-  ModalFooter,
-  FormControl,
-  FormLabel,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  Alert,
-  AlertIcon,
-  AlertDescription,
-  AlertTitle,
   Spinner,
+  Stack,
+  UseDisclosureReturn,
   useToast,
 } from "@chakra-ui/react";
 import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
@@ -60,6 +58,7 @@ export const EndEpochModal = ({
     onMutate: (variables) => {
       console.log(variables);
     },
+    mode: "recklesslyUnprepared",
   });
 
   useWaitForTransaction({
