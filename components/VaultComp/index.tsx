@@ -39,6 +39,7 @@ import VaultProgressBar from "./VaultProgressBar";
 import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
 import { useVaultMeta, useVaultUser } from "../hooks/useVault";
+import { Number } from "../Number";
 import { truncate } from "../utils/stringsAndNumbers";
 import { VaultHeroLeft } from "./VaultHeroLeft";
 import { VaultTitle } from "./VaultTitle";
@@ -182,7 +183,8 @@ const VaultComp = ({
                   <Text variant="medium">AUM</Text>
                   <Spacer />
                   <Text variant="medium">
-                    {commify(currentAum)} / {commify(aumCap)} USDC
+                    <Number>{commify(currentAum)}</Number> /{" "}
+                    <Number>{commify(aumCap)}</Number> USDC
                   </Text>
                 </Flex>
 
@@ -198,7 +200,8 @@ const VaultComp = ({
                   <Text variant="medium">Pending Deposits</Text>
                   <Spacer />
                   <Text variant="medium">
-                    {truncate(commify(pendingDeposit!), 2)} USDC
+                    <Number>{truncate(commify(pendingDeposit!), 2)}</Number>{" "}
+                    USDC
                   </Text>
                 </Flex>
 
@@ -215,7 +218,7 @@ const VaultComp = ({
                       justifyContent="space-between"
                     >
                       <Heading variant="medium">
-                        Your Vault Stats{" "}
+                        Your Stats{" "}
                         {hasPendingDeposit.data && (
                           <Badge borderRadius={"md"} colorScheme="orange">
                             1
@@ -408,6 +411,26 @@ const VaultComp = ({
                 {farmer.data && farmer.data.toString() === address && (
                   <FarmerSettingsAccordion contractConfig={contractConfig} />
                 )}
+                <Accordion
+                  borderRadius="1rem"
+                  pt="1rem"
+                  allowToggle
+                  border="none"
+                >
+                  <AccordionItem border="none">
+                    <AccordionButton
+                      borderRadius="1rem"
+                      justifyItems="space-between"
+                      justifyContent="space-between"
+                    >
+                      <Heading variant="medium">Vault Activity</Heading>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel display={"grid"} placeContent="center">
+                      <Number>[Work in progress]</Number>
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
               </AccordionPanel>
             </>
           )}

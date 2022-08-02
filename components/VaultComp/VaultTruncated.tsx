@@ -1,6 +1,7 @@
-import { Badge, Flex, Skeleton, Spacer, Text } from "@chakra-ui/react";
+import { Badge, Flex, Skeleton, Text } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
 import { commify, formatUnits } from "ethers/lib/utils";
+import { Number } from "../Number";
 import { truncate } from "../utils/stringsAndNumbers";
 import { useReadVault, useWatchVault } from "../Vault/ContractContext";
 import { useVaultAssetToken } from "../Vault/hooks/useVaultAsset";
@@ -53,14 +54,13 @@ export const VaultTruncated = () => {
         aumCap={+aumCap}
         remainingDeposits={"0"}
       />
-      <Flex alignItems={"center"}>
+      <Flex alignItems={"center"} justifyContent="space-between">
         <Badge colorScheme={"green"} variant="outline">
-          Epoch {epoch}
+          Epoch: {epoch}
         </Badge>
-        <Spacer />
         <Text variant="medium">
-          {truncate(commify(+currentAum), 2)}/{truncate(commify(aumCap), 2)}{" "}
-          USDC
+          <Number>{truncate(commify(+currentAum), 2)}</Number>/
+          <Number>{truncate(commify(aumCap), 2)}</Number> USDC
         </Text>
       </Flex>
     </>
