@@ -183,8 +183,8 @@ const VaultComp = ({
                   <Text variant="medium">AUM</Text>
                   <Spacer />
                   <Text variant="medium">
-                    <Number>{commify(currentAum)}</Number> /{" "}
-                    <Number>{commify(aumCap)}</Number> USDC
+                    <Number>{commify(truncate(currentAum, 2))}</Number> /{" "}
+                    <Number>{commify(truncate(aumCap, 2))}</Number> USDC
                   </Text>
                 </Flex>
 
