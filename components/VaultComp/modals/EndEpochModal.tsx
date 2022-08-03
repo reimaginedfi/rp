@@ -55,7 +55,7 @@ export const EndEpochModal = ({
     ...contractConfig,
     functionName: "progressEpoch",
     args: [aumBN],
-    onMutate: (variables) => {
+    onMutate: (variables: any) => {
       console.log(variables);
     },
     mode: "recklesslyUnprepared",

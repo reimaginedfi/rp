@@ -36,7 +36,7 @@ const UserStat = () => {
     ...contractConfig,
     functionName: "updatePendingDepositState",
     args: [address],
-    // mode: "recklesslyUnprepared",
+    mode: "recklesslyUnprepared",
   });
 
   const userResult = useWatchVault("vaultUsers", {

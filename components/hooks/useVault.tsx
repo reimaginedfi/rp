@@ -169,7 +169,7 @@ export const useVaultDeposit = (
       contractConfig?.addressOrName,
       parseUnits(depositAmount, assetToken.data?.decimals),
     ],
-    onSuccess(data, variables, context) {
+    onSuccess(data: any, variables: any, context: any) {
       addRecentTransaction({
         hash: data?.hash,
         description: `Approve REFI Pro to spend ${commify(depositAmount)} USDC`,
@@ -213,7 +213,7 @@ export const useVaultDeposit = (
     functionName: "deposit",
     args: [parseUnits(depositAmount, assetToken.data?.decimals)],
 
-    onSuccess(data, variables, context) {
+    onSuccess(data: any, variables: any, context: any) {
       addRecentTransaction({
         hash: data?.hash,
         description: `Deposit ${commify(depositAmount)} USDC`,
@@ -221,7 +221,7 @@ export const useVaultDeposit = (
       });
     },
     mode: "recklesslyUnprepared",
-    onSettled(data, error, variables, context) {
+    onSettled(data: any, error: any, variables: any, context: any) {
       console.log({ data });
       console.log({ error });
       console.log({ variables });
