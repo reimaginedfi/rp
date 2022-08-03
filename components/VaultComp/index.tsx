@@ -10,7 +10,6 @@ import {
   Alert,
   AlertDescription,
   AlertIcon,
-  Badge,
   Box,
   Button,
   CloseButton,
@@ -31,7 +30,6 @@ import { commify } from "ethers/lib/utils";
 import useWindowSize from "react-use/lib/useWindowSize";
 import { useAccount, useContractRead } from "wagmi";
 import { ContractConfig } from "../../contracts";
-import UserStat from "../UserStat";
 import DepositModal from "./modals/depositModal";
 import WithdrawModal from "./modals/withdrawModal";
 import VaultProgressBar from "./VaultProgressBar";
@@ -41,6 +39,7 @@ import Confetti from "react-confetti";
 import { useVaultMeta, useVaultUser } from "../hooks/useVault";
 import { Number } from "../Number";
 import { truncate } from "../utils/stringsAndNumbers";
+import { UserSection } from "./sections/UserSection";
 import { VaultHeroLeft } from "./VaultHeroLeft";
 import { VaultTitle } from "./VaultTitle";
 import { VaultTruncated } from "./VaultTruncated";
@@ -205,55 +204,7 @@ const VaultComp = ({
                   </Text>
                 </Flex>
 
-                <Accordion
-                  borderRadius="1rem"
-                  mt="1rem"
-                  allowToggle
-                  border="none"
-                >
-                  <AccordionItem border="none">
-                    <AccordionButton
-                      borderRadius="1rem"
-                      justifyItems="space-between"
-                      justifyContent="space-between"
-                    >
-                      <Heading variant="medium">
-                        Your Stats{" "}
-                        {hasPendingDeposit.data && (
-                          <Badge borderRadius={"md"} colorScheme="orange">
-                            1
-                          </Badge>
-                        )}
-                      </Heading>
-                      <AccordionIcon />
-                    </AccordionButton>
-                    <AccordionPanel
-                      p={{ base: 1, md: 3 }}
-                      borderRadius="1rem"
-                      bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
-                    >
-                      {hasPendingDeposit.data && (
-                        <Alert
-                          status="warning"
-                          borderRadius={"md"}
-                          py={1}
-                          px={2}
-                        >
-                          <AlertIcon boxSize={"1rem"}></AlertIcon>
-                          <AlertDescription>
-                            <Text fontSize={"xs"}>
-                              You have claimable Vault Tokens. They will be
-                              automatically claimed when you do another deposit,
-                              or you can claim them manually. Unclaimed VT will
-                              still count towards this epoch{"'"}s progressions.
-                            </Text>
-                          </AlertDescription>
-                        </Alert>
-                      )}
-                      <UserStat />
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
+                <UserSection />
                 <Accordion
                   borderRadius="1rem"
                   pt="1rem"

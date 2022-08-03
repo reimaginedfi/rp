@@ -1,19 +1,14 @@
-import { useToast } from "@chakra-ui/react";
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
 import { BigNumber, constants } from "ethers";
 import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
-import { useMemo } from "react";
 import {
   erc20ABI,
-  etherscanBlockExplorers,
   useAccount,
   useContractRead,
   useContractWrite,
   useToken,
 } from "wagmi";
-import vaultContractInterface from "../../abi/vault.abi.json";
 import { ContractConfig } from "../../contracts";
-import { SuccessToast } from "../Toasts";
 import { useContractConfig } from "../Vault/ContractContext";
 
 // export const useVault = (addressOrName: string) => {
@@ -211,13 +206,13 @@ export const useVaultDeposit = (
     error: storeAssetError,
     status: storeAssetStatus,
     data: depositData,
+    status,
+    error,
   } = useContractWrite({
     ...contractConfig,
     functionName: "deposit",
     args: [parseUnits(depositAmount, assetToken.data?.decimals)],
-    overrides: {
-      gasLimit: 300000,
-    },
+
     onSuccess(data, variables, context) {
       addRecentTransaction({
         hash: data?.hash,
@@ -226,7 +221,18 @@ export const useVaultDeposit = (
       });
     },
     mode: "recklesslyUnprepared",
+    onSettled(data, error, variables, context) {
+      console.log({ data });
+      console.log({ error });
+      console.log({ variables });
+      console.log({ context });
+    },
+    overrides: {
+      gasLimit: 1000000,
+    },
   });
+
+  console.log(status, error);
 
   const depositFor = useContractWrite({
     ...contractConfig,

@@ -7,7 +7,7 @@ import "@fontsource/inter/variable-full.css";
 import { getDefaultWallets } from "@rainbow-me/rainbowkit";
 import type { AppProps } from "next/app";
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
-import { infuraProvider } from "wagmi/providers/infura";
+// import { infuraProvider } from "wagmi/providers/infura";
 import { publicProvider } from "wagmi/providers/public";
 
 import Layout from "../components/Layout";
@@ -16,7 +16,7 @@ import theme from "../theme";
 export const { chains, provider, webSocketProvider } = configureChains(
   [chain.mainnet],
   [
-    infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_ID as string }),
+    // infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_ID as string }),
     publicProvider(),
   ]
 );

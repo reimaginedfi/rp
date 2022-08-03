@@ -1,6 +1,7 @@
 import type { GetContractArgs } from "@wagmi/core";
 import { chain } from "wagmi";
 import vaultContractInterface from "./abi/vault.abi.json";
+import configContractInterface from "./abi/vaultconfig.abi.json";
 
 export type ContractConfig = GetContractArgs;
 
@@ -22,6 +23,15 @@ export const vaults: ContractsMap = {
     {
       addressOrName: "0x00000008786611c72a00909bd8d398b1be195be3",
       contractInterface: vaultContractInterface.abi,
+    },
+  ],
+};
+
+export const vaultConfigs: ContractsMap = {
+  [chain.mainnet.id]: [
+    {
+      addressOrName: "0x00000997e18087b2477336fe87B0c486c6A2670D",
+      contractInterface: configContractInterface.abi,
     },
   ],
 };

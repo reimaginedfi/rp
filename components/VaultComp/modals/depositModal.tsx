@@ -1,32 +1,36 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
-  ModalOverlay,
-  ModalCloseButton,
-  ModalContent,
-  Modal,
-  ModalHeader,
-  ModalBody,
+  Button,
+  Flex,
   Heading,
   Input,
   InputGroup,
   InputRightElement,
-  Button,
-  Grid,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Text,
   useColorMode,
-  Flex,
-  Stack,
-  VStack,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
 
 //Wagmi
-import { useAccount, useNetwork, useWaitForTransaction } from "wagmi";
+import {
+  useAccount,
+  useContractRead,
+  useNetwork,
+  useWaitForTransaction,
+} from "wagmi";
 
 //Vaults
+import { parseUnits } from "ethers/lib/utils";
+import { vaultConfigs, vaults } from "../../../contracts";
 import { useVaultDeposit, useVaultUser } from "../../hooks/useVault";
-import { vaults } from "../../../contracts";
 import { DangerToast, SuccessToast } from "../../Toasts";
 import getErrorMessage from "../../utils/errors";
 
@@ -52,7 +56,6 @@ export default function DepositModal({
 
   const {
     balanceDisplay,
-    isAllowed,
     approve,
     isApproving,
     storeAsset,
@@ -71,19 +74,6 @@ export default function DepositModal({
   const { totalDeposited } = useVaultUser(contractConfig, address ?? "");
 
   const toast = useToast();
-
-  useEffect(() => {
-    if (isAllowed && approveStatus === "success") {
-      toast({
-        variant: "success",
-        duration: 5000,
-        position: "bottom",
-        render: () => (
-          <SuccessToast message={`You have approved ${amount} USDC`} />
-        ),
-      });
-    }
-  }, [approveStatus, isAllowed]);
 
   useEffect(() => {
     console.log("approveMaxError: ", approveMaxError);
@@ -210,6 +200,26 @@ export default function DepositModal({
       }
     },
   });
+  const vaultConfig = vaultConfigs[chain!.id][0];
+  const canDeposit = useContractRead({
+    ...vaultConfig,
+    functionName: "canDeposit",
+    args: [address, parseUnits(amount === "" ? "0" : amount, 6)],
+  });
+  const isAllowed = canDeposit.data?.toString() === "true";
+
+  useEffect(() => {
+    if (isAllowed && approveStatus === "success") {
+      toast({
+        variant: "success",
+        duration: 5000,
+        position: "bottom",
+        render: () => (
+          <SuccessToast message={`You have approved ${amount} USDC`} />
+        ),
+      });
+    }
+  }, [approveStatus, isAllowed]);
 
   return (
     <Modal
@@ -289,7 +299,10 @@ export default function DepositModal({
                   borderRadius="xl"
                   variant="tertiary"
                   isDisabled={
-                    +amount + totalDeposited < 25000 || isApproving || isAllowed
+                    +amount + totalDeposited < 25000 ||
+                    isApproving ||
+                    !isAllowed ||
+                    canDeposit.isLoading
                   }
                   isLoading={isApproving}
                   onClick={handleApprove}

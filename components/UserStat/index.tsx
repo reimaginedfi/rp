@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Grid,
   GridItem,
@@ -61,9 +62,19 @@ const UserStat = () => {
   return (
     <Stack p={{ base: 1, md: 3 }}>
       <Text variant={"small"}>Total Asset Value</Text>
-      <Heading pb="2rem" textAlign={"center"}>
-        {commify(formatUnits(totalValue, asset.data?.decimals))} USDC
-      </Heading>
+      <Box>
+        <Heading
+          textAlign={"center"}
+          textShadow={"1px 1px 2rem rgb(200 100 100 / 50%)"}
+          my={0}
+          py={0}
+        >
+          {commify(formatUnits(totalValue, asset.data?.decimals))}
+        </Heading>
+        <Text textAlign={"center"} mt={-2} mb={4}>
+          {asset.data?.symbol}
+        </Text>
+      </Box>
       <Grid
         templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
         w="full"
