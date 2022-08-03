@@ -59,6 +59,7 @@ const FarmerSettingsAccordion = dynamic(
   }
 );
 
+
 const VaultComp = ({
   currentAum,
   aumCap,
@@ -99,6 +100,7 @@ const VaultComp = ({
     hasPendingDepositValue,
     totalDeposited,
   } = useVaultUser(contractConfig, address ?? "");
+
   return (
     <>
       <Accordion

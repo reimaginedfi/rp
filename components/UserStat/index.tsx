@@ -36,7 +36,7 @@ const UserStat = () => {
     ...contractConfig,
     functionName: "updatePendingDepositState",
     args: [address],
-    mode: "recklesslyUnprepared",
+    // mode: "recklesslyUnprepared",
   });
 
   const userResult = useWatchVault("vaultUsers", {
@@ -104,7 +104,7 @@ const UserStat = () => {
               />
             </VStack>
             <Stack>
-              <Text variant="small">Pending Deposits</Text>
+              <Text variant="small">Total Deposits</Text>
               <Text
                 fontFamily="Inter"
                 fontWeight="500"

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
 import {
+  Alert,
+  AlertIcon,
   Button,
   Flex,
   Heading,
@@ -28,11 +30,15 @@ import {
 } from "wagmi";
 
 //Vaults
-import { parseUnits } from "ethers/lib/utils";
 import { vaultConfigs, vaults } from "../../../contracts";
 import { useVaultDeposit, useVaultUser } from "../../hooks/useVault";
 import { DangerToast, SuccessToast } from "../../Toasts";
 import getErrorMessage from "../../utils/errors";
+
+//Tools
+import { parseUnits, formatUnits, commify } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
+import { truncate } from "../../utils/stringsAndNumbers";
 
 type ModalProps = {
   onClose?: () => void;
@@ -208,6 +214,12 @@ export default function DepositModal({
   });
   const isAllowed = canDeposit.data?.toString() === "true";
 
+  const minimumDeposit = useContractRead({
+    ...vaultConfig,
+    functionName: "minimumStoredValueBeforeFees",
+  });
+  const meetsMinimum = +amount >= +formatUnits(BigNumber.from(minimumDeposit?.data!._hex).toNumber(), 6);
+
   useEffect(() => {
     if (isAllowed && approveStatus === "success") {
       toast({
@@ -264,7 +276,16 @@ export default function DepositModal({
                     onChange={(e) => setAmount(e.target.value)}
                     value={amount}
                     bg={colorMode === "dark" ? "#373737" : "#F3F3F3"}
+                    isInvalid={+amount > +balanceDisplay}
                     border="none"
+                    _focus={{
+                      border: "none",
+                      boxShadow: +amount > +balanceDisplay && "brand",
+                    }}
+                    _active={{
+                      border: "none",
+                      boxShadow: +amount > +balanceDisplay && "brand",
+                    }}
                   />
                   <InputRightElement>
                     <Button
@@ -284,6 +305,18 @@ export default function DepositModal({
                   USDC
                 </Text>
               </Flex>
+              {+amount > +balanceDisplay && (
+                <Alert borderRadius={"1rem"} status="error">
+                  <AlertIcon />
+                  Amount exceeds your balance
+                </Alert>
+              )}
+              {!meetsMinimum && amount !== "" ? (
+                <Alert borderRadius={"1rem"} status="error">
+                <AlertIcon />
+                  Minimum deposit is {(commify(~~formatUnits(BigNumber.from(minimumDeposit?.data!._hex).toNumber(), 6)))} USDC
+                </Alert>
+              ) : null}
             </VStack>
             {amount !== "" && (
               <Flex
@@ -300,8 +333,8 @@ export default function DepositModal({
                   variant="tertiary"
                   isDisabled={
                     +amount + totalDeposited < 25000 ||
+                    isAllowed ||
                     isApproving ||
-                    !isAllowed ||
                     canDeposit.isLoading
                   }
                   isLoading={isApproving}
@@ -321,7 +354,7 @@ export default function DepositModal({
             )}
             <Button
               disabled={
-                !isAllowed || amount === "" || isApproving || isApprovingMax
+                amount === "" || isApproving || isApprovingMax || !isAllowed
               }
               isLoading={isStoring || isLoading}
               onClick={handleDeposit}
@@ -334,6 +367,7 @@ export default function DepositModal({
               </Text>
             </Button>
             <Text
+              textAlign={"center"}
               variant="small"
               color={colorMode === "dark" ? "#A0A0A0" : "#6F6F6F"}
             >
