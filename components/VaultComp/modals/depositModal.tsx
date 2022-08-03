@@ -219,7 +219,7 @@ export default function DepositModal({
     ...vaultConfig,
     functionName: "minimumStoredValueBeforeFees",
   });
-  const meetsMinimum = +amount >= +formatUnits(BigNumber.from(minimumDeposit?.data!._hex).toNumber(), 6);
+  const meetsMinimum = +amount >= (minimumDeposit.data! ? +formatUnits(BigNumber.from(minimumDeposit?.data?._hex!).toNumber(), 6) : 25000);
 
   useEffect(() => {
     if (approveStatus === "success") {
@@ -315,7 +315,7 @@ export default function DepositModal({
               {!meetsMinimum && amount !== "" ? (
                 <Alert borderRadius={"1rem"} status="error">
                 <AlertIcon />
-                  Minimum deposit is {(commify(~~formatUnits(BigNumber.from(minimumDeposit?.data!._hex).toNumber(), 6)))} USDC
+                  Minimum deposit is {(commify(~~formatUnits(BigNumber.from(minimumDeposit?.data?._hex).toNumber(), 6)))} USDC
                 </Alert>
               ) : null}
             </VStack>
