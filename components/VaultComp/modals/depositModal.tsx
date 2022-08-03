@@ -64,6 +64,7 @@ export default function DepositModal({
     balanceDisplay,
     approve,
     isApproving,
+    isAllowed,
     storeAsset,
     isStoring,
     approveMax,
@@ -212,7 +213,7 @@ export default function DepositModal({
     functionName: "canDeposit",
     args: [address, parseUnits(amount === "" ? "0" : amount, 6)],
   });
-  const isAllowed = canDeposit.data?.toString() === "true";
+  const userAllowed = canDeposit.data?.toString() === "true";
 
   const minimumDeposit = useContractRead({
     ...vaultConfig,
@@ -221,7 +222,7 @@ export default function DepositModal({
   const meetsMinimum = +amount >= +formatUnits(BigNumber.from(minimumDeposit?.data!._hex).toNumber(), 6);
 
   useEffect(() => {
-    if (isAllowed && approveStatus === "success") {
+    if (approveStatus === "success") {
       toast({
         variant: "success",
         duration: 5000,
@@ -231,7 +232,7 @@ export default function DepositModal({
         ),
       });
     }
-  }, [approveStatus, isAllowed]);
+  }, [approveStatus]);
 
   return (
     <Modal
@@ -319,7 +320,8 @@ export default function DepositModal({
               ) : null}
             </VStack>
             {amount !== "" && (
-              <Flex
+              <>
+              {!isAllowed && <Flex
                 my={7}
                 gap={3}
                 alignItems="center"
@@ -333,7 +335,6 @@ export default function DepositModal({
                   variant="tertiary"
                   isDisabled={
                     +amount + totalDeposited < 25000 ||
-                    isAllowed ||
                     isApproving ||
                     canDeposit.isLoading
                   }
@@ -350,11 +351,12 @@ export default function DepositModal({
                 >
                   Allow REFI to use your MAX USDC
                 </Button> */}
-              </Flex>
+              </Flex>}
+              </>
             )}
             <Button
               disabled={
-                amount === "" || isApproving || isApprovingMax || !isAllowed
+                amount === "" || isApproving || isApprovingMax || !isAllowed || !userAllowed
               }
               isLoading={isStoring || isLoading}
               onClick={handleDeposit}
