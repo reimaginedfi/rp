@@ -27,7 +27,6 @@ import {
   useContractRead,
   useNetwork,
   useWaitForTransaction,
-  useBalance
 } from "wagmi";
 
 //Vaults
@@ -39,7 +38,6 @@ import getErrorMessage from "../../utils/errors";
 //Tools
 import { parseUnits, formatUnits, commify } from "ethers/lib/utils";
 import { BigNumber } from "ethers";
-import { truncate } from "../../utils/stringsAndNumbers";
 
 type ModalProps = {
   onClose?: () => void;
@@ -81,12 +79,6 @@ export default function DepositModal({
 
   // CHECKS FOR TOTAL DEPOSITED AND REFI TOKENS IN ACCOUNT
   const { totalDeposited } = useVaultUser(contractConfig, address ?? "");
-
-  const { data: refiBalance, isLoading: loading } = useBalance({
-    addressOrName: address,
-    token: "0xA808B22ffd2c472aD1278088F16D4010E6a54D5F",
-    watch: true,
-  });
 
   // GETS CONTRACT CONFIG FROM VAULTS
   useEffect(() => {
@@ -218,7 +210,7 @@ export default function DepositModal({
     functionName: "canDeposit",
     args: [address, parseUnits(amount === "" ? "0" : amount, 6)],
   });
-  const userAllowed = canDeposit.data?.toString() === "true";
+  const depositAllowed = canDeposit.data?.toString() === "true";
 
   //MINIMUM DEPOSIT - fetches minimum deposit amount for users who have not deposited before
   const minimumDeposit = useContractRead({
@@ -305,7 +297,7 @@ export default function DepositModal({
                   Amount exceeds your balance
                 </Alert>
               )}
-              {!meetsMinimum || +refiBalance!.formatted !>= 1000000 || +formatUnits(totalDeposited!, 6) >= 25000 && amount !== "" ? (
+              {!meetsMinimum || !depositAllowed && amount !== "" ? (
                 <Alert borderRadius={"1rem"} status="error">
                 <AlertIcon />
                   Minimum deposit is {minimumDeposit.data ? commify(~~formatUnits(BigNumber.from(minimumDeposit!.data!._hex!).toNumber(), 6)) : "25,000"} USDC
@@ -341,7 +333,7 @@ export default function DepositModal({
             )}
             <Button
               disabled={
-                amount === "" || isApproving || isApprovingMax || !isAllowed || !userAllowed
+                amount === "" || isApproving || isApprovingMax || !isAllowed || !depositAllowed
               }
               isLoading={isStoring || isLoading}
               onClick={handleDeposit}
