@@ -27,6 +27,7 @@ import {
   useContractRead,
   useNetwork,
   useWaitForTransaction,
+  useBalance
 } from "wagmi";
 
 //Vaults
@@ -59,7 +60,9 @@ export default function DepositModal({
 
   const [contractConfig, setContractConfig] = useState<any>();
   const [amount, setAmount] = useState<string>("");
-
+  const toast = useToast();
+  
+  //CONTRACT READ FOR DEPOSIT FUNCTIONS
   const {
     balanceDisplay,
     approve,
@@ -69,37 +72,32 @@ export default function DepositModal({
     isStoring,
     approveMax,
     isApprovingMax,
-    approveMaxError,
     storeAssetError,
     approveError,
     approveStatus,
-    approveMaxStatus,
     storeAssetStatus,
     depositData,
   } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
 
+  // CHECKS FOR TOTAL DEPOSITED AND REFI TOKENS IN ACCOUNT
   const { totalDeposited } = useVaultUser(contractConfig, address ?? "");
 
-  const toast = useToast();
+  const { data: refiBalance, isLoading: loading } = useBalance({
+    addressOrName: address,
+    token: "0xA808B22ffd2c472aD1278088F16D4010E6a54D5F",
+    watch: true,
+  });
 
+  console.log(refiBalance)
+
+  // GETS CONTRACT CONFIG FROM VAULTS
   useEffect(() => {
-    console.log("approveMaxError: ", approveMaxError);
-    if (approveMaxError && approveMaxStatus === "error") {
-      toast({
-        variant: "danger",
-        title: approveMaxError?.name,
-        duration: 5000,
-        render: () => (
-          <DangerToast
-            message={approveMaxError
-              ?.toString()
-              .substring(approveMaxError?.toString().indexOf(":"), -1)}
-          />
-        ),
-      });
-    }
-  }, [approveMaxError, approveMaxStatus, toast]);
+    vaults[chain!.id].map((contract) => {
+      setContractConfig(contract);
+    });
+  }, [chain, vaults]);
 
+  // ERRORS HANDLING && ALERTS 
   useEffect(() => {
     console.log("storeAssetError: ", storeAssetError);
     if (storeAssetError && storeAssetStatus === "error") {
@@ -137,11 +135,63 @@ export default function DepositModal({
   }, [approveError, approveStatus, toast]);
 
   useEffect(() => {
-    vaults[chain!.id].map((contract) => {
-      setContractConfig(contract);
-      console.log("contract", contract);
-    });
-  }, [chain, vaults]);
+    if (approveStatus === "success") {
+      toast({
+        variant: "success",
+        duration: 5000,
+        position: "bottom",
+        render: () => (
+          <SuccessToast message={`You have approved ${amount} USDC`} />
+        ),
+      });
+    }
+  }, [approveStatus]);
+
+  // HANDLES DEPOSIT function on button click
+  const handleDeposit = async () => {
+    if (!isAllowed) {
+      return;
+    }
+    try {
+      await storeAsset();
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      toast({
+        variant: "danger",
+        duration: 5000,
+        position: "bottom",
+        render: () => <DangerToast message={errorMessage} />,
+      });
+    }
+  };
+
+  // APPROVE ERC20 TOKEN on button click
+  const handleApprove = async () => {
+    try {
+      await approve();
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      toast({
+        variant: "danger",
+        position: "bottom",
+        duration: 5000,
+        render: () => <DangerToast message={errorMessage} />,
+      });
+    }
+  };
+
+  // CHECKS DEPOSIT TXN UNTIL IT SUCCEEDS
+  const { isLoading } = useWaitForTransaction({
+    hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
+    enabled: typeof depositData?.hash === "string",
+    // onSuccess never fails
+    //https://github.com/wagmi-dev/wagmi/discussions/428
+    onSuccess: (data) => {
+      if (data.status === 1) {
+        setDepositSuccess(true);
+      }
+    },
+  });
 
   useEffect(() => {
     if (depositSuccess) {
@@ -161,53 +211,10 @@ export default function DepositModal({
     }
   }, [depositSuccess]);
 
-  const handleDeposit = async () => {
-    if (!isAllowed) {
-      return;
-    }
-    try {
-      await storeAsset();
-    } catch (error) {
-      const errorMessage = getErrorMessage(error);
-      toast({
-        variant: "danger",
-        duration: 5000,
-        position: "bottom",
-        render: () => <DangerToast message={errorMessage} />,
-      });
-    }
-  };
-
-  const handleApprove = async () => {
-    try {
-      await approve();
-    } catch (error) {
-      const errorMessage = getErrorMessage(error);
-      toast({
-        variant: "danger",
-        position: "bottom",
-        duration: 5000,
-        render: () => <DangerToast message={errorMessage} />,
-      });
-    }
-  };
-
-  const handleApproveMax = async () => {
-    await approveMax();
-  };
-
-  const { isLoading } = useWaitForTransaction({
-    hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
-    enabled: typeof depositData?.hash === "string",
-    // onSuccess never fails
-    //https://github.com/wagmi-dev/wagmi/discussions/428
-    onSuccess: (data) => {
-      if (data.status === 1) {
-        setDepositSuccess(true);
-      }
-    },
-  });
+  //VAULT CONTRAG CONFIG 
   const vaultConfig = vaultConfigs[chain!.id][0];
+
+  //CAN DEPOSIT / USER ALLOWED - checks whether user meets the criteria (has enough tokens, has deposited before)
   const canDeposit = useContractRead({
     ...vaultConfig,
     functionName: "canDeposit",
@@ -215,24 +222,12 @@ export default function DepositModal({
   });
   const userAllowed = canDeposit.data?.toString() === "true";
 
+  //MINIMUM DEPOSIT - fetches minimum deposit amount for users who have not deposited before
   const minimumDeposit = useContractRead({
     ...vaultConfig,
     functionName: "minimumStoredValueBeforeFees",
   });
   const meetsMinimum = +amount >= (minimumDeposit.data! ? +formatUnits(BigNumber.from(minimumDeposit?.data?._hex!).toNumber(), 6) : 25000);
-
-  useEffect(() => {
-    if (approveStatus === "success") {
-      toast({
-        variant: "success",
-        duration: 5000,
-        position: "bottom",
-        render: () => (
-          <SuccessToast message={`You have approved ${amount} USDC`} />
-        ),
-      });
-    }
-  }, [approveStatus]);
 
   return (
     <Modal
@@ -312,7 +307,7 @@ export default function DepositModal({
                   Amount exceeds your balance
                 </Alert>
               )}
-              {!meetsMinimum && amount !== "" ? (
+              {!meetsMinimum || +refiBalance!.formatted !>= 1000000 || +formatUnits(totalDeposited, 6) >= 25000 && amount !== "" ? (
                 <Alert borderRadius={"1rem"} status="error">
                 <AlertIcon />
                   Minimum deposit is {(commify(~~formatUnits(BigNumber.from(minimumDeposit?.data?._hex).toNumber(), 6)))} USDC
@@ -343,14 +338,6 @@ export default function DepositModal({
                 >
                   Allow REFI to use your USDC
                 </Button>
-                {/* <Button w='full' p={3} borderRadius='xl'
-                variant='secondary'
-                  isDisabled={+amount <= 0 || isApproving}
-                  isLoading={isApprovingMax}
-                  onClick={handleApproveMax}
-                >
-                  Allow REFI to use your MAX USDC
-                </Button> */}
               </Flex>}
               </>
             )}

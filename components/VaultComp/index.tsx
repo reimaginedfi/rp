@@ -59,7 +59,6 @@ const FarmerSettingsAccordion = dynamic(
   }
 );
 
-
 const VaultComp = ({
   currentAum,
   aumCap,
@@ -69,20 +68,26 @@ const VaultComp = ({
 }: VaultProps) => {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
+  const [depositSuccess, setDepositSuccess] = useState<boolean>(false);
+
+  //MODAL OPEN/CLOSE STATES
   const {
     isOpen: depositIsOpen,
     onOpen: onOpenDeposit,
     onClose: onCloseDeposit,
   } = useDisclosure();
+
   const {
     isOpen: withdrawIsOpen,
     onOpen: onOpenWithdraw,
     onClose: onCloseWithdraw,
   } = useDisclosure();
+
   const { isOpen: isWarningVisible, onClose } = useDisclosure({
     defaultIsOpen: true,
   });
 
+  //VAULT META - fetches vault information from the contract
   const { assetToken, farmer } = useVaultMeta(contractConfig);
 
   const feeReceiver = useContractRead({
@@ -90,16 +95,15 @@ const VaultComp = ({
     functionName: "feeDistributor",
     watch: true,
   });
-  const [depositSuccess, setDepositSuccess] = useState<boolean>(false);
 
   const { width, height } = useWindowSize();
-  const {
-    sharesValue,
-    user,
-    hasPendingDeposit,
-    hasPendingDepositValue,
-    totalDeposited,
-  } = useVaultUser(contractConfig, address ?? "");
+  // const {
+  //   sharesValue,
+  //   user,
+  //   hasPendingDeposit,
+  //   hasPendingDepositValue,
+  //   totalDeposited,
+  // } = useVaultUser(contractConfig, address ?? "");
 
   return (
     <>
