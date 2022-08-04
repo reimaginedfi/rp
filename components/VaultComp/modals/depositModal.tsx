@@ -308,7 +308,7 @@ export default function DepositModal({
               {!meetsMinimum || +refiBalance!.formatted !>= 1000000 || +formatUnits(totalDeposited!, 6) >= 25000 && amount !== "" ? (
                 <Alert borderRadius={"1rem"} status="error">
                 <AlertIcon />
-                  Minimum deposit is {(commify(~~formatUnits(BigNumber.from(minimumDeposit!.data!._hex).toNumber(), 6)))} USDC
+                  Minimum deposit is {(commify(~~formatUnits(BigNumber.from(minimumDeposit?.data?._hex).toNumber(), 6)))} USDC
                 </Alert>
               ) : null}
             </VStack>
