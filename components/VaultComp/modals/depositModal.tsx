@@ -88,8 +88,6 @@ export default function DepositModal({
     watch: true,
   });
 
-  console.log(refiBalance)
-
   // GETS CONTRACT CONFIG FROM VAULTS
   useEffect(() => {
     vaults[chain!.id].map((contract) => {
@@ -307,10 +305,10 @@ export default function DepositModal({
                   Amount exceeds your balance
                 </Alert>
               )}
-              {!meetsMinimum || +refiBalance!.formatted !>= 1000000 || +formatUnits(totalDeposited, 6) >= 25000 && amount !== "" ? (
+              {!meetsMinimum || +refiBalance!.formatted !>= 1000000 || +formatUnits(totalDeposited!, 6) >= 25000 && amount !== "" ? (
                 <Alert borderRadius={"1rem"} status="error">
                 <AlertIcon />
-                  Minimum deposit is {(commify(~~formatUnits(BigNumber.from(minimumDeposit?.data?._hex).toNumber(), 6)))} USDC
+                  Minimum deposit is {(commify(~~formatUnits(BigNumber.from(minimumDeposit!.data!._hex).toNumber(), 6)))} USDC
                 </Alert>
               ) : null}
             </VStack>
