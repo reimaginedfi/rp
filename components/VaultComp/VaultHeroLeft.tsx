@@ -90,12 +90,12 @@ export const VaultHeroLeft = () => {
       </Badge>
       <Stat mt={"0.5rem"}>
         <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
-          <StatNumber>{(factor * 100).toFixed(2).toString()}%</StatNumber>
+          <StatNumber>{((factor - 1) * 100).toFixed(2)}%</StatNumber>
         </Skeleton>
         <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
           <StatHelpText>
-            <StatArrow type="increase" />
-            {formatUnits(rawGains.toString(), 6)} USDC
+            <StatArrow type={rawGains.isNegative() ? "decrease" : "increase"} />
+            {formatUnits(rawGains.abs().toString(), 6)} USDC
           </StatHelpText>
         </Skeleton>
       </Stat>
