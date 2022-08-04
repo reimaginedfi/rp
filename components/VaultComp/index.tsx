@@ -59,7 +59,6 @@ const FarmerSettingsAccordion = dynamic(
   }
 );
 
-
 const VaultComp = ({
   currentAum,
   aumCap,
@@ -364,7 +363,7 @@ const VaultComp = ({
                 {farmer.data && farmer.data.toString() === address && (
                   <FarmerSettingsAccordion contractConfig={contractConfig} />
                 )}
-                <Accordion
+                {/* <Accordion
                   borderRadius="1rem"
                   pt="1rem"
                   allowToggle
@@ -383,7 +382,7 @@ const VaultComp = ({
                       <Number>[Work in progress]</Number>
                     </AccordionPanel>
                   </AccordionItem>
-                </Accordion>
+                </Accordion> */}
               </AccordionPanel>
             </>
           )}
