@@ -3,6 +3,7 @@ import {
   Flex,
   GridItem,
   Heading,
+  Skeleton,
   Spinner,
   Stack,
   Stat,
@@ -10,18 +11,16 @@ import {
   StatHelpText,
   StatNumber,
   Text,
-  useColorMode,
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
 import { useBlockNumber } from "wagmi";
-import { useVaultMeta, useVaultState } from "../hooks/useVault";
-import { useContractConfig } from "../Vault/ContractContext";
+import { useVaultState } from "../hooks/useVault";
+import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 import VaultProgressBar from "./VaultProgressBar";
 
 export const VaultHeroLeft = () => {
-  const contractConfig = useContractConfig();
-  const { assetToken, aum, epoch, aumCap, vaultName } =
-    useVaultMeta(contractConfig);
+  const { epoch, aum, aumCap, previewAum, rawGains, factor } = useCompleteAum();
 
   const vaultState = useVaultState(BigNumber.from(epoch.data ?? 0).toNumber());
   const lastManagementBlock = BigNumber.from(
@@ -30,8 +29,6 @@ export const VaultHeroLeft = () => {
   const blockNumber = useBlockNumber({
     watch: true,
   });
-
-  const { colorMode } = useColorMode();
 
   if (
     vaultState.isLoading ||
@@ -92,11 +89,15 @@ export const VaultHeroLeft = () => {
         Running
       </Badge>
       <Stat mt={"0.5rem"}>
-        <StatNumber>+0.00%</StatNumber>
-        <StatHelpText>
-          <StatArrow type="increase" />
-          0.00 USDC
-        </StatHelpText>
+        <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
+          <StatNumber>{(factor * 100).toFixed(2).toString()}%</StatNumber>
+        </Skeleton>
+        <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
+          <StatHelpText>
+            <StatArrow type="increase" />
+            {formatUnits(rawGains.toString(), 6)} USDC
+          </StatHelpText>
+        </Skeleton>
       </Stat>
       <Text
         style={{

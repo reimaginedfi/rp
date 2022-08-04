@@ -1,27 +1,12 @@
-import {
-  Box,
-  Button,
-  Grid,
-  GridItem,
-  Heading,
-  Icon,
-  Stack,
-  Text,
-  useColorMode,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Heading, Stack, Text } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
-import { commify, formatUnits } from "ethers/lib/utils";
-import { AiFillBank } from "react-icons/ai";
-import { HiCurrencyDollar, HiSave } from "react-icons/hi";
 import { useAccount, useContractWrite } from "wagmi";
 import { useVaultUser } from "../hooks/useVault";
-import { truncate } from "../utils/stringsAndNumbers";
 import { useContractConfig, useWatchVault } from "../Vault/ContractContext";
+import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../Vault/hooks/useVaultAsset";
 
 const UserStat = () => {
-  const { colorMode } = useColorMode();
   const { address } = useAccount();
   const contractConfig = useContractConfig();
   const {
@@ -59,6 +44,14 @@ const UserStat = () => {
         .div(totalSupply.data!)
         .add(userResult.data?.[0]);
 
+  const { factor, isAumLoading } = useCompleteAum();
+
+  const unrealizedBN = isAumLoading
+    ? totalValue.toNumber()
+    : totalValue.toNumber() * (1 + factor);
+
+  const unrealized = (unrealizedBN / 1000000).toFixed(2);
+
   return (
     <Stack p={{ base: 1, md: 3 }}>
       <Text variant={"small"}>Total Asset Value</Text>
@@ -69,13 +62,27 @@ const UserStat = () => {
           my={0}
           py={0}
         >
-          {commify(formatUnits(totalValue, asset.data?.decimals))}
+          {unrealized}
         </Heading>
         <Text textAlign={"center"} mt={-2} mb={4}>
           {asset.data?.symbol}
         </Text>
       </Box>
-      <Grid
+      <Text variant={"small"}>PnL this epoch</Text>
+      <Box>
+        <Heading
+          textAlign={"center"}
+          textShadow={"1px 1px 2rem rgb(200 100 100 / 50%)"}
+          my={0}
+          py={0}
+        >
+          {(+unrealized - totalValue.toNumber() / 1000000).toFixed(2)}
+        </Heading>
+        <Text textAlign={"center"} mt={-2} mb={4}>
+          {asset.data?.symbol}
+        </Text>
+      </Box>
+      {/* <Grid
         templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
         w="full"
         m="auto"
@@ -217,7 +224,7 @@ const UserStat = () => {
             </Stack>
           </Grid>
         </GridItem>
-      </Grid>
+      </Grid> */}
     </Stack>
   );
 };
