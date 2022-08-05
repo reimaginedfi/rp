@@ -36,8 +36,8 @@ import { DangerToast, SuccessToast } from "../../Toasts";
 import getErrorMessage from "../../utils/errors";
 
 //Tools
-import { parseUnits, formatUnits, commify } from "ethers/lib/utils";
 import { BigNumber } from "ethers";
+import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
 
 type ModalProps = {
   onClose?: () => void;
@@ -215,7 +215,11 @@ export default function DepositModal({
     ...vaultConfig,
     functionName: "minimumStoredValueBeforeFees",
   });
-  const meetsMinimum = +amount >= (minimumDeposit.data! ? +formatUnits(BigNumber.from(minimumDeposit?.data?._hex!).toNumber(), 6) : 25000);
+  const meetsMinimum =
+    +amount >=
+    (minimumDeposit.data!
+      ? +formatUnits(BigNumber.from(minimumDeposit?.data?._hex!).toNumber(), 6)
+      : 25000);
 
   return (
     <Modal
