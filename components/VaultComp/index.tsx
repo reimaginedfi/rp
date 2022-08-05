@@ -424,7 +424,7 @@ const VaultComp = ({
                           {txn.hash.slice(0, 5)+ '...' + txn.hash.slice(-2)}
                           </Link>
                           <Text>
-                            {(+txn.value / 1000000)}
+                            {(+txn.value / 1000000)} USDC
                           </Text>
                         </Flex>
                       ))}
