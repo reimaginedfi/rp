@@ -410,24 +410,36 @@ const VaultComp = ({
                       <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel w='full' display={"grid"} >
-                    <Flex justify='space-between'>
+                    <Grid templateColumns='repeat(3, 1fr)'>
                         <Text fontWeight='semibold'>
                           Txn Hash
                         </Text>
                         <Text fontWeight='semibold'>
-                          value
+                          Type </Text>
+                        <Text fontWeight='semibold'>
+                          value (USDC)
                         </Text>
-                      </Flex>
-                      {vaultTxns.length && vaultTxns.map((txn) => (
-                        <Flex w='full' justifyContent='space-between' alignItems={'center'} key={txn.hash}>
-                          <Link target='_blank' href={`https://etherscan.io/tx/` + txn.hash}>
+                      </Grid>
+                      
+                      {vaultTxns.length && vaultTxns.map((txn) => {
+                        if(txn.tokenSymbol !== 'USDC') {
+                          return 
+                        }
+                        return (
+                        <Grid key={txn.hash} templateColumns='repeat(3, 1fr)'>
+                        <GridItem >
+                           <Link target='_blank' href={`https://etherscan.io/tx/` + txn.hash}>
                           {txn.hash.slice(0, 5)+ '...' + txn.hash.slice(-2)}
                           </Link>
-                          <Text>
-                            {(+txn.value / 1000000)} USDC
-                          </Text>
-                        </Flex>
-                      ))}
+                        </GridItem>
+                        <GridItem >
+                          <Text>{txn.to === contractConfig.addressOrName ? 'Deposit' : 'Withdraw'}</Text></GridItem>
+                          <GridItem><Text>
+                            {(+txn.value / 1000000)}
+                          </Text></GridItem>
+                      </Grid>
+                      )})}
+                      
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
