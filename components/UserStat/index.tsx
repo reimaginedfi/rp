@@ -113,7 +113,7 @@ const UserStat = () => {
           <Tooltip
             justifySelf="center"
             hasArrow
-            label="You can transform your depositted USDC into VT tokens for withdrawals"
+            label="You can transform your deposited USDC into VT tokens for withdrawals"
             bg={colorMode === "dark" ? "white" : "black"}
           >
             <InfoOutlineIcon w={3.5} h={3.5} />

@@ -189,7 +189,7 @@ const VaultComp = ({
                 <Flex px="1rem" mt={2} alignItems="center">
                   <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#C51E25" />
                   <Text mr={1} variant="medium">AUM</Text>
-                  <Tooltip hasArrow label="Total USDC value of assets depositted and managed by farmer" bg={colorMode === "dark" ? "white" : "black"}>
+                  <Tooltip hasArrow label="Total USDC value of assets deposited and managed by farmer" bg={colorMode === "dark" ? "white" : "black"}>
                   <InfoOutlineIcon w={3.5} h={3.5} />
                   </Tooltip>
                   <Spacer />
