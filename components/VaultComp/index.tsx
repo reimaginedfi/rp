@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
@@ -25,6 +25,7 @@ import {
   Text,
   useColorMode,
   useDisclosure,
+  VStack,
 } from "@chakra-ui/react";
 import { commify } from "ethers/lib/utils";
 import useWindowSize from "react-use/lib/useWindowSize";
@@ -82,6 +83,8 @@ const VaultComp = ({
     defaultIsOpen: true,
   });
 
+  const [vaultTxns, setVaultTxns] = useState<any[]>([]);
+
   const { assetToken, farmer } = useVaultMeta(contractConfig);
 
   const feeReceiver = useContractRead({
@@ -99,6 +102,20 @@ const VaultComp = ({
     hasPendingDepositValue,
     totalDeposited,
   } = useVaultUser(contractConfig, address ?? "");
+
+  useEffect(() => {
+    fetch(
+      `https://api.etherscan.io/api?module=account&action=tokentx&tokenaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&address=${contractConfig?.addressOrName}&startblock=0&endblock=99999999999999999&page=1&offset=1000&sort=asc&apikey=${process.env.NEXT_PUBLIC_SC_ETHERSCAN}`
+    )
+      .then(async (res) => {
+        const data = await res.json();
+        console.log('vault txns response: ', data.result)
+        setVaultTxns(data.result);
+      })
+      .catch((err) => {
+        console.log('error fetching vault txns: ', err)
+      });
+  }, [contractConfig]);
 
   return (
     <>
@@ -363,7 +380,7 @@ const VaultComp = ({
                 {farmer.data && farmer.data.toString() === address && (
                   <FarmerSettingsAccordion contractConfig={contractConfig} />
                 )}
-                {/* <Accordion
+                <Accordion
                   borderRadius="1rem"
                   pt="1rem"
                   allowToggle
@@ -378,11 +395,28 @@ const VaultComp = ({
                       <Heading variant="medium">Vault Activity</Heading>
                       <AccordionIcon />
                     </AccordionButton>
-                    <AccordionPanel display={"grid"} placeContent="center">
-                      <Number>[Work in progress]</Number>
+                    <AccordionPanel w='full' display={"grid"} >
+                    <Flex justify='space-between'>
+                        <Text fontWeight='semibold'>
+                          Txn Hash
+                        </Text>
+                        <Text fontWeight='semibold'>
+                          value
+                        </Text>
+                      </Flex>
+                      {vaultTxns.length && vaultTxns.map((txn) => (
+                        <Flex w='full' justifyContent='space-between' alignItems={'center'} key={txn.hash}>
+                          <Link target='_blank' href={`https://etherscan.io/tx/` + txn.hash}>
+                          {txn.hash.slice(0, 5)+ '...' + txn.hash.slice(-2)}
+                          </Link>
+                          <Text>
+                            {(+txn.value / 1000000)}
+                          </Text>
+                        </Flex>
+                      ))}
                     </AccordionPanel>
                   </AccordionItem>
-                </Accordion> */}
+                </Accordion>
               </AccordionPanel>
             </>
           )}
