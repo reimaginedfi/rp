@@ -15,8 +15,12 @@ export const Vault = ({
 }: {
   contractConfig: ContractConfig;
 }) => {
+
+  //VAULT META DATA - used to display vault info
   const { assetToken, aum, epoch, aumCap, vaultName } =
     useVaultMeta(contractConfig);
+
+  //VAULT CONTRACT - fetches current vault state
   const vaultState = useContractRead({
     ...contractConfig,
     functionName: "vaultStates",
@@ -24,6 +28,7 @@ export const Vault = ({
     watch: true,
   });
 
+  // FETCHES PENDING DEPOSIT AMOUNT
   const pendingDeposit = formatUnits(
     vaultState.data?.assetsToDeposit ?? 0,
     assetToken.data?.decimals

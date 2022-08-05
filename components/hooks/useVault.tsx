@@ -143,7 +143,7 @@ export const useVaultDeposit = (
     balance ?? 0,
     assetToken.data?.decimals ?? 0
   );
-
+  
   const { data: allowance } = useContractRead({
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
