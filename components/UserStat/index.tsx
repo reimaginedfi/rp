@@ -61,7 +61,7 @@ const UserStat = () => {
 
   const unrealizedBN = isAumLoading
     ? totalValue.toNumber()
-    : totalValue.toNumber() * factor;
+    : totalValue.toNumber() * (1 + factor);
 
   const unrealized = (unrealizedBN / 1000000).toFixed(2);
 
