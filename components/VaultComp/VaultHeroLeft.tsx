@@ -13,19 +13,26 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
-import { formatUnits } from "ethers/lib/utils";
+import { formatUnits, commify } from "ethers/lib/utils";
+import {truncate} from "../utils/stringsAndNumbers";
 import { useBlockNumber } from "wagmi";
 import { useVaultState } from "../hooks/useVault";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 import VaultProgressBar from "./VaultProgressBar";
 
 export const VaultHeroLeft = () => {
+  // VAULT META DATA - used to display vault info
   const { epoch, aum, aumCap, previewAum, rawGains, factor } = useCompleteAum();
 
+  // VAULT CONTRACT - fetches current vault state
   const vaultState = useVaultState(BigNumber.from(epoch.data ?? 0).toNumber());
+
+  // MANAGEMENT BLOCK - 
   const lastManagementBlock = BigNumber.from(
     vaultState.data?.lastManagementBlock ?? 0
   ).toNumber();
+
+  // CURRENT CHAIN BLOCK - to calculate against management block
   const blockNumber = useBlockNumber({
     watch: true,
   });
@@ -95,7 +102,7 @@ export const VaultHeroLeft = () => {
         <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
           <StatHelpText>
             <StatArrow type="increase" />
-            {formatUnits(rawGains.toString(), 6)} USDC
+            {truncate(commify(formatUnits(rawGains.toString(), 6)), 2)} USDC
           </StatHelpText>
         </Skeleton>
       </Stat>

@@ -68,8 +68,6 @@ export default function DepositModal({
     isAllowed,
     storeAsset,
     isStoring,
-    approveMax,
-    isApprovingMax,
     storeAssetError,
     approveError,
     approveStatus,
@@ -204,7 +202,7 @@ export default function DepositModal({
   //VAULT CONTRAG CONFIG 
   const vaultConfig = vaultConfigs[chain!.id][0];
 
-  //CAN DEPOSIT / USER ALLOWED - checks whether user meets the criteria (has enough tokens, has deposited before)
+  //CAN DEPOSIT / DEPOSIT ALLOWED - checks whether user meets the criteria (has enough REFI tokens, has deposited 25K before)
   const canDeposit = useContractRead({
     ...vaultConfig,
     functionName: "canDeposit",
@@ -333,7 +331,7 @@ export default function DepositModal({
             )}
             <Button
               disabled={
-                amount === "" || isApproving || isApprovingMax || !isAllowed || !depositAllowed
+                amount === "" || isApproving || !isAllowed || !depositAllowed
               }
               isLoading={isStoring || isLoading}
               onClick={handleDeposit}
