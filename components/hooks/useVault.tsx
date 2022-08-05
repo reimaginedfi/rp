@@ -7,6 +7,7 @@ import {
   useContractRead,
   useContractWrite,
   useToken,
+  useWaitForTransaction,
 } from "wagmi";
 import { ContractConfig } from "../../contracts";
 import { useContractConfig } from "../Vault/ContractContext";
@@ -142,7 +143,7 @@ export const useVaultDeposit = (
     balance ?? 0,
     assetToken.data?.decimals ?? 0
   );
-
+  
   const { data: allowance } = useContractRead({
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
@@ -156,8 +157,9 @@ export const useVaultDeposit = (
     allowance.gte(parseUnits(depositAmount, assetToken.data?.decimals) ?? "0");
 
   const {
+    data: approveData,
     write: approve,
-    isLoading: isApproving,
+    isLoading,
     error: approveError,
     status: approveStatus,
   } = useContractWrite({
@@ -177,6 +179,7 @@ export const useVaultDeposit = (
       });
     },
   });
+  const { isLoading: isApproving } = useWaitForTransaction(approveData);
 
   // const approve = async () => {
   //   rawApprove();

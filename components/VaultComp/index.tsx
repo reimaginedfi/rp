@@ -26,6 +26,7 @@ import {
   useColorMode,
   useDisclosure,
   VStack,
+  Tooltip
 } from "@chakra-ui/react";
 import { commify } from "ethers/lib/utils";
 import useWindowSize from "react-use/lib/useWindowSize";
@@ -44,6 +45,8 @@ import { UserSection } from "./sections/UserSection";
 import { VaultHeroLeft } from "./VaultHeroLeft";
 import { VaultTitle } from "./VaultTitle";
 import { VaultTruncated } from "./VaultTruncated";
+
+import {InfoOutlineIcon} from "@chakra-ui/icons";
 
 type VaultProps = {
   currentAum: string;
@@ -69,22 +72,28 @@ const VaultComp = ({
 }: VaultProps) => {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
+  const [depositSuccess, setDepositSuccess] = useState<boolean>(false);
+
+  //MODAL OPEN/CLOSE STATES
   const {
     isOpen: depositIsOpen,
     onOpen: onOpenDeposit,
     onClose: onCloseDeposit,
   } = useDisclosure();
+
   const {
     isOpen: withdrawIsOpen,
     onOpen: onOpenWithdraw,
     onClose: onCloseWithdraw,
   } = useDisclosure();
+
   const { isOpen: isWarningVisible, onClose } = useDisclosure({
     defaultIsOpen: true,
   });
 
   const [vaultTxns, setVaultTxns] = useState<any[]>([]);
 
+  //VAULT META - fetches vault information from the contract
   const { assetToken, farmer } = useVaultMeta(contractConfig);
 
   const feeReceiver = useContractRead({
@@ -92,16 +101,15 @@ const VaultComp = ({
     functionName: "feeDistributor",
     watch: true,
   });
-  const [depositSuccess, setDepositSuccess] = useState<boolean>(false);
 
   const { width, height } = useWindowSize();
-  const {
-    sharesValue,
-    user,
-    hasPendingDeposit,
-    hasPendingDepositValue,
-    totalDeposited,
-  } = useVaultUser(contractConfig, address ?? "");
+  // const {
+  //   sharesValue,
+  //   user,
+  //   hasPendingDeposit,
+  //   hasPendingDepositValue,
+  //   totalDeposited,
+  // } = useVaultUser(contractConfig, address ?? "");
 
   useEffect(() => {
     fetch(
@@ -197,7 +205,10 @@ const VaultComp = ({
                   )}
                 <Flex px="1rem" mt={2} alignItems="center">
                   <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#C51E25" />
-                  <Text variant="medium">AUM</Text>
+                  <Text mr={1} variant="medium">AUM</Text>
+                  <Tooltip hasArrow label="Total USDC value of assets deposited and managed by farmer" bg={colorMode === "dark" ? "white" : "black"}>
+                  <InfoOutlineIcon w={3.5} h={3.5} />
+                  </Tooltip>
                   <Spacer />
                   <Text variant="medium">
                     <Number>{commify(truncate(currentAum, 2))}</Number> /{" "}
@@ -214,7 +225,10 @@ const VaultComp = ({
                 </Flex>
                 <Flex px="1rem" alignItems={"center"}>
                   <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#E9A9AB" />
-                  <Text variant="medium">Pending Deposits</Text>
+                  <Text mr={1} variant="medium">Pending Deposits</Text>
+                  <Tooltip hasArrow label="Deposits made currently not shown in the vault's AUM (waiting for next epoch)" bg={colorMode === "dark" ? "white" : "black"}>
+                  <InfoOutlineIcon w={3.5} h={3.5} />
+                  </Tooltip>
                   <Spacer />
                   <Text variant="medium">
                     <Number>{truncate(commify(pendingDeposit!), 2)}</Number>{" "}
