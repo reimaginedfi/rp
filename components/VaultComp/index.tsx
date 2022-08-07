@@ -52,6 +52,34 @@ import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { HiSave } from "react-icons/hi";
 import { GiReceiveMoney, GiPayMoney } from "react-icons/gi";
 
+//Fetching stuff
+import axios from "axios";
+import axiosRetry from "axios-retry";
+import useSWR from "swr";
+
+axiosRetry(axios, {
+  retries: 10, // number of retries
+  retryDelay: (retryCount) => {
+    console.log(`retry attempt: ${retryCount}`);
+    return retryCount * 3000; // time interval between retries
+  },
+  retryCondition: (error) => {
+    // if retry condition is not specified, by default three requests are retried
+    return error!.response!.status === 503;
+  },
+});
+
+export const fetcher: any = async (url: string) => await axios({
+    method: "GET",
+    url: url,
+  }).catch((error) => {
+    if (error.response.status !== 200) {
+      throw new Error(
+        `API call failed with status code: ${error.response.status} after 3 retry attempts`
+      );
+    }
+  });
+
 type VaultProps = {
   currentAum: string;
   aumCap: string;
@@ -115,21 +143,11 @@ const VaultComp = ({
   //   totalDeposited,
   // } = useVaultUser(contractConfig, address ?? "");
 
-  useEffect(() => {
-    fetch(
-      `https://api.etherscan.io/api?module=account&action=tokentx&tokenaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&address=${contractConfig?.addressOrName}&startblock=0&endblock=99999999999999999&page=1&offset=1000&sort=asc&apikey=${process.env.NEXT_PUBLIC_SC_ETHERSCAN}`
-    )
-      .then(async (res) => {
-        const data = await res.json();
-        console.log("vault txns response: ", data.result);
-        setVaultTxns(data.result.reverse());
-      })
-      .catch((err) => {
-        console.log("error fetching vault txns: ", err);
-      });
-  }, [contractConfig]);
+    const {data: vaultActivity, error} = useSWR(`https://api.etherscan.io/api?module=account&action=tokentx&tokenaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&address=${contractConfig?.addressOrName}&startblock=0&endblock=99999999999999999&page=1&offset=1000&sort=asc&apikey=${process.env.NEXT_PUBLIC_SC_ETHERSCAN}`, fetcher);
 
-  console.log(vaultTxns, contractConfig.addressOrName);
+    useEffect(() => {
+      if (vaultActivity?.data) setVaultTxns(vaultActivity.data.result.reverse());
+    }, [vaultActivity]);
 
   return (
     <>
@@ -458,8 +476,8 @@ const VaultComp = ({
                         </Text>
                       </Grid>
 
-                      {vaultTxns &&
-                        vaultTxns.map((txn) => {
+                      {vaultTxns ?
+                        vaultTxns.map((txn: any) => {
                           if (txn.tokenSymbol !== "USDC") {
                             return;
                           }
@@ -553,7 +571,7 @@ const VaultComp = ({
                               </Flex>
                             </Grid>
                           );
-                        })}
+                        }): <SkeletonText />}
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
