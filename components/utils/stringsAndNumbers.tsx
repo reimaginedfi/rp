@@ -1,5 +1,5 @@
-export const trimAddress = (address: string, secondSlice: number) =>
-  address?.slice(0, 6) + "..." + address?.slice(secondSlice);
+export const trimAddress = (address: string, firstSlice: number, secondSlice: number) =>
+  address?.slice(0, firstSlice) + "..." + address?.slice(secondSlice);
 
 export function truncate(str: string, maxDecimalDigits: number)  {
   if (str.includes(".")) {

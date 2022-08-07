@@ -429,14 +429,31 @@ const VaultComp = ({
                     </AccordionButton>
                     <AccordionPanel w="full" display={"grid"}>
                       <Grid templateColumns="repeat(4, 1fr)">
-                        <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"}>Action</Text>
-                        <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"} textAlign={"center"}>
+                        <Text
+                          variant="medium"
+                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
+                        >
+                          Action
+                        </Text>
+                        <Text
+                          variant="medium"
+                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
+                          textAlign={"center"}
+                        >
                           TxN
                         </Text>
-                        <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"} textAlign={"center"}>
+                        <Text
+                          variant="medium"
+                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
+                          textAlign={"center"}
+                        >
                           Date
                         </Text>
-                        <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"} textAlign={"center"}>
+                        <Text
+                          variant="medium"
+                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
+                          textAlign={"center"}
+                        >
                           Value (USDC)
                         </Text>
                       </Grid>
@@ -462,39 +479,78 @@ const VaultComp = ({
                                 {txn.to === contractConfig.addressOrName ? (
                                   <HiSave />
                                 ) : txn.to ===
-                                "0x4457df4a5bccf796662b6374d5947c881cc83ac7"
-                                ? (<GiPayMoney/>) : (
+                                  "0x4457df4a5bccf796662b6374d5947c881cc83ac7" ? (
+                                  <GiPayMoney />
+                                ) : (
                                   <GiReceiveMoney />
                                 )}
-                                <Heading fontWeight="400" variant="small" textAlign={"center"}>
+                                <Heading
+                                  fontWeight="400"
+                                  variant="small"
+                                  textAlign={"center"}
+                                >
                                   {txn.to === contractConfig.addressOrName
                                     ? "Deposit"
                                     : txn.to ===
-                                    "0x4457df4a5bccf796662b6374d5947c881cc83ac7"
+                                      "0x4457df4a5bccf796662b6374d5947c881cc83ac7"
                                     ? "Farmer"
                                     : "Withdraw"}
                                 </Heading>
                               </Flex>
-                              <GridItem textAlign={"center"}>
+                              <Flex
+                                alignItems="center"
+                                justifyContent="center"
+                                textAlign={"center"}
+                              >
                                 <Link
                                   target="_blank"
                                   href={`https://etherscan.io/tx/` + txn.hash}
                                 >
-                                    <Text                                   variant="medium" color={colorMode === 'dark' ? "#EDEDED": "#171717"}
->
-{trimAddress(txn.hash, -4)}
-
-                                    </Text>
+                                  <Text
+                                    variant="medium"
+                                    color={
+                                      colorMode === "dark"
+                                        ? "#EDEDED"
+                                        : "#171717"
+                                    }
+                                  >
+                                    {trimAddress(txn.hash, 4, -3)}
+                                  </Text>
                                 </Link>
-                              </GridItem>
-                              <Text variant="medium" color={colorMode === 'dark' ? "#EDEDED": "#171717"} textAlign={"center"}>
-                              {moment.unix(txn.timeStamp).format("ll").toString()}
-                              </Text>
-                              <GridItem>
-                                <Text variant="medium" color={colorMode === 'dark' ? "#EDEDED": "#171717"} textAlign={"center"}>
+                              </Flex>
+                              <Flex
+                                alignItems="center"
+                                justifyContent="center"
+                                textAlign={"center"}
+                              >
+                                <Text
+                                  variant="medium"
+                                  color={
+                                    colorMode === "dark" ? "#EDEDED" : "#171717"
+                                  }
+                                  textAlign={"center"}
+                                >
+                                  {moment
+                                    .unix(txn.timeStamp)
+                                    .format("ll")
+                                    .toString()}
+                                </Text>
+                              </Flex>
+                              <Flex
+                                alignItems="center"
+                                justifyContent="center"
+                                textAlign={"center"}
+                              >
+                                <Text
+                                  variant="medium"
+                                  color={
+                                    colorMode === "dark" ? "#EDEDED" : "#171717"
+                                  }
+                                  textAlign={"center"}
+                                >
                                   {truncate(commify(+txn.value / 1000000), 2)}
                                 </Text>
-                              </GridItem>
+                              </Flex>
                             </Grid>
                           );
                         })}
