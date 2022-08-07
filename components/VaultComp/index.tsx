@@ -35,6 +35,7 @@ import { ContractConfig } from "../../contracts";
 import DepositModal from "./modals/depositModal";
 import WithdrawModal from "./modals/withdrawModal";
 import VaultProgressBar from "./VaultProgressBar";
+import moment from "moment";
 
 import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
@@ -427,10 +428,13 @@ const VaultComp = ({
                       <AccordionIcon />
                     </AccordionButton>
                     <AccordionPanel w="full" display={"grid"}>
-                      <Grid templateColumns="repeat(3, 1fr)">
+                      <Grid templateColumns="repeat(4, 1fr)">
                         <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"}>Action</Text>
                         <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"} textAlign={"center"}>
                           TxN
+                        </Text>
+                        <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"} textAlign={"center"}>
+                          Date
                         </Text>
                         <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"} textAlign={"center"}>
                           Value (USDC)
@@ -445,7 +449,7 @@ const VaultComp = ({
                           return (
                             <Grid
                               key={txn.hash}
-                              templateColumns="repeat(3, 1fr)"
+                              templateColumns="repeat(4, 1fr)"
                               alignContent="center"
                               justifyContent={"center"}
                               py="0.5rem"
@@ -457,17 +461,17 @@ const VaultComp = ({
                               >
                                 {txn.to === contractConfig.addressOrName ? (
                                   <HiSave />
-                                ) : txn.from ===
-                                contractConfig.addressOrName
+                                ) : txn.to ===
+                                "0x4457df4a5bccf796662b6374d5947c881cc83ac7"
                                 ? (<GiPayMoney/>) : (
                                   <GiReceiveMoney />
                                 )}
                                 <Heading fontWeight="400" variant="small" textAlign={"center"}>
                                   {txn.to === contractConfig.addressOrName
                                     ? "Deposit"
-                                    : txn.from ===
-                                    contractConfig.addressOrName
-                                    ? "Movement"
+                                    : txn.to ===
+                                    "0x4457df4a5bccf796662b6374d5947c881cc83ac7"
+                                    ? "Farmer"
                                     : "Withdraw"}
                                 </Heading>
                               </Flex>
@@ -476,9 +480,16 @@ const VaultComp = ({
                                   target="_blank"
                                   href={`https://etherscan.io/tx/` + txn.hash}
                                 >
-                                  {trimAddress(txn.hash, -4)}
+                                    <Text                                   variant="medium" color={colorMode === 'dark' ? "#EDEDED": "#171717"}
+>
+{trimAddress(txn.hash, -4)}
+
+                                    </Text>
                                 </Link>
                               </GridItem>
+                              <Text variant="medium" color={colorMode === 'dark' ? "#EDEDED": "#171717"} textAlign={"center"}>
+                              {moment.unix(txn.timeStamp).format("ll").toString()}
+                              </Text>
                               <GridItem>
                                 <Text variant="medium" color={colorMode === 'dark' ? "#EDEDED": "#171717"} textAlign={"center"}>
                                   {truncate(commify(+txn.value / 1000000), 2)}
