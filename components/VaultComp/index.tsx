@@ -48,8 +48,8 @@ import { VaultTruncated } from "./VaultTruncated";
 
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 
-import {HiSave} from "react-icons/hi";
-import {GiReceiveMoney} from "react-icons/gi";
+import { HiSave } from "react-icons/hi";
+import { GiReceiveMoney, GiPayMoney } from "react-icons/gi";
 
 type VaultProps = {
   currentAum: string;
@@ -128,7 +128,7 @@ const VaultComp = ({
       });
   }, [contractConfig]);
 
-  console.log(vaultTxns)
+  console.log(vaultTxns, contractConfig.addressOrName);
 
   return (
     <>
@@ -428,9 +428,13 @@ const VaultComp = ({
                     </AccordionButton>
                     <AccordionPanel w="full" display={"grid"}>
                       <Grid templateColumns="repeat(3, 1fr)">
-                      <Text fontWeight="semibold" >Type </Text>
-                        <Text fontWeight="semibold" textAlign={"center"}>Txn Hash</Text>
-                        <Text fontWeight="semibold" textAlign={"center"}>value (USDC)</Text>
+                        <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"}>Action</Text>
+                        <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"} textAlign={"center"}>
+                          TxN
+                        </Text>
+                        <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"} textAlign={"center"}>
+                          Value (USDC)
+                        </Text>
                       </Grid>
 
                       {vaultTxns &&
@@ -442,21 +446,30 @@ const VaultComp = ({
                             <Grid
                               key={txn.hash}
                               templateColumns="repeat(3, 1fr)"
-                              borderTop={colorMode === "dark" ? "1px solid #fff" : "1px solid #000"}
                               alignContent="center"
                               justifyContent={"center"}
-                              p="0.5rem"
+                              py="0.5rem"
                             >
-                              <Flex direction="row" gap="0.25rem" alignItems="center">
-                              {txn.to === contractConfig.addressOrName
-                                    ?                                 <HiSave/>
-                                    :<GiReceiveMoney/>}
-                                <Text textAlign={"center"}>
-                                {txn.to === contractConfig.addressOrName
+                              <Flex
+                                direction="row"
+                                gap="0.25rem"
+                                alignItems="center"
+                              >
+                                {txn.to === contractConfig.addressOrName ? (
+                                  <HiSave />
+                                ) : txn.from ===
+                                contractConfig.addressOrName
+                                ? (<GiPayMoney/>) : (
+                                  <GiReceiveMoney />
+                                )}
+                                <Heading fontWeight="400" variant="small" textAlign={"center"}>
+                                  {txn.to === contractConfig.addressOrName
                                     ? "Deposit"
-                                    : txn.from === "0x0000000000000000000000000000000000000000" ? "Movement"
+                                    : txn.from ===
+                                    contractConfig.addressOrName
+                                    ? "Movement"
                                     : "Withdraw"}
-                                </Text>
+                                </Heading>
                               </Flex>
                               <GridItem textAlign={"center"}>
                                 <Link
@@ -467,7 +480,9 @@ const VaultComp = ({
                                 </Link>
                               </GridItem>
                               <GridItem>
-                                <Text textAlign={"center"}>{truncate(commify(+txn.value / 1000000), 2)}</Text>
+                                <Text variant="medium" color={colorMode === 'dark' ? "#EDEDED": "#171717"} textAlign={"center"}>
+                                  {truncate(commify(+txn.value / 1000000), 2)}
+                                </Text>
                               </GridItem>
                             </Grid>
                           );
