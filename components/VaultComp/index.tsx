@@ -26,7 +26,7 @@ import {
   useColorMode,
   useDisclosure,
   VStack,
-  Tooltip
+  Tooltip,
 } from "@chakra-ui/react";
 import { commify } from "ethers/lib/utils";
 import useWindowSize from "react-use/lib/useWindowSize";
@@ -40,13 +40,16 @@ import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
 import { useVaultMeta, useVaultUser } from "../hooks/useVault";
 import { Number } from "../Number";
-import { truncate } from "../utils/stringsAndNumbers";
+import { truncate, trimAddress } from "../utils/stringsAndNumbers";
 import { UserSection } from "./sections/UserSection";
 import { VaultHeroLeft } from "./VaultHeroLeft";
 import { VaultTitle } from "./VaultTitle";
 import { VaultTruncated } from "./VaultTruncated";
 
-import {InfoOutlineIcon} from "@chakra-ui/icons";
+import { InfoOutlineIcon } from "@chakra-ui/icons";
+
+import {HiSave} from "react-icons/hi";
+import {GiReceiveMoney} from "react-icons/gi";
 
 type VaultProps = {
   currentAum: string;
@@ -117,13 +120,15 @@ const VaultComp = ({
     )
       .then(async (res) => {
         const data = await res.json();
-        console.log('vault txns response: ', data.result)
-        setVaultTxns(data.result);
+        console.log("vault txns response: ", data.result);
+        setVaultTxns(data.result.reverse());
       })
       .catch((err) => {
-        console.log('error fetching vault txns: ', err)
+        console.log("error fetching vault txns: ", err);
       });
   }, [contractConfig]);
+
+  console.log(vaultTxns)
 
   return (
     <>
@@ -205,9 +210,15 @@ const VaultComp = ({
                   )}
                 <Flex px="1rem" mt={2} alignItems="center">
                   <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#C51E25" />
-                  <Text mr={1} variant="medium">AUM</Text>
-                  <Tooltip hasArrow label="Total USDC value of assets deposited and managed by farmer" bg={colorMode === "dark" ? "white" : "black"}>
-                  <InfoOutlineIcon w={3.5} h={3.5} />
+                  <Text mr={1} variant="medium">
+                    AUM
+                  </Text>
+                  <Tooltip
+                    hasArrow
+                    label="Total USDC value of assets deposited and managed by farmer"
+                    bg={colorMode === "dark" ? "white" : "black"}
+                  >
+                    <InfoOutlineIcon w={3.5} h={3.5} />
                   </Tooltip>
                   <Spacer />
                   <Text variant="medium">
@@ -225,9 +236,15 @@ const VaultComp = ({
                 </Flex>
                 <Flex px="1rem" alignItems={"center"}>
                   <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#E9A9AB" />
-                  <Text mr={1} variant="medium">Pending Deposits</Text>
-                  <Tooltip hasArrow label="Deposits made currently not shown in the vault's AUM (waiting for next epoch)" bg={colorMode === "dark" ? "white" : "black"}>
-                  <InfoOutlineIcon w={3.5} h={3.5} />
+                  <Text mr={1} variant="medium">
+                    Pending Deposits
+                  </Text>
+                  <Tooltip
+                    hasArrow
+                    label="Deposits made currently not shown in the vault's AUM (waiting for next epoch)"
+                    bg={colorMode === "dark" ? "white" : "black"}
+                  >
+                    <InfoOutlineIcon w={3.5} h={3.5} />
                   </Tooltip>
                   <Spacer />
                   <Text variant="medium">
@@ -409,37 +426,52 @@ const VaultComp = ({
                       <Heading variant="medium">Vault Activity</Heading>
                       <AccordionIcon />
                     </AccordionButton>
-                    <AccordionPanel w='full' display={"grid"} >
-                    <Grid templateColumns='repeat(3, 1fr)'>
-                        <Text fontWeight='semibold'>
-                          Txn Hash
-                        </Text>
-                        <Text fontWeight='semibold'>
-                          Type </Text>
-                        <Text fontWeight='semibold'>
-                          value (USDC)
-                        </Text>
+                    <AccordionPanel w="full" display={"grid"}>
+                      <Grid templateColumns="repeat(3, 1fr)">
+                      <Text fontWeight="semibold" >Type </Text>
+                        <Text fontWeight="semibold" textAlign={"center"}>Txn Hash</Text>
+                        <Text fontWeight="semibold" textAlign={"center"}>value (USDC)</Text>
                       </Grid>
-                      
-                      {vaultTxns.length && vaultTxns.map((txn) => {
-                        if(txn.tokenSymbol !== 'USDC') {
-                          return 
-                        }
-                        return (
-                        <Grid key={txn.hash} templateColumns='repeat(3, 1fr)'>
-                        <GridItem >
-                           <Link target='_blank' href={`https://etherscan.io/tx/` + txn.hash}>
-                          {txn.hash.slice(0, 5)+ '...' + txn.hash.slice(-2)}
-                          </Link>
-                        </GridItem>
-                        <GridItem >
-                          <Text>{txn.to === contractConfig.addressOrName ? 'Deposit' : 'Withdraw'}</Text></GridItem>
-                          <GridItem><Text>
-                            {(+txn.value / 1000000)}
-                          </Text></GridItem>
-                      </Grid>
-                      )})}
-                      
+
+                      {vaultTxns &&
+                        vaultTxns.map((txn) => {
+                          if (txn.tokenSymbol !== "USDC") {
+                            return;
+                          }
+                          return (
+                            <Grid
+                              key={txn.hash}
+                              templateColumns="repeat(3, 1fr)"
+                              borderTop={colorMode === "dark" ? "1px solid #fff" : "1px solid #000"}
+                              alignContent="center"
+                              justifyContent={"center"}
+                              p="0.5rem"
+                            >
+                              <Flex direction="row" gap="0.25rem" alignItems="center">
+                              {txn.to === contractConfig.addressOrName
+                                    ?                                 <HiSave/>
+                                    :<GiReceiveMoney/>}
+                                <Text textAlign={"center"}>
+                                {txn.to === contractConfig.addressOrName
+                                    ? "Deposit"
+                                    : txn.from === "0x0000000000000000000000000000000000000000" ? "Movement"
+                                    : "Withdraw"}
+                                </Text>
+                              </Flex>
+                              <GridItem textAlign={"center"}>
+                                <Link
+                                  target="_blank"
+                                  href={`https://etherscan.io/tx/` + txn.hash}
+                                >
+                                  {trimAddress(txn.hash, -4)}
+                                </Link>
+                              </GridItem>
+                              <GridItem>
+                                <Text textAlign={"center"}>{truncate(commify(+txn.value / 1000000), 2)}</Text>
+                              </GridItem>
+                            </Grid>
+                          );
+                        })}
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
