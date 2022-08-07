@@ -23,25 +23,23 @@ import {
   Spacer,
   Stack,
   Text,
+  Tooltip,
   useColorMode,
   useDisclosure,
-  VStack,
-  Tooltip,
 } from "@chakra-ui/react";
 import { commify } from "ethers/lib/utils";
+import moment from "moment";
 import useWindowSize from "react-use/lib/useWindowSize";
 import { useAccount, useContractRead } from "wagmi";
 import { ContractConfig } from "../../contracts";
-import DepositModal from "./modals/depositModal";
 import WithdrawModal from "./modals/withdrawModal";
 import VaultProgressBar from "./VaultProgressBar";
-import moment from "moment";
 
 import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
-import { useVaultMeta, useVaultUser } from "../hooks/useVault";
+import { useVaultMeta } from "../hooks/useVault";
 import { Number } from "../Number";
-import { truncate, trimAddress } from "../utils/stringsAndNumbers";
+import { trimAddress, truncate } from "../utils/stringsAndNumbers";
 import { UserSection } from "./sections/UserSection";
 import { VaultHeroLeft } from "./VaultHeroLeft";
 import { VaultTitle } from "./VaultTitle";
@@ -49,8 +47,9 @@ import { VaultTruncated } from "./VaultTruncated";
 
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 
+import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
 import { HiSave } from "react-icons/hi";
-import { GiReceiveMoney, GiPayMoney } from "react-icons/gi";
+import { DepositButton } from "./modals/DepositButton";
 
 type VaultProps = {
   currentAum: string;
@@ -177,9 +176,7 @@ const VaultComp = ({
                   </GridItem>
 
                   <GridItem alignItems="center">
-                    <Button w="full" variant="primary" onClick={onOpenDeposit}>
-                      Deposit
-                    </Button>
+                    <DepositButton />
                   </GridItem>
                   <GridItem>
                     <Button w="full" variant="ghost" onClick={onOpenWithdraw}>
@@ -574,14 +571,6 @@ const VaultComp = ({
         }}
       />
 
-      {depositIsOpen && (
-        <DepositModal
-          onClose={onCloseDeposit}
-          isOpen={depositIsOpen}
-          depositSuccess={depositSuccess!}
-          setDepositSuccess={setDepositSuccess}
-        />
-      )}
       {withdrawIsOpen && (
         <WithdrawModal onClose={onCloseWithdraw} isOpen={withdrawIsOpen} />
       )}
