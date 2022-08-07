@@ -92,6 +92,8 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
           borderBottom="1px solid"
           borderColor={colorMode === "dark" ? "#2E2E2E" : "#E8E8E8"}
           alignItems="center"
+          pos="sticky"
+          zIndex="popover"
         >
           <Button
             display={{ base: "flex", md: "none" }}

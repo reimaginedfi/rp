@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
@@ -25,7 +25,8 @@ import {
   Text,
   useColorMode,
   useDisclosure,
-  Tooltip
+  VStack,
+  Tooltip,
 } from "@chakra-ui/react";
 import { commify } from "ethers/lib/utils";
 import useWindowSize from "react-use/lib/useWindowSize";
@@ -34,18 +35,22 @@ import { ContractConfig } from "../../contracts";
 import DepositModal from "./modals/depositModal";
 import WithdrawModal from "./modals/withdrawModal";
 import VaultProgressBar from "./VaultProgressBar";
+import moment from "moment";
 
 import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
 import { useVaultMeta, useVaultUser } from "../hooks/useVault";
 import { Number } from "../Number";
-import { truncate } from "../utils/stringsAndNumbers";
+import { truncate, trimAddress } from "../utils/stringsAndNumbers";
 import { UserSection } from "./sections/UserSection";
 import { VaultHeroLeft } from "./VaultHeroLeft";
 import { VaultTitle } from "./VaultTitle";
 import { VaultTruncated } from "./VaultTruncated";
 
-import {InfoOutlineIcon} from "@chakra-ui/icons";
+import { InfoOutlineIcon } from "@chakra-ui/icons";
+
+import { HiSave } from "react-icons/hi";
+import { GiReceiveMoney, GiPayMoney } from "react-icons/gi";
 
 type VaultProps = {
   currentAum: string;
@@ -90,6 +95,8 @@ const VaultComp = ({
     defaultIsOpen: true,
   });
 
+  const [vaultTxns, setVaultTxns] = useState<any[]>([]);
+
   //VAULT META - fetches vault information from the contract
   const { assetToken, farmer } = useVaultMeta(contractConfig);
 
@@ -107,6 +114,22 @@ const VaultComp = ({
   //   hasPendingDepositValue,
   //   totalDeposited,
   // } = useVaultUser(contractConfig, address ?? "");
+
+  useEffect(() => {
+    fetch(
+      `https://api.etherscan.io/api?module=account&action=tokentx&tokenaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&address=${contractConfig?.addressOrName}&startblock=0&endblock=99999999999999999&page=1&offset=1000&sort=asc&apikey=${process.env.NEXT_PUBLIC_SC_ETHERSCAN}`
+    )
+      .then(async (res) => {
+        const data = await res.json();
+        console.log("vault txns response: ", data.result);
+        setVaultTxns(data.result.reverse());
+      })
+      .catch((err) => {
+        console.log("error fetching vault txns: ", err);
+      });
+  }, [contractConfig]);
+
+  console.log(vaultTxns, contractConfig.addressOrName);
 
   return (
     <>
@@ -188,9 +211,15 @@ const VaultComp = ({
                   )}
                 <Flex px="1rem" mt={2} alignItems="center">
                   <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#C51E25" />
-                  <Text mr={1} variant="medium">AUM</Text>
-                  <Tooltip hasArrow label="Total USDC value of assets deposited and managed by farmer" bg={colorMode === "dark" ? "white" : "black"}>
-                  <InfoOutlineIcon w={3.5} h={3.5} />
+                  <Text mr={1} variant="medium">
+                    AUM
+                  </Text>
+                  <Tooltip
+                    hasArrow
+                    label="Total USDC value of assets deposited and managed by farmer"
+                    bg={colorMode === "dark" ? "white" : "black"}
+                  >
+                    <InfoOutlineIcon w={3.5} h={3.5} />
                   </Tooltip>
                   <Spacer />
                   <Text variant="medium">
@@ -208,9 +237,15 @@ const VaultComp = ({
                 </Flex>
                 <Flex px="1rem" alignItems={"center"}>
                   <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#E9A9AB" />
-                  <Text mr={1} variant="medium">Pending Deposits</Text>
-                  <Tooltip hasArrow label="Deposits made currently not shown in the vault's AUM (waiting for next epoch)" bg={colorMode === "dark" ? "white" : "black"}>
-                  <InfoOutlineIcon w={3.5} h={3.5} />
+                  <Text mr={1} variant="medium">
+                    Pending Deposits
+                  </Text>
+                  <Tooltip
+                    hasArrow
+                    label="Deposits made currently not shown in the vault's AUM (waiting for next epoch)"
+                    bg={colorMode === "dark" ? "white" : "black"}
+                  >
+                    <InfoOutlineIcon w={3.5} h={3.5} />
                   </Tooltip>
                   <Spacer />
                   <Text variant="medium">
@@ -377,7 +412,7 @@ const VaultComp = ({
                 {farmer.data && farmer.data.toString() === address && (
                   <FarmerSettingsAccordion contractConfig={contractConfig} />
                 )}
-                {/* <Accordion
+                <Accordion
                   borderRadius="1rem"
                   pt="1rem"
                   allowToggle
@@ -392,11 +427,80 @@ const VaultComp = ({
                       <Heading variant="medium">Vault Activity</Heading>
                       <AccordionIcon />
                     </AccordionButton>
-                    <AccordionPanel display={"grid"} placeContent="center">
-                      <Number>[Work in progress]</Number>
+                    <AccordionPanel w="full" display={"grid"}>
+                      <Grid templateColumns="repeat(4, 1fr)">
+                        <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"}>Action</Text>
+                        <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"} textAlign={"center"}>
+                          TxN
+                        </Text>
+                        <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"} textAlign={"center"}>
+                          Date
+                        </Text>
+                        <Text variant="medium" color={colorMode === 'dark' ? "#7E7E7E" : "#858585"} textAlign={"center"}>
+                          Value (USDC)
+                        </Text>
+                      </Grid>
+
+                      {vaultTxns &&
+                        vaultTxns.map((txn) => {
+                          if (txn.tokenSymbol !== "USDC") {
+                            return;
+                          }
+                          return (
+                            <Grid
+                              key={txn.hash}
+                              templateColumns="repeat(4, 1fr)"
+                              alignContent="center"
+                              justifyContent={"center"}
+                              py="0.5rem"
+                            >
+                              <Flex
+                                direction="row"
+                                gap="0.25rem"
+                                alignItems="center"
+                              >
+                                {txn.to === contractConfig.addressOrName ? (
+                                  <HiSave />
+                                ) : txn.to ===
+                                "0x4457df4a5bccf796662b6374d5947c881cc83ac7"
+                                ? (<GiPayMoney/>) : (
+                                  <GiReceiveMoney />
+                                )}
+                                <Heading fontWeight="400" variant="small" textAlign={"center"}>
+                                  {txn.to === contractConfig.addressOrName
+                                    ? "Deposit"
+                                    : txn.to ===
+                                    "0x4457df4a5bccf796662b6374d5947c881cc83ac7"
+                                    ? "Farmer"
+                                    : "Withdraw"}
+                                </Heading>
+                              </Flex>
+                              <GridItem textAlign={"center"}>
+                                <Link
+                                  target="_blank"
+                                  href={`https://etherscan.io/tx/` + txn.hash}
+                                >
+                                    <Text                                   variant="medium" color={colorMode === 'dark' ? "#EDEDED": "#171717"}
+>
+{trimAddress(txn.hash, -4)}
+
+                                    </Text>
+                                </Link>
+                              </GridItem>
+                              <Text variant="medium" color={colorMode === 'dark' ? "#EDEDED": "#171717"} textAlign={"center"}>
+                              {moment.unix(txn.timeStamp).format("ll").toString()}
+                              </Text>
+                              <GridItem>
+                                <Text variant="medium" color={colorMode === 'dark' ? "#EDEDED": "#171717"} textAlign={"center"}>
+                                  {truncate(commify(+txn.value / 1000000), 2)}
+                                </Text>
+                              </GridItem>
+                            </Grid>
+                          );
+                        })}
                     </AccordionPanel>
                   </AccordionItem>
-                </Accordion> */}
+                </Accordion>
               </AccordionPanel>
             </>
           )}
