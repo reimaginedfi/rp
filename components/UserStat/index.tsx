@@ -15,7 +15,7 @@ import { useVaultUser } from "../hooks/useVault";
 import { useContractConfig, useWatchVault } from "../Vault/ContractContext";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../Vault/hooks/useVaultAsset";
-
+import { truncate } from "../utils/stringsAndNumbers";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 
 const UserStat = () => {
@@ -95,6 +95,41 @@ const UserStat = () => {
           py={0}
         >
           {(+unrealized - totalValue.toNumber() / 1000000).toFixed(2)}
+        </Heading>
+        <Text textAlign={"center"} mt={-2} mb={4}>
+          {asset.data?.symbol}
+        </Text>
+      </Box>
+      <Stack
+        w="100%"
+        direction="row"
+        justifyContent="center"
+        alignContent={"center"}
+      >
+      <Flex gap={1} alignItems="center" direction={"row"}>
+
+      <Text variant={"medium"} textAlign="center">
+        Total Deposits
+      </Text>
+      <Tooltip
+            justifySelf="center"
+            hasArrow
+            label="This is how much you've deposited so far (not including any gains from AUM)"
+            bg={colorMode === "dark" ? "white" : "black"}
+          >
+            <InfoOutlineIcon w={3.5} h={3.5} />
+          </Tooltip>
+        </Flex>
+        </Stack>
+      <Box>
+        <Heading
+          textAlign={"center"}
+          variant={"big"}
+          textShadow={"1px 1px 2rem rgb(200 100 100 / 50%)"}
+          my={0}
+          py={0}
+        >
+          {truncate(formatUnits(totalDeposited, 6), 2)}
         </Heading>
         <Text textAlign={"center"} mt={-2} mb={4}>
           {asset.data?.symbol}

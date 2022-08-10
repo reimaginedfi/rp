@@ -476,7 +476,7 @@ const VaultComp = ({
                         </Text>
                       </Grid>
 
-                      {vaultTxns ?
+                      {vaultTxns !== [] ?
                         vaultTxns.map((txn: any) => {
                           if (txn.tokenSymbol !== "USDC") {
                             return;
