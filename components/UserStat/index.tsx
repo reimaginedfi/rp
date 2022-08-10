@@ -67,9 +67,26 @@ const UserStat = () => {
 
   return (
     <Stack p={{ base: 1, md: 3 }}>
-      <Text variant={"medium"} textAlign="center">
+            <Stack
+        w="100%"
+        direction="row"
+        justifyContent="center"
+        alignContent={"center"}
+      >
+            <Flex gap={1} alignItems="center" direction={"row"}>
+            <Text variant={"medium"} textAlign="center">
         Total Asset Value
       </Text>
+      <Tooltip
+            justifySelf="center"
+            hasArrow
+            label="Sum of total deposits plus total gains not yet withdrawn"
+            bg={colorMode === "dark" ? "white" : "black"}
+          >
+            <InfoOutlineIcon w={3.5} h={3.5} />
+          </Tooltip>
+        </Flex>
+        </Stack>
       <Box>
         <Heading
           textAlign={"center"}
@@ -84,9 +101,26 @@ const UserStat = () => {
           {asset.data?.symbol}
         </Text>
       </Box>
+      <Stack
+        w="100%"
+        direction="row"
+        justifyContent="center"
+        alignContent={"center"}
+      >
+      <Flex gap={1} alignItems="center" direction={"row"}>
       <Text variant={"medium"} textAlign="center">
         PnL this epoch
       </Text>
+      <Tooltip
+            justifySelf="center"
+            hasArrow
+            label="Total gains or losses from all deposits not yet withdrawn"
+            bg={colorMode === "dark" ? "white" : "black"}
+          >
+            <InfoOutlineIcon w={3.5} h={3.5} />
+          </Tooltip>
+        </Flex>
+    </Stack>
       <Box>
         <Heading
           textAlign={"center"}
@@ -114,7 +148,7 @@ const UserStat = () => {
       <Tooltip
             justifySelf="center"
             hasArrow
-            label="This is how much you've deposited so far (not including any gains from AUM)"
+            label="How much you've deposited so far (not including any gains from AUM)"
             bg={colorMode === "dark" ? "white" : "black"}
           >
             <InfoOutlineIcon w={3.5} h={3.5} />
