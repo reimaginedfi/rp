@@ -150,7 +150,8 @@ const VaultComp = ({
   );
 
   useEffect(() => {
-    if (vaultActivity?.data) setVaultTxns(vaultActivity.data.result.reverse());
+    if (vaultActivity?.data)
+      setVaultTxns(vaultActivity.data?.result?.reverse?.());
   }, [vaultActivity]);
 
   return (
@@ -244,10 +245,20 @@ const VaultComp = ({
                     <InfoOutlineIcon w={3.5} h={3.5} />
                   </Tooltip>
                   <Spacer />
-                  <Text variant="medium">
-                    <Number>{millify(+currentAum)}</Number> /{" "}
-                    <Number>{millify(+aumCap)}</Number> USDC
-                  </Text>
+
+                  <Tooltip label={`${commify(currentAum)} USDC`}>
+                    <Text variant="medium">
+                      <Number>{millify(+currentAum)}</Number>
+                    </Text>
+                  </Tooltip>
+                  <Text variant="medium"> / </Text>
+                  <Tooltip label={`${commify(aumCap)} USDC`}>
+                    <Text variant="medium">
+                      <Number>{millify(+aumCap)}</Number>
+                    </Text>
+                  </Tooltip>
+
+                  <Text variant="medium">USDC</Text>
                 </Flex>
 
                 <Flex px="1rem">
@@ -270,9 +281,11 @@ const VaultComp = ({
                     <InfoOutlineIcon w={3.5} h={3.5} />
                   </Tooltip>
                   <Spacer />
-                  <Text variant="medium">
-                    <Number>{millify(+pendingDeposit)}</Number> USDC
-                  </Text>
+                  <Tooltip label={`${commify(pendingDeposit)} USDC`}>
+                    <Text variant="medium">
+                      <Number>{millify(+pendingDeposit)}</Number> USDC
+                    </Text>
+                  </Tooltip>
                 </Flex>
 
                 <UserSection />
@@ -479,7 +492,7 @@ const VaultComp = ({
                         </Text>
                       </Grid>
 
-                      {vaultTxns !== [] ? (
+                      {vaultTxns.length > 1 ? (
                         vaultTxns.map((txn: any) => {
                           if (txn.tokenSymbol !== "USDC") {
                             return;
