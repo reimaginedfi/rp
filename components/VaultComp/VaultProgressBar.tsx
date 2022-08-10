@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { Box, Text, HStack, Skeleton, useColorMode } from "@chakra-ui/react";
+import { Box, Skeleton, useColorMode } from "@chakra-ui/react";
 
 type ProgressBarProps = {
   currentAum: number;
@@ -44,6 +44,7 @@ export default function VaultProgressBar({
     if (item.value > 0) {
       return (
         <Box
+          display={"inline-block"}
           height="0.25rem"
           bgColor={item.color}
           width={item.value + "%"}
@@ -62,20 +63,18 @@ export default function VaultProgressBar({
               : (null as any)
           }
           key={i}
-        ></Box>
+        />
       );
     }
   });
 
   return (
     <Box
-      display="inline-block"
+      display="flex"
       w="100%"
-      height="0.25rem"
+      h="0.25rem"
       bgColor={colorMode === "dark" ? "#373434" : "#E8E8E8"}
       borderRadius="1rem"
-      mb="0"
-      pb="0"
     >
       {bars != null ? bars : <Skeleton h="0.25rem" />}
     </Box>
