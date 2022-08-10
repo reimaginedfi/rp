@@ -23,25 +23,24 @@ import {
   Spacer,
   Stack,
   Text,
+  Tooltip,
   useColorMode,
   useDisclosure,
-  VStack,
-  Tooltip,
 } from "@chakra-ui/react";
 import { commify } from "ethers/lib/utils";
+import moment from "moment";
 import useWindowSize from "react-use/lib/useWindowSize";
 import { useAccount, useContractRead } from "wagmi";
 import { ContractConfig } from "../../contracts";
 import DepositModal from "./modals/depositModal";
 import WithdrawModal from "./modals/withdrawModal";
 import VaultProgressBar from "./VaultProgressBar";
-import moment from "moment";
 
 import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
-import { useVaultMeta, useVaultUser } from "../hooks/useVault";
+import { useVaultMeta } from "../hooks/useVault";
 import { Number } from "../Number";
-import { truncate, trimAddress } from "../utils/stringsAndNumbers";
+import { trimAddress, truncate } from "../utils/stringsAndNumbers";
 import { UserSection } from "./sections/UserSection";
 import { VaultHeroLeft } from "./VaultHeroLeft";
 import { VaultTitle } from "./VaultTitle";
@@ -49,12 +48,13 @@ import { VaultTruncated } from "./VaultTruncated";
 
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 
+import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
 import { HiSave } from "react-icons/hi";
-import { GiReceiveMoney, GiPayMoney } from "react-icons/gi";
 
 //Fetching stuff
 import axios from "axios";
 import axiosRetry from "axios-retry";
+import millify from "millify";
 import useSWR from "swr";
 
 axiosRetry(axios, {
@@ -69,7 +69,8 @@ axiosRetry(axios, {
   },
 });
 
-export const fetcher: any = async (url: string) => await axios({
+export const fetcher: any = async (url: string) =>
+  await axios({
     method: "GET",
     url: url,
   }).catch((error) => {
@@ -143,11 +144,14 @@ const VaultComp = ({
   //   totalDeposited,
   // } = useVaultUser(contractConfig, address ?? "");
 
-    const {data: vaultActivity, error} = useSWR(`https://api.etherscan.io/api?module=account&action=tokentx&tokenaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&address=${contractConfig?.addressOrName}&startblock=0&endblock=99999999999999999&page=1&offset=1000&sort=asc&apikey=${process.env.NEXT_PUBLIC_SC_ETHERSCAN}`, fetcher);
+  const { data: vaultActivity, error } = useSWR(
+    `https://api.etherscan.io/api?module=account&action=tokentx&tokenaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&address=${contractConfig?.addressOrName}&startblock=0&endblock=99999999999999999&page=1&offset=1000&sort=asc&apikey=${process.env.NEXT_PUBLIC_SC_ETHERSCAN}`,
+    fetcher
+  );
 
-    useEffect(() => {
-      if (vaultActivity?.data) setVaultTxns(vaultActivity.data.result.reverse());
-    }, [vaultActivity]);
+  useEffect(() => {
+    if (vaultActivity?.data) setVaultTxns(vaultActivity.data.result.reverse());
+  }, [vaultActivity]);
 
   return (
     <>
@@ -206,7 +210,7 @@ const VaultComp = ({
                   </GridItem>
                 </Grid>
                 {+pendingDeposit + +currentAum > 0 &&
-                  (+pendingDeposit + +currentAum) / +aumCap > 0.8 &&
+                  (+pendingDeposit + +currentAum) / +aumCap > 0.95 &&
                   isWarningVisible && (
                     <Flex w="full" px={"1rem"}>
                       <Alert
@@ -241,8 +245,8 @@ const VaultComp = ({
                   </Tooltip>
                   <Spacer />
                   <Text variant="medium">
-                    <Number>{commify(truncate(currentAum, 2))}</Number> /{" "}
-                    <Number>{commify(truncate(aumCap, 2))}</Number> USDC
+                    <Number>{millify(+currentAum)}</Number> /{" "}
+                    <Number>{millify(+aumCap)}</Number> USDC
                   </Text>
                 </Flex>
 
@@ -267,8 +271,7 @@ const VaultComp = ({
                   </Tooltip>
                   <Spacer />
                   <Text variant="medium">
-                    <Number>{truncate(commify(pendingDeposit!), 2)}</Number>{" "}
-                    USDC
+                    <Number>{millify(+pendingDeposit)}</Number> USDC
                   </Text>
                 </Flex>
 
@@ -476,7 +479,7 @@ const VaultComp = ({
                         </Text>
                       </Grid>
 
-                      {vaultTxns !== [] ?
+                      {vaultTxns !== [] ? (
                         vaultTxns.map((txn: any) => {
                           if (txn.tokenSymbol !== "USDC") {
                             return;
@@ -571,7 +574,10 @@ const VaultComp = ({
                               </Flex>
                             </Grid>
                           );
-                        }): <SkeletonText />}
+                        })
+                      ) : (
+                        <SkeletonText />
+                      )}
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
