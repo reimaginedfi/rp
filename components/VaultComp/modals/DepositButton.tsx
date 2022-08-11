@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Avatar,
   Button,
   Flex,
@@ -26,18 +28,39 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
-import { formatUnits, parseUnits } from "ethers/lib/utils";
+import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
 import { useEffect, useState } from "react";
-import { useAccount, useContractRead, useNetwork, useWaitForTransaction } from "wagmi";
+import {
+  useAccount,
+  useContractRead,
+  useNetwork,
+  useWaitForTransaction,
+} from "wagmi";
 import { vaultConfigs, vaults } from "../../../contracts";
 import { useVaultDeposit, useVaultUser } from "../../hooks/useVault";
 import { DangerToast, SuccessToast } from "../../Toasts";
 import getErrorMessage from "../../utils/errors";
 
+interface TokenInputProps {
+  amount: string;
+  setAmount: (amount: string) => void;
+  balanceDisplay: string;
+  meetsMinimum: boolean;
+  depositAllowed: boolean;
+  minimumDeposit: any;
+}
 
-const TokenInput = () => {
-
-
+const TokenInput: React.FC<TokenInputProps> = ({
+  amount,
+  setAmount,
+  balanceDisplay,
+  meetsMinimum,
+  depositAllowed,
+  minimumDeposit,
+}) => {
+  useEffect(() => {
+    console.log({amount});
+  }, [amount]);
   return (
     <Stack
       w={"full"}
@@ -75,9 +98,14 @@ const TokenInput = () => {
           min={0}
           step={0.1}
           flex={1}
+          value={amount}
+          // onChange={(e) => setAmount(e.target.value)}
           allowMouseWheel
         >
-          <NumberInputField textAlign="right" />
+          <NumberInputField
+            onChange={(e) => setAmount(e.target.value.toString())}
+            textAlign="right"
+          />
           <NumberInputStepper>
             <NumberIncrementStepper />
             <NumberDecrementStepper />
@@ -87,20 +115,41 @@ const TokenInput = () => {
       <Flex justifyContent={"space-between"}>
         <Flex>
           <Text fontSize="sm" mr={2}>
-            Balance: 303.010101
+            Balance: {balanceDisplay} USDC
           </Text>
-          <Button size="sm" variant={"link"}>
+          <Button
+            onClick={() => setAmount(balanceDisplay)}
+            size="sm"
+            variant={"link"}
+          >
             Max
           </Button>
         </Flex>
         <Text fontSize="sm" textAlign={"right"}>
-          $303.12
+          {balanceDisplay} USDC
         </Text>
       </Flex>
       <Progress size={"xs"} borderRadius="full" />
-      <Text fontSize="xs" color={"red"}>
-        Exceeds wallet balance
-      </Text>
+      {+amount > +balanceDisplay && (
+        <Text fontSize="xs" color={"red"}>
+          Exceeds wallet balance
+        </Text>
+      )}
+      {!meetsMinimum || (!depositAllowed && amount !== "") ? (
+        <Alert borderRadius={"1rem"} status="error">
+          <AlertIcon />
+          Minimum deposit is{" "}
+          {minimumDeposit.data
+            ? commify(
+                ~~formatUnits(
+                  BigNumber.from(minimumDeposit!.data!._hex!).toNumber(),
+                  6
+                )
+              )
+            : "25,000"}{" "}
+          USDC
+        </Alert>
+      ) : null}
     </Stack>
   );
 };
@@ -110,12 +159,14 @@ interface DepositButtonProps {
   setDepositSuccess: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const DepositButton: React.FC<DepositButtonProps> = ({depositSuccess,
-  setDepositSuccess,}) => {
+export const DepositButton: React.FC<DepositButtonProps> = ({
+  depositSuccess,
+  setDepositSuccess,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [amount, setAmount] = useState<string>("");
   const toast = useToast();
-  const {chain} = useNetwork()
+  const { chain } = useNetwork();
   const [contractConfig, setContractConfig] = useState<any>();
 
   //CONTRACT READ FOR DEPOSIT FUNCTIONS
@@ -133,8 +184,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({depositSuccess,
     depositData,
   } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
 
-  const {address} = useAccount()
-
+  const { address } = useAccount();
 
   // GETS CONTRACT CONFIG FROM VAULTS
   useEffect(() => {
@@ -258,7 +308,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({depositSuccess,
     }
   }, [depositSuccess]);
 
-  //VAULT CONTRAG CONFIG 
+  //VAULT CONTRAG CONFIG
   const vaultConfig = vaultConfigs[chain!.id][0];
 
   //CAN DEPOSIT / DEPOSIT ALLOWED - checks whether user meets the criteria (has enough REFI tokens, has deposited 25K before)
@@ -293,7 +343,14 @@ export const DepositButton: React.FC<DepositButtonProps> = ({depositSuccess,
           </ModalHeader>
           <ModalBody>
             <Stack spacing={4}>
-              <TokenInput />
+              <TokenInput
+                amount={amount}
+                setAmount={setAmount}
+                balanceDisplay={balanceDisplay}
+                depositAllowed={depositAllowed}
+                meetsMinimum={meetsMinimum}
+                minimumDeposit={minimumDeposit}
+              />
               <TableContainer>
                 <Table>
                   <Tbody>
@@ -308,7 +365,11 @@ export const DepositButton: React.FC<DepositButtonProps> = ({depositSuccess,
                           <Text fontSize={"lg"} fontWeight="bold">
                             {balanceDisplay} USDC
                           </Text>
-                          <Button onClick={() => setAmount(balanceDisplay)} variant={"link"} size="xs">
+                          <Button
+                            onClick={() => setAmount(balanceDisplay)}
+                            variant={"link"}
+                            size="xs"
+                          >
                             Max
                           </Button>
                         </Flex>
@@ -331,29 +392,32 @@ export const DepositButton: React.FC<DepositButtonProps> = ({depositSuccess,
           </ModalBody>
           <ModalFooter>
             <Stack w="full">
-              <Button isDisabled={
-                    +amount + totalDeposited < 25000 ||
-                    isApproving ||
-                    canDeposit.isLoading
-                  }
-                  isLoading={isApproving}
-                  onClick={handleApprove} w={"full"}>
+              <Button
+                isDisabled={
+                  +amount + totalDeposited < 25000 ||
+                  isApproving ||
+                  canDeposit.isLoading
+                }
+                isLoading={isApproving}
+                onClick={handleApprove}
+                w={"full"}
+              >
                 Approve
               </Button>
               <Button
-              disabled={
-                amount === "" || isApproving || !isAllowed || !depositAllowed
-              }
-              isLoading={isStoring || isLoading}
-              onClick={handleDeposit}
-              minW={"10rem"}
-              variant="primary"
-            >
-              Deposit
-              <Text fontWeight="light" ml="0.25rem">
-                {amount && `${amount} USDC`}
-              </Text>
-            </Button>
+                disabled={
+                  amount === "" || isApproving || !isAllowed || !depositAllowed
+                }
+                isLoading={isStoring || isLoading}
+                onClick={handleDeposit}
+                minW={"10rem"}
+                variant="primary"
+              >
+                Deposit
+                <Text fontWeight="light" ml="0.25rem">
+                  {amount && `${amount} USDC`}
+                </Text>
+              </Button>
               <Button variant={"link"} w={"full"} onClick={onClose}>
                 Cancel
               </Button>

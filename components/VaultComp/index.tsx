@@ -176,7 +176,10 @@ const VaultComp = ({
                   </GridItem>
 
                   <GridItem alignItems="center">
-                    <DepositButton />
+                    <DepositButton
+                      depositSuccess={depositSuccess}
+                      setDepositSuccess={setDepositSuccess}
+                    />
                   </GridItem>
                   <GridItem>
                     <Button w="full" variant="ghost" onClick={onOpenWithdraw}>
