@@ -23,9 +23,21 @@ import {
   Text,
   Tr,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
+import { BigNumber } from "ethers";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
+import { useEffect, useState } from "react";
+import { useAccount, useContractRead, useNetwork, useWaitForTransaction } from "wagmi";
+import { vaultConfigs, vaults } from "../../../contracts";
+import { useVaultDeposit, useVaultUser } from "../../hooks/useVault";
+import { DangerToast, SuccessToast } from "../../Toasts";
+import getErrorMessage from "../../utils/errors";
+
 
 const TokenInput = () => {
+
+
   return (
     <Stack
       w={"full"}
@@ -93,8 +105,181 @@ const TokenInput = () => {
   );
 };
 
-export const DepositButton = () => {
+interface DepositButtonProps {
+  depositSuccess: boolean;
+  setDepositSuccess: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const DepositButton: React.FC<DepositButtonProps> = ({depositSuccess,
+  setDepositSuccess,}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [amount, setAmount] = useState<string>("");
+  const toast = useToast();
+  const {chain} = useNetwork()
+  const [contractConfig, setContractConfig] = useState<any>();
+
+  //CONTRACT READ FOR DEPOSIT FUNCTIONS
+  const {
+    balanceDisplay,
+    approve,
+    isApproving,
+    isAllowed,
+    storeAsset,
+    isStoring,
+    storeAssetError,
+    approveError,
+    approveStatus,
+    storeAssetStatus,
+    depositData,
+  } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
+
+  const {address} = useAccount()
+
+
+  // GETS CONTRACT CONFIG FROM VAULTS
+  useEffect(() => {
+    vaults[chain!.id].map((contract) => {
+      setContractConfig(contract);
+    });
+  }, [chain, vaults]);
+
+  const { totalDeposited } = useVaultUser(contractConfig, address ?? "");
+
+  useEffect(() => {
+    console.log("storeAssetError: ", storeAssetError);
+    if (storeAssetError && storeAssetStatus === "error") {
+      toast({
+        variant: "danger",
+        title: storeAssetError?.name,
+        duration: 5000,
+        render: () => (
+          <DangerToast
+            message={storeAssetError
+              ?.toString()
+              .substring(storeAssetError?.toString().indexOf(":"), -1)}
+          />
+        ),
+      });
+    }
+  }, [storeAssetError, storeAssetStatus, toast]);
+
+  useEffect(() => {
+    console.log("approveError: ", approveError);
+    if (approveError && approveStatus === "error") {
+      toast({
+        variant: "danger",
+        title: approveError?.name,
+        duration: 5000,
+        render: () => (
+          <DangerToast
+            message={approveError
+              ?.toString()
+              .substring(approveError?.toString().indexOf(":"), -1)}
+          />
+        ),
+      });
+    }
+  }, [approveError, approveStatus, toast]);
+
+  useEffect(() => {
+    if (approveStatus === "success") {
+      toast({
+        variant: "success",
+        duration: 5000,
+        position: "bottom",
+        render: () => (
+          <SuccessToast message={`You have approved ${amount} USDC`} />
+        ),
+      });
+    }
+  }, [approveStatus]);
+
+  // HANDLES DEPOSIT function on button click
+  const handleDeposit = async () => {
+    if (!isAllowed) {
+      return;
+    }
+    try {
+      await storeAsset();
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      toast({
+        variant: "danger",
+        duration: 5000,
+        position: "bottom",
+        render: () => <DangerToast message={errorMessage} />,
+      });
+    }
+  };
+
+  // APPROVE ERC20 TOKEN on button click
+  const handleApprove = async () => {
+    try {
+      await approve();
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      toast({
+        variant: "danger",
+        position: "bottom",
+        duration: 5000,
+        render: () => <DangerToast message={errorMessage} />,
+      });
+    }
+  };
+
+  // CHECKS DEPOSIT TXN UNTIL IT SUCCEEDS
+  const { isLoading } = useWaitForTransaction({
+    hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
+    enabled: typeof depositData?.hash === "string",
+    // onSuccess never fails
+    //https://github.com/wagmi-dev/wagmi/discussions/428
+    onSuccess: (data) => {
+      if (data.status === 1) {
+        setDepositSuccess(true);
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (depositSuccess) {
+      toast({
+        variant: "success",
+        duration: 5000,
+        position: "bottom",
+        render: () => (
+          <SuccessToast
+            message={`You have deposited ${amount} USDC`}
+            link={depositData?.hash}
+          />
+        ),
+      });
+
+      onClose!();
+    }
+  }, [depositSuccess]);
+
+  //VAULT CONTRAG CONFIG 
+  const vaultConfig = vaultConfigs[chain!.id][0];
+
+  //CAN DEPOSIT / DEPOSIT ALLOWED - checks whether user meets the criteria (has enough REFI tokens, has deposited 25K before)
+  const canDeposit = useContractRead({
+    ...vaultConfig,
+    functionName: "canDeposit",
+    args: [address, parseUnits(amount === "" ? "0" : amount, 6)],
+  });
+  const depositAllowed = canDeposit.data?.toString() === "true";
+
+  //MINIMUM DEPOSIT - fetches minimum deposit amount for users who have not deposited before
+  const minimumDeposit = useContractRead({
+    ...vaultConfig,
+    functionName: "minimumStoredValueBeforeFees",
+  });
+  const meetsMinimum =
+    +amount >=
+    (minimumDeposit.data!
+      ? +formatUnits(BigNumber.from(minimumDeposit?.data?._hex!).toNumber(), 6)
+      : 25000);
+
   return (
     <>
       <Button w={"full"} onClick={onOpen}>
@@ -121,9 +306,9 @@ export const DepositButton = () => {
                       <Td px={2} py={1}>
                         <Flex justifyContent={"space-between"}>
                           <Text fontSize={"lg"} fontWeight="bold">
-                            $303.12
+                            {balanceDisplay} USDC
                           </Text>
-                          <Button variant={"link"} size="xs">
+                          <Button onClick={() => setAmount(balanceDisplay)} variant={"link"} size="xs">
                             Max
                           </Button>
                         </Flex>
@@ -146,9 +331,29 @@ export const DepositButton = () => {
           </ModalBody>
           <ModalFooter>
             <Stack w="full">
-              <Button w={"full"} onClick={onClose}>
+              <Button isDisabled={
+                    +amount + totalDeposited < 25000 ||
+                    isApproving ||
+                    canDeposit.isLoading
+                  }
+                  isLoading={isApproving}
+                  onClick={handleApprove} w={"full"}>
                 Approve
               </Button>
+              <Button
+              disabled={
+                amount === "" || isApproving || !isAllowed || !depositAllowed
+              }
+              isLoading={isStoring || isLoading}
+              onClick={handleDeposit}
+              minW={"10rem"}
+              variant="primary"
+            >
+              Deposit
+              <Text fontWeight="light" ml="0.25rem">
+                {amount && `${amount} USDC`}
+              </Text>
+            </Button>
               <Button variant={"link"} w={"full"} onClick={onClose}>
                 Cancel
               </Button>
