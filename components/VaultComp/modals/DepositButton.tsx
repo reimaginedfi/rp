@@ -394,6 +394,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
             <Stack w="full">
               <Button
                 isDisabled={
+                  amount === "" ||
                   +amount + totalDeposited < 25000 ||
                   isApproving ||
                   canDeposit.isLoading
