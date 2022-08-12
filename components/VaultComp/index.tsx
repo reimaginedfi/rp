@@ -51,6 +51,36 @@ import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
 import { HiSave } from "react-icons/hi";
 import { DepositButton } from "./modals/DepositButton";
 
+//Fetching stuff
+import axios from "axios";
+import axiosRetry from "axios-retry";
+import millify from "millify";
+import useSWR from "swr";
+
+axiosRetry(axios, {
+  retries: 10, // number of retries
+  retryDelay: (retryCount) => {
+    console.log(`retry attempt: ${retryCount}`);
+    return retryCount * 3000; // time interval between retries
+  },
+  retryCondition: (error) => {
+    // if retry condition is not specified, by default three requests are retried
+    return error!.response!.status === 503;
+  },
+});
+
+export const fetcher: any = async (url: string) =>
+  await axios({
+    method: "GET",
+    url: url,
+  }).catch((error) => {
+    if (error.response.status !== 200) {
+      throw new Error(
+        `API call failed with status code: ${error.response.status} after 3 retry attempts`
+      );
+    }
+  });
+
 type VaultProps = {
   currentAum: string;
   aumCap: string;
@@ -114,21 +144,15 @@ const VaultComp = ({
   //   totalDeposited,
   // } = useVaultUser(contractConfig, address ?? "");
 
-  useEffect(() => {
-    fetch(
-      `https://api.etherscan.io/api?module=account&action=tokentx&tokenaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&address=${contractConfig?.addressOrName}&startblock=0&endblock=99999999999999999&page=1&offset=1000&sort=asc&apikey=${process.env.NEXT_PUBLIC_SC_ETHERSCAN}`
-    )
-      .then(async (res) => {
-        const data = await res.json();
-        console.log("vault txns response: ", data.result);
-        setVaultTxns(data.result.reverse());
-      })
-      .catch((err) => {
-        console.log("error fetching vault txns: ", err);
-      });
-  }, [contractConfig]);
+  const { data: vaultActivity, error } = useSWR(
+    `https://api.etherscan.io/api?module=account&action=tokentx&tokenaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&address=${contractConfig?.addressOrName}&startblock=0&endblock=99999999999999999&page=1&offset=1000&sort=asc&apikey=${process.env.NEXT_PUBLIC_SC_ETHERSCAN}`,
+    fetcher
+  );
 
-  console.log(vaultTxns, contractConfig.addressOrName);
+  useEffect(() => {
+    if (vaultActivity?.data)
+      setVaultTxns(vaultActivity.data?.result?.reverse?.());
+  }, [vaultActivity]);
 
   return (
     <>
@@ -188,7 +212,7 @@ const VaultComp = ({
                   </GridItem>
                 </Grid>
                 {+pendingDeposit + +currentAum > 0 &&
-                  (+pendingDeposit + +currentAum) / +aumCap > 0.8 &&
+                  (+pendingDeposit + +currentAum) / +aumCap > 0.95 &&
                   isWarningVisible && (
                     <Flex w="full" px={"1rem"}>
                       <Alert
@@ -222,10 +246,20 @@ const VaultComp = ({
                     <InfoOutlineIcon w={3.5} h={3.5} />
                   </Tooltip>
                   <Spacer />
-                  <Text variant="medium">
-                    <Number>{commify(truncate(currentAum, 2))}</Number> /{" "}
-                    <Number>{commify(truncate(aumCap, 2))}</Number> USDC
-                  </Text>
+
+                  <Tooltip label={`${commify(currentAum)} USDC`}>
+                    <Text variant="medium">
+                      <Number>{millify(+currentAum)}</Number>
+                    </Text>
+                  </Tooltip>
+                  <Text variant="medium"> / </Text>
+                  <Tooltip label={`${commify(aumCap)} USDC`}>
+                    <Text variant="medium">
+                      <Number>{millify(+aumCap)}</Number>
+                    </Text>
+                  </Tooltip>
+
+                  <Text variant="medium">USDC</Text>
                 </Flex>
 
                 <Flex px="1rem">
@@ -248,10 +282,11 @@ const VaultComp = ({
                     <InfoOutlineIcon w={3.5} h={3.5} />
                   </Tooltip>
                   <Spacer />
-                  <Text variant="medium">
-                    <Number>{truncate(commify(pendingDeposit!), 2)}</Number>{" "}
-                    USDC
-                  </Text>
+                  <Tooltip label={`${commify(pendingDeposit)} USDC`}>
+                    <Text variant="medium">
+                      <Number>{millify(+pendingDeposit)}</Number> USDC
+                    </Text>
+                  </Tooltip>
                 </Flex>
 
                 <UserSection />
@@ -458,8 +493,8 @@ const VaultComp = ({
                         </Text>
                       </Grid>
 
-                      {vaultTxns &&
-                        vaultTxns.map((txn) => {
+                      {vaultTxns.length > 1 ? (
+                        vaultTxns.map((txn: any) => {
                           if (txn.tokenSymbol !== "USDC") {
                             return;
                           }
@@ -553,7 +588,10 @@ const VaultComp = ({
                               </Flex>
                             </Grid>
                           );
-                        })}
+                        })
+                      ) : (
+                        <SkeletonText />
+                      )}
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>

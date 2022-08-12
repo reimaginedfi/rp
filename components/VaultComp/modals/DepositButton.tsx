@@ -90,7 +90,7 @@ const TokenInput: React.FC<TokenInputProps> = ({
           mr={2}
           alignSelf="stretch"
         >
-          <Avatar name="USDC" size={"xs"} mr={2} />
+          <Avatar name="USDC" size={"xs"} mr={2} colorScheme="blue"/>
           <Text>USDC</Text>
         </Flex>
         <NumberInput
@@ -363,7 +363,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                       <Td px={2} py={1}>
                         <Flex justifyContent={"space-between"}>
                           <Text fontSize={"lg"} fontWeight="bold">
-                            {balanceDisplay} USDC
+                            {+amount} USDC
                           </Text>
                           <Button
                             onClick={() => setAmount(balanceDisplay)}
@@ -381,7 +381,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                       </Td>
                       <Td px={2} py={1}>
                         <Flex justifyContent={"space-between"}>
-                          <Text>$3.03</Text>
+                          <Text>{(+amount / 100) * 2}</Text>
                         </Flex>
                       </Td>
                     </Tr>
