@@ -289,6 +289,7 @@ export const useVaultDeposit = (
     storeAssetStatus,
     depositData,
     depositFor,
+    approveData
   };
 };
 

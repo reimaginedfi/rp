@@ -106,6 +106,7 @@ const VaultComp = ({
   const { colorMode } = useColorMode();
   const { address } = useAccount();
   const [depositSuccess, setDepositSuccess] = useState<boolean>(false);
+  const [approvalSuccess, setApprovalSuccess] = useState<string>('');
 
   //MODAL OPEN/CLOSE STATES
   const {
@@ -203,6 +204,8 @@ const VaultComp = ({
                     <DepositButton
                       depositSuccess={depositSuccess}
                       setDepositSuccess={setDepositSuccess}
+                      approvalSuccess={approvalSuccess}
+                      setApprovalSuccess={setApprovalSuccess}
                     />
                   </GridItem>
                   <GridItem>
