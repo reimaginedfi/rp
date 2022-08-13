@@ -1,7 +1,7 @@
 import {
   Alert,
   AlertIcon,
-  Avatar,
+  Image,
   Button,
   Flex,
   Modal,
@@ -23,6 +23,7 @@ import {
   Tbody,
   Td,
   Text,
+  Tooltip,
   Tr,
   useDisclosure,
   useToast,
@@ -41,6 +42,8 @@ import { vaultConfigs, vaults } from "../../../contracts";
 import { useVaultDeposit, useVaultUser } from "../../hooks/useVault";
 import { DangerToast, SuccessToast } from "../../Toasts";
 import getErrorMessage from "../../utils/errors";
+
+import { InfoOutlineIcon } from "@chakra-ui/icons";
 
 interface TokenInputProps {
   amount: string;
@@ -88,8 +91,8 @@ const TokenInput: React.FC<TokenInputProps> = ({
           mr={2}
           alignSelf="stretch"
         >
-          <Avatar name="USDC" size={"xs"} mr={2} colorScheme="blue"/>
-          <Text>USDC</Text>
+          <Image mr="0.25rem" w="1.5rem" h="1.5rem" src="/icons/usdc.svg" />
+          <Text fontSize="1.5rem">USDC</Text>
         </Flex>
         <NumberInput
           placeholder={"0.0"}
@@ -98,15 +101,15 @@ const TokenInput: React.FC<TokenInputProps> = ({
           flex={1}
           value={amount}
           allowMouseWheel
-        >
+          bg={colorMode === "dark" ? "#373737" : "#F3F3F3"}
+          borderRadius="1rem"
+          >
           <NumberInputField
             onChange={(e) => setAmount(e.target.value.toString())}
             textAlign="right"
+            border="none"
+            fontSize="1.5rem"
           />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
         </NumberInput>
       </Flex>
       <Flex justifyContent={"space-between"} >
@@ -165,7 +168,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
   setApprovalSuccess
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [amount, setAmount] = useState<string>("");
+  const [amount, setAmount] = useState<string>("0.0");
   const toast = useToast();
   const { chain } = useNetwork();
   const [contractConfig, setContractConfig] = useState<any>();
@@ -351,7 +354,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
 
   return (
     <>
-      <Button w={"full"} onClick={onOpen}>
+      <Button variant="primary" w={"full"} onClick={onOpen}>
         Deposit
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -398,7 +401,17 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                     </Tr>
                     <Tr>
                       <Td px={2} py={1}>
-                        Fees 
+                        <Stack direction="row" alignItems="center">
+                          <Text fontSize={"lg"} fontWeight="bold" alignSelf="center">Fees</Text>
+                          <Tooltip
+                    hasArrow
+                    label="REFI takes 2% of the amount you deposit to the vault as management fees."
+                    bg={colorMode === "dark" ? "white" : "black"}
+                  >
+                    <InfoOutlineIcon w={3.5} h={3.5} />
+                  </Tooltip>
+                        </Stack>
+
                       </Td>
                       <Td px={2} py={1}>
                         <Flex justifyContent={"space-between"}>
@@ -412,7 +425,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
             </Stack>
           </ModalBody>
           <ModalFooter>
-            <Stack w="full">
+            <Stack w="full" textAlign={"left"}>
               <Button
                 isDisabled={
                   amount === "" ||
@@ -440,7 +453,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                   {amount && `${amount} USDC`}
                 </Text>
               </Button>
-              <Button variant={"link"} w={"full"} onClick={onClose}>
+              <Button variant={"ghost"} w={"full"} onClick={onClose}>
                 Cancel
               </Button>
               <Text
@@ -448,9 +461,10 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
               color={colorMode === "dark" ? "#A0A0A0" : "#6F6F6F"}
               alignSelf="center"
               justifySelf={"center"}
+              w="full"
             >
               <b>NOTE:</b> You will need to allow REFI to use your USDC before
-              depositting.
+              depositing.
             </Text>
             </Stack>
           </ModalFooter>
