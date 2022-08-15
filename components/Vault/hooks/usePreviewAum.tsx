@@ -20,8 +20,6 @@ export const useCompleteAum = () => {
   const rawGains = aum.data!.toNumber() !== 0 ? BigNumber.from(previewAum.data?.total_usdc_value ?? 0).sub(
     BigNumber.from(aum.data ?? 0)
   ) : BigNumber.from(0);
-
-  console.log(aum.data)
   
   const percentageGainDivisor = rawGains.toNumber() !== 0 ? rawGains.div(aum.data ?? 1) : 0;
   const percentageGainRemainder = rawGains.toNumber() !== 0 ? rawGains.mod(aum.data ?? 1).toNumber() /
