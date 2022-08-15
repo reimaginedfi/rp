@@ -27,10 +27,11 @@ import {
   Tr,
   useDisclosure,
   useToast,
-  useColorMode
+  useColorMode,
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
 import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
+import {truncate} from "../../utils/stringsAndNumbers";
 import { useEffect, useState } from "react";
 import {
   useAccount,
@@ -62,20 +63,18 @@ const TokenInput: React.FC<TokenInputProps> = ({
   depositAllowed,
   minimumDeposit,
 }) => {
-
   const { colorMode } = useColorMode();
 
   useEffect(() => {
-    console.log({amount});
+    console.log({ amount });
   }, [amount]);
-
 
   return (
     <Stack
       w={"full"}
       alignItems="stretch"
       p={2}
-      border={+amount > +balanceDisplay ? "solid 1px red" : null as any}
+      border={+amount > +balanceDisplay ? "solid 1px red" : (null as any)}
       borderRadius="8px"
     >
       <Flex
@@ -84,13 +83,7 @@ const TokenInput: React.FC<TokenInputProps> = ({
         borderRadius="md"
         my={1}
       >
-        <Flex
-          alignItems={"center"}
-          py={1}
-          px={2}
-          mr={2}
-          alignSelf="stretch"
-        >
+        <Flex alignItems={"center"} py={1} px={2} mr={2} alignSelf="stretch">
           <Image mr="0.25rem" w="1.5rem" h="1.5rem" src="/icons/usdc.svg" />
           <Text fontSize="1.5rem">USDC</Text>
         </Flex>
@@ -99,35 +92,36 @@ const TokenInput: React.FC<TokenInputProps> = ({
           min={0}
           step={0.1}
           flex={1}
-          value={amount}
+          value={truncate(amount, 2)}
           allowMouseWheel
           bg={colorMode === "dark" ? "#373737" : "#F3F3F3"}
           borderRadius="1rem"
-          >
+        >
           <NumberInputField
             onChange={(e) => setAmount(e.target.value.toString())}
             textAlign="right"
             border="none"
             fontSize="1.5rem"
           />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
         </NumberInput>
       </Flex>
-      <Flex justifyContent={"space-between"} >
+      <Flex justifyContent={"space-between"} alignContent="center">
         <Flex>
           <Text fontSize="sm" mr={2} alignSelf="center">
-            Balance: {balanceDisplay} USDC
+            Balance: {commify(truncate(balanceDisplay, 2))} USDC
           </Text>
           <Button
             onClick={() => setAmount(balanceDisplay)}
-            variant={"ghost"}
+            variant={"tertiary"}
             size="xs"
           >
             Max
           </Button>
         </Flex>
-        <Text fontSize="sm" textAlign={"right"}>
-          {balanceDisplay} USDC
-        </Text>
       </Flex>
       <Progress size={"xs"} borderRadius="full" />
       {+amount > +balanceDisplay && (
@@ -165,7 +159,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
   depositSuccess,
   setDepositSuccess,
   approvalSuccess,
-  setApprovalSuccess
+  setApprovalSuccess,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [amount, setAmount] = useState<string>("0.0");
@@ -186,7 +180,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
     approveStatus,
     storeAssetStatus,
     depositData,
-    approveData
+    approveData,
   } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
 
   const { colorMode } = useColorMode();
@@ -337,20 +331,22 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
       ? +formatUnits(BigNumber.from(minimumDeposit?.data?._hex!).toNumber(), 6)
       : 25000);
 
-      const { isLoading: isLoadingApprove } = useWaitForTransaction({
-        hash: typeof approveData?.hash === "string" ? approveData?.hash : "",
-        enabled: typeof approveData?.hash === "string",
-        // onSuccess never fails
-        //https://github.com/wagmi-dev/wagmi/discussions/428
-        onSuccess: (data) => {
-          if (data.status === 1) {
-            setApprovalSuccess('true');
-          } else {data.status === 0} {
-            setApprovalSuccess('false');
-          }
-        },
-      });
-    
+  const { isLoading: isLoadingApprove } = useWaitForTransaction({
+    hash: typeof approveData?.hash === "string" ? approveData?.hash : "",
+    enabled: typeof approveData?.hash === "string",
+    // onSuccess never fails
+    //https://github.com/wagmi-dev/wagmi/discussions/428
+    onSuccess: (data) => {
+      if (data.status === 1) {
+        setApprovalSuccess("true");
+      } else {
+        data.status === 0;
+      }
+      {
+        setApprovalSuccess("false");
+      }
+    },
+  });
 
   return (
     <>
@@ -363,8 +359,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
           <ModalHeader>
             Deposit to Vault <ModalCloseButton />
           </ModalHeader>
-          <ModalBody
-          >
+          <ModalBody>
             <Stack spacing={4}>
               <TokenInput
                 amount={amount}
@@ -385,12 +380,16 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                       </Td>
                       <Td px={2} py={1}>
                         <Flex justifyContent={"space-between"}>
-                          <Text fontSize={"lg"} fontWeight="bold" alignSelf="center">
-                            {+amount} USDC
+                          <Text
+                            fontSize={"lg"}
+                            fontWeight="bold"
+                            alignSelf="center"
+                          >
+                            {commify(truncate(amount, 2))} USDC
                           </Text>
                           <Button
                             onClick={() => setAmount(balanceDisplay)}
-                            variant={"ghost"}
+                            variant={"tertiary"}
                             fontSize="0.75rem"
                             py="0.15rem"
                           >
@@ -402,20 +401,25 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                     <Tr>
                       <Td px={2} py={1}>
                         <Stack direction="row" alignItems="center">
-                          <Text fontSize={"lg"} fontWeight="bold" alignSelf="center">Fees</Text>
+                          <Text
+                            fontSize={"lg"}
+                            fontWeight="bold"
+                            alignSelf="center"
+                          >
+                            Fees
+                          </Text>
                           <Tooltip
-                    hasArrow
-                    label="REFI takes 2% of the amount you deposit to the vault as management fees."
-                    bg={colorMode === "dark" ? "white" : "black"}
-                  >
-                    <InfoOutlineIcon w={3.5} h={3.5} />
-                  </Tooltip>
+                            hasArrow
+                            label="REFI takes 2% of the amount you deposit to the vault as management fees."
+                            bg={colorMode === "dark" ? "white" : "black"}
+                          >
+                            <InfoOutlineIcon w={3.5} h={3.5} />
+                          </Tooltip>
                         </Stack>
-
                       </Td>
                       <Td px={2} py={1}>
                         <Flex justifyContent={"space-between"}>
-                          <Text>{(+amount / 100) * 2} USDC</Text>
+                          <Text>{commify(truncate(((+amount / 100) * 2).toString(), 2))} USDC</Text>
                         </Flex>
                       </Td>
                     </Tr>
@@ -456,16 +460,6 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
               <Button variant={"ghost"} w={"full"} onClick={onClose}>
                 Cancel
               </Button>
-              <Text
-              variant="small"
-              color={colorMode === "dark" ? "#A0A0A0" : "#6F6F6F"}
-              alignSelf="center"
-              justifySelf={"center"}
-              w="full"
-            >
-              <b>NOTE:</b> You will need to allow REFI to use your USDC before
-              depositing.
-            </Text>
             </Stack>
           </ModalFooter>
         </ModalContent>
