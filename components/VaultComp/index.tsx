@@ -33,7 +33,7 @@ import useWindowSize from "react-use/lib/useWindowSize";
 import { useAccount, useContractRead } from "wagmi";
 import { ContractConfig } from "../../contracts";
 import WithdrawModal from "./modals/withdrawModal";
-import VaultProgressBar from "./VaultProgressBar";
+import ProgressBar from "../ui/ProgressBar";
 
 import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
@@ -266,10 +266,10 @@ const VaultComp = ({
                 </Flex>
 
                 <Flex px="1rem">
-                  <VaultProgressBar
-                    currentAum={parseInt(currentAum)}
-                    aumCap={parseInt(aumCap)}
-                    remainingDeposits={pendingDeposit}
+                  <ProgressBar
+                    partial={parseInt(currentAum)}
+                    total={parseInt(aumCap)}
+                    remaining={pendingDeposit}
                   />
                 </Flex>
                 <Flex px="1rem" alignItems={"center"}>

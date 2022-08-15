@@ -16,7 +16,6 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  Progress,
   Stack,
   Table,
   TableContainer,
@@ -29,6 +28,7 @@ import {
   useToast,
   useColorMode,
 } from "@chakra-ui/react";
+import ProgressBar from "../../ui/ProgressBar";
 import { BigNumber } from "ethers";
 import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
 import {truncate} from "../../utils/stringsAndNumbers";
@@ -111,26 +111,31 @@ const TokenInput: React.FC<TokenInputProps> = ({
       </Flex>
       <Flex justifyContent={"space-between"} alignContent="center">
         <Flex>
-          <Text fontSize="sm" mr={2} alignSelf="center">
+          <Text variant="extralarge" fontSize="sm" mr={2} alignSelf="center">
             Balance: {commify(truncate(balanceDisplay, 2))} USDC
           </Text>
           <Button
             onClick={() => setAmount(balanceDisplay)}
             variant={"tertiary"}
-            size="xs"
+            p="0"
+            fontSize="0.75rem"
           >
             Max
           </Button>
         </Flex>
       </Flex>
-      <Progress size={"xs"} borderRadius="full" />
+      <ProgressBar
+        total={+balanceDisplay}
+        partial={+amount}
+        size="0.5rem"
+      />
       {+amount > +balanceDisplay && (
         <Text fontSize="xs" color={"red"}>
           Exceeds wallet balance
         </Text>
       )}
       {!meetsMinimum || (!depositAllowed && amount !== "") ? (
-        <Alert borderRadius={"1rem"} status="error">
+        <Alert size="xs" p="0.25rem" fontSize="small" borderRadius={"1rem"} status="error">
           <AlertIcon />
           Minimum deposit is{" "}
           {minimumDeposit.data
@@ -360,7 +365,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
             Deposit to Vault <ModalCloseButton />
           </ModalHeader>
           <ModalBody>
-            <Stack spacing={4}>
+            <Stack spacing={3}>
               <TokenInput
                 amount={amount}
                 setAmount={setAmount}
@@ -373,12 +378,12 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                 <Table>
                   <Tbody>
                     <Tr>
-                      <Td px={2} py={1}>
+                      <Td px={2} py={2} border="0">
                         <Text fontSize={"lg"} fontWeight="bold">
                           Total
                         </Text>
                       </Td>
-                      <Td px={2} py={1}>
+                      <Td px={2} py={2} border="0">
                         <Flex justifyContent={"space-between"}>
                           <Text
                             fontSize={"lg"}
@@ -387,19 +392,11 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                           >
                             {commify(truncate(amount, 2))} USDC
                           </Text>
-                          <Button
-                            onClick={() => setAmount(balanceDisplay)}
-                            variant={"tertiary"}
-                            fontSize="0.75rem"
-                            py="0.15rem"
-                          >
-                            Max
-                          </Button>
                         </Flex>
                       </Td>
                     </Tr>
-                    <Tr>
-                      <Td px={2} py={1}>
+                    <Tr >
+                      <Td px={2} py={1} border="0">
                         <Stack direction="row" alignItems="center">
                           <Text
                             fontSize={"lg"}
@@ -417,7 +414,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                           </Tooltip>
                         </Stack>
                       </Td>
-                      <Td px={2} py={1}>
+                      <Td px={2} py={1} border="0">
                         <Flex justifyContent={"space-between"}>
                           <Text>{commify(truncate(((+amount / 100) * 2).toString(), 2))} USDC</Text>
                         </Flex>
@@ -430,6 +427,9 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
           </ModalBody>
           <ModalFooter>
             <Stack w="full" textAlign={"left"}>
+              {+amount + totalDeposited < 25000 ||
+                  isApproving ||
+                  canDeposit.isLoading ? null :
               <Button
                 isDisabled={
                   amount === "" ||
@@ -442,7 +442,8 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                 w={"full"}
               >
                 Approve
-              </Button>
+              </Button>}
+              {amount === "" || isApproving || !isAllowed || !depositAllowed ? null :
               <Button
                 disabled={
                   amount === "" || isApproving || !isAllowed || !depositAllowed
@@ -454,9 +455,9 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
               >
                 Deposit
                 <Text fontWeight="light" ml="0.25rem">
-                  {amount && `${amount} USDC`}
+                  {amount && `${commify(truncate(amount, 2))} USDC`}
                 </Text>
-              </Button>
+              </Button>}
               <Button variant={"ghost"} w={"full"} onClick={onClose}>
                 Cancel
               </Button>

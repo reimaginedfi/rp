@@ -18,7 +18,7 @@ import {truncate} from "../utils/stringsAndNumbers";
 import { useBlockNumber } from "wagmi";
 import { useVaultState } from "../hooks/useVault";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
-import VaultProgressBar from "./VaultProgressBar";
+import ProgressBar from "../ui/ProgressBar";
 
 export const VaultHeroLeft = () => {
   // VAULT META DATA - used to display vault info
@@ -76,11 +76,10 @@ export const VaultHeroLeft = () => {
         </Badge>
         <Text mt={4}>Vault will reopen at block {lastManagementBlock}</Text>
         <Stack pt={4}>
-          <VaultProgressBar
-            color="orange"
-            currentAum={(blockNumber.data ?? 0) - lastManagementBlock + 6000}
-            aumCap={6000}
-            remainingDeposits={undefined}
+          <ProgressBar
+            // color="orange"
+            partial={(blockNumber.data ?? 0) - lastManagementBlock + 6000}
+            total={6000}
           />
           <Text>
             {lastManagementBlock - blockNumber.data!} blocks remaining

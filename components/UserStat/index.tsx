@@ -46,7 +46,6 @@ const UserStat = () => {
 
   const isLoading =
     !userResult.data || !totalAssets.data || !totalSupply.data || !asset.data;
-    console.log(userResult.data?.[0].toNumber() === 0)
 
   // pending deposit: userResult.data[0]
   // vault tokens balance: userResult.data[2]
