@@ -17,15 +17,17 @@ export const useCompleteAum = () => {
   const { aum, epoch, aumCap } = useVaultMeta(contractConfig);
   const previewAum = usePreviewAum();
 
-  const rawGains = BigNumber.from(previewAum.data?.total_usdc_value ?? 0).sub(
+  const rawGains = aum.data!.toNumber() !== 0 ? BigNumber.from(previewAum.data?.total_usdc_value ?? 0).sub(
     BigNumber.from(aum.data ?? 0)
-  );
-  const percentageGainDivisor = rawGains.div(aum.data ?? 1);
-  const percentageGainRemainder =
-    rawGains.mod(aum.data ?? 1).toNumber() /
-    BigNumber.from(aum.data ?? 1).toNumber();
+  ) : BigNumber.from(0);
 
-  const factor = percentageGainDivisor.toNumber() + percentageGainRemainder;
+  console.log(aum.data)
+  
+  const percentageGainDivisor = rawGains.toNumber() !== 0 ? rawGains.div(aum.data ?? 1) : 0;
+  const percentageGainRemainder = rawGains.toNumber() !== 0 ? rawGains.mod(aum.data ?? 1).toNumber() /
+    BigNumber.from(aum.data ?? 1).toNumber() : 0;
+
+  const factor = percentageGainDivisor !== 0 ? percentageGainDivisor.toNumber() + percentageGainRemainder : 0;
 
   return {
     aum,

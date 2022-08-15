@@ -47,15 +47,16 @@ const UserStat = () => {
   const isLoading =
     !userResult.data || !totalAssets.data || !totalSupply.data || !asset.data;
 
+
   // pending deposit: userResult.data[0]
   // vault tokens balance: userResult.data[2]
   // total value: pd + vt * totalAssets / totalSupply
   const totalValue = isLoading
     ? BigNumber.from(0)
-    : BigNumber.from(userResult.data?.[2] ?? 0)
+    : userResult.data?.[2].toNumber() !== 0 ? BigNumber.from(userResult.data?.[2] ?? 0)
         .mul(totalAssets.data!)
         .div(totalSupply.data!)
-        .add(userResult.data?.[0]);
+        .add(userResult.data?.[0]) : BigNumber.from(0);
 
   const { factor, isAumLoading } = useCompleteAum();
 

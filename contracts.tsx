@@ -25,6 +25,12 @@ export const vaults: ContractsMap = {
       contractInterface: vaultContractInterface.abi,
     },
   ],
+  // [chain.mainnet.id]: [
+  //   {
+  //     addressOrName: "0x63bBB71B68c76B78243d0a4AA463D34536788A15",
+  //     contractInterface: vaultContractInterface.abi,
+  //   }
+  // ]
 };
 
 export const vaultConfigs: ContractsMap = {
