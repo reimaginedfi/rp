@@ -27,6 +27,9 @@ import {
   useDisclosure,
   useToast,
   useColorMode,
+  Grid,
+  GridItem,
+  Box,
 } from "@chakra-ui/react";
 import ProgressBar from "../../ui/ProgressBar";
 import { BigNumber } from "ethers";
@@ -110,19 +113,17 @@ const TokenInput: React.FC<TokenInputProps> = ({
         </NumberInput>
       </Flex>
       <Flex justifyContent={"space-between"} alignContent="center">
-        <Flex>
-          <Text variant="extralarge" fontSize="sm" mr={2} alignSelf="center">
-            Balance: {commify(truncate(balanceDisplay, 2))} USDC
-          </Text>
-          <Button
-            onClick={() => setAmount(balanceDisplay)}
-            variant={"tertiary"}
-            p="0"
-            fontSize="0.75rem"
-          >
-            Max
-          </Button>
-        </Flex>
+        <Text variant="extralarge" fontSize="sm" mr={2} alignSelf="center">
+          Balance: {commify(truncate(balanceDisplay, 2))} USDC
+        </Text>
+        <Button
+          onClick={() => setAmount(balanceDisplay)}
+          variant={"tertiary"}
+          p={4}
+          fontSize="1rem"
+        >
+          Max
+        </Button>
       </Flex>
       <ProgressBar total={+balanceDisplay} partial={+amount} size="0.5rem" />
       {+amount > +balanceDisplay && (
@@ -370,7 +371,40 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                 meetsMinimum={meetsMinimum}
                 minimumDeposit={minimumDeposit}
               />
-              <TableContainer>
+              <Grid templateColumns="repeat(1, 1fr)">
+                <GridItem>
+                  <Flex alignItems="center" justify="space-between">
+                    <Text fontSize={"lg"} fontWeight="bold">
+                      Total
+                    </Text>
+
+                    <Text fontSize={"lg"} fontWeight="bold" alignSelf="center">
+                      {commify(truncate(amount, 2))} USDC
+                    </Text>
+                  </Flex>
+                </GridItem>
+                <GridItem>
+                  <Flex alignItems="center" justify="space-between">
+                    <Text fontSize="lg" fontWeight="bold" alignSelf="center">
+                      Fees
+                    </Text>
+                    <Flex alignItems='center' gap={2}>
+                      <Text>
+                        {commify(truncate(((+amount / 100) * 2).toString(), 2))}{" "}
+                        USDC
+                      </Text>
+                      <Tooltip
+                        hasArrow
+                        label="REFI takes 2% of the amount you deposit to the vault as management fees."
+                        bg={colorMode === "dark" ? "white" : "black"}
+                      >
+                        <InfoOutlineIcon w={3.5} h={3.5} />
+                      </Tooltip>
+                    </Flex>
+                  </Flex>
+                </GridItem>
+              </Grid>
+              {/* <TableContainer>
                 <Table>
                   <Tbody>
                     <Tr>
@@ -423,7 +457,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                     </Tr>
                   </Tbody>
                 </Table>
-              </TableContainer>
+              </TableContainer> */}
             </Stack>
           </ModalBody>
           <ModalFooter>
