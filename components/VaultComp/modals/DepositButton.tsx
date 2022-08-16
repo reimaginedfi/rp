@@ -31,7 +31,7 @@ import {
 import ProgressBar from "../../ui/ProgressBar";
 import { BigNumber } from "ethers";
 import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
-import {truncate} from "../../utils/stringsAndNumbers";
+import { truncate } from "../../utils/stringsAndNumbers";
 import { useEffect, useState } from "react";
 import {
   useAccount,
@@ -124,19 +124,15 @@ const TokenInput: React.FC<TokenInputProps> = ({
           </Button>
         </Flex>
       </Flex>
-      <ProgressBar
-        total={+balanceDisplay}
-        partial={+amount}
-        size="0.5rem"
-      />
+      <ProgressBar total={+balanceDisplay} partial={+amount} size="0.5rem" />
       {+amount > +balanceDisplay && (
         <Text fontSize="xs" color={"red"}>
           Exceeds wallet balance
         </Text>
       )}
-      {!meetsMinimum || (!depositAllowed && amount !== "") ? (
-        <Alert size="xs" p="0.25rem" fontSize="small" borderRadius={"1rem"} status="error">
-          <AlertIcon />
+
+      {(!meetsMinimum || (!depositAllowed && amount !== "")) && (
+        <Text fontSize="xs" color={"red"}>
           Minimum deposit is{" "}
           {minimumDeposit.data
             ? commify(
@@ -147,8 +143,8 @@ const TokenInput: React.FC<TokenInputProps> = ({
               )
             : "25,000"}{" "}
           USDC
-        </Alert>
-      ) : null}
+        </Text>
+      )}
     </Stack>
   );
 };
@@ -395,7 +391,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                         </Flex>
                       </Td>
                     </Tr>
-                    <Tr >
+                    <Tr>
                       <Td px={2} py={1} border="0">
                         <Stack direction="row" alignItems="center">
                           <Text
@@ -416,7 +412,12 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                       </Td>
                       <Td px={2} py={1} border="0">
                         <Flex justifyContent={"space-between"}>
-                          <Text>{commify(truncate(((+amount / 100) * 2).toString(), 2))} USDC</Text>
+                          <Text>
+                            {commify(
+                              truncate(((+amount / 100) * 2).toString(), 2)
+                            )}{" "}
+                            USDC
+                          </Text>
                         </Flex>
                       </Td>
                     </Tr>
@@ -428,36 +429,44 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
           <ModalFooter>
             <Stack w="full" textAlign={"left"}>
               {+amount + totalDeposited < 25000 ||
-                  isApproving ||
-                  canDeposit.isLoading ? null :
-              <Button
-                isDisabled={
-                  amount === "" ||
-                  +amount + totalDeposited < 25000 ||
-                  isApproving ||
-                  canDeposit.isLoading
-                }
-                isLoading={isApproving}
-                onClick={handleApprove}
-                w={"full"}
-              >
-                Approve
-              </Button>}
-              {amount === "" || isApproving || !isAllowed || !depositAllowed ? null :
-              <Button
-                disabled={
-                  amount === "" || isApproving || !isAllowed || !depositAllowed
-                }
-                isLoading={isStoring || isLoading}
-                onClick={handleDeposit}
-                minW={"10rem"}
-                variant="primary"
-              >
-                Deposit
-                <Text fontWeight="light" ml="0.25rem">
-                  {amount && `${commify(truncate(amount, 2))} USDC`}
-                </Text>
-              </Button>}
+              isApproving ||
+              canDeposit.isLoading ? null : (
+                <Button
+                  isDisabled={
+                    amount === "" ||
+                    +amount + totalDeposited < 25000 ||
+                    isApproving ||
+                    canDeposit.isLoading
+                  }
+                  isLoading={isApproving}
+                  onClick={handleApprove}
+                  w={"full"}
+                >
+                  Approve
+                </Button>
+              )}
+              {amount === "" ||
+              isApproving ||
+              !isAllowed ||
+              !depositAllowed ? null : (
+                <Button
+                  disabled={
+                    amount === "" ||
+                    isApproving ||
+                    !isAllowed ||
+                    !depositAllowed
+                  }
+                  isLoading={isStoring || isLoading}
+                  onClick={handleDeposit}
+                  minW={"10rem"}
+                  variant="primary"
+                >
+                  Deposit
+                  <Text fontWeight="light" ml="0.25rem">
+                    {amount && `${commify(truncate(amount, 2))} USDC`}
+                  </Text>
+                </Button>
+              )}
               <Button variant={"ghost"} w={"full"} onClick={onClose}>
                 Cancel
               </Button>

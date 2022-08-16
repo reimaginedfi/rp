@@ -17,7 +17,7 @@ export const useCompleteAum = () => {
   const { aum, epoch, aumCap } = useVaultMeta(contractConfig);
   const previewAum = usePreviewAum();
 
-  const rawGains = aum.data!.toNumber() !== 0 ? BigNumber.from(previewAum.data?.total_usdc_value ?? 0).sub(
+  const rawGains = aum.data?.toNumber() !== 0 ? BigNumber.from(previewAum.data?.total_usdc_value ?? 0).sub(
     BigNumber.from(aum.data ?? 0)
   ) : BigNumber.from(0);
   
