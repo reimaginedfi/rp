@@ -237,7 +237,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
   }, [approveError, approvalSuccess, toast]);
 
   useEffect(() => {
-    if (approveStatus === "success" && isApproved) {
+    if (!isApproving && approveStatus === "success") {
       toast({
         variant: "success",
         duration: 5000,
@@ -247,7 +247,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
         ),
       });
     }
-  }, [approveStatus, isApproved, isApproving]);
+  }, [approveStatus, isApproving]);
 
   // HANDLES DEPOSIT function on button click
   const handleDeposit = async () => {
@@ -283,7 +283,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
   };
 
   useEffect(() => {
-    if (depositSuccess) {
+    if (!isStoring && storeAssetStatus === "success") {
       toast({
         variant: "success",
         duration: 5000,
@@ -298,7 +298,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
 
       onClose!();
     }
-  }, [depositSuccess]);
+  }, [isStoring, depositSuccess]);
 
   //VAULT CONTRAG CONFIG
   const vaultConfig = vaultConfigs[chain!.id][0];
