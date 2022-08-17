@@ -13,10 +13,10 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
-import { formatUnits, commify } from "ethers/lib/utils";
-import {truncate} from "../utils/stringsAndNumbers";
+import { commify, formatUnits } from "ethers/lib/utils";
 import { useBlockNumber } from "wagmi";
 import { useVaultState } from "../hooks/useVault";
+import { truncate } from "../utils/stringsAndNumbers";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 import VaultProgressBar from "./VaultProgressBar";
 
@@ -27,7 +27,7 @@ export const VaultHeroLeft = () => {
   // VAULT CONTRACT - fetches current vault state
   const vaultState = useVaultState(BigNumber.from(epoch.data ?? 0).toNumber());
 
-  // MANAGEMENT BLOCK - 
+  // MANAGEMENT BLOCK -
   const lastManagementBlock = BigNumber.from(
     vaultState.data?.lastManagementBlock ?? 0
   ).toNumber();
@@ -97,12 +97,19 @@ export const VaultHeroLeft = () => {
       </Badge>
       <Stat mt={"0.5rem"}>
         <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
-          <StatNumber>{((factor) * 100).toFixed(2)}%</StatNumber>
+          <StatNumber>
+            {factor > 0 ? "+" : ""}
+            {(factor * 100).toFixed(2)}%
+          </StatNumber>
         </Skeleton>
         <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
           <StatHelpText>
             <StatArrow type={rawGains.isNegative() ? "decrease" : "increase"} />
-            {truncate(commify(formatUnits(rawGains.abs().toString(), 6)), 2)} USDC
+            {truncate(
+              commify(formatUnits(rawGains.abs().toString(), 6)),
+              2
+            )}{" "}
+            USDC
           </StatHelpText>
         </Skeleton>
       </Stat>
