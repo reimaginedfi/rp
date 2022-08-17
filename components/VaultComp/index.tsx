@@ -309,26 +309,26 @@ const VaultComp = ({
                       bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
                     >
                       <Flex alignItems={"center"}>
-                        <Text variant="medium">Entry Fee</Text>
+                        <Text variant="medium">Deposit Fee</Text>
                         <Spacer />
                         {feeReceiver.isLoading ? (
                           <SkeletonText />
                         ) : (
-                          <Text variant="medium">1%</Text>
+                          <Text variant="medium">2%</Text>
                         )}
                       </Flex>
                       <Flex alignItems={"center"}>
-                        <Text variant="medium">Exit Fee</Text>
+                        <Text variant="medium">Withdraw Fee</Text>
                         <Spacer />
                         {feeReceiver.isLoading ? (
                           <SkeletonText />
                         ) : (
-                          <Text variant="medium">1%</Text>
+                          <Text variant="medium">0%</Text>
                         )}
                       </Flex>
                       <Flex alignItems={"center"}>
                         <Text variant="medium">
-                          Management Fee (of profits)
+                          Performance Fee (of profits)
                         </Text>
                         <Spacer />
                         {feeReceiver.isLoading ? (
