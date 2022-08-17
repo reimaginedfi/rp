@@ -34,7 +34,7 @@ import {
 import ProgressBar from "../../ui/ProgressBar";
 import { BigNumber } from "ethers";
 import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
-import { truncate } from "../../utils/stringsAndNumbers";
+import { truncate, noSpecialCharacters } from "../../utils/stringsAndNumbers";
 import { useEffect, useState } from "react";
 import {
   useAccount,
@@ -93,12 +93,14 @@ const TokenInput: React.FC<TokenInputProps> = ({
         <NumberInput
           placeholder={"0.0"}
           min={0}
-          step={0.1}
+          step={1000}
           flex={1}
           value={truncate(amount, 2)}
+          onChange={setAmount}
           allowMouseWheel
           bg={colorMode === "dark" ? "#373737" : "#F3F3F3"}
           borderRadius="1rem"
+          inputMode="numeric"
         >
           <NumberInputField
             onChange={(e) => setAmount(e.target.value.toString())}
@@ -174,7 +176,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
     balanceDisplay,
     approve,
     isApproving,
-    isAllowed,
+    isApproved,
     storeAsset,
     isStoring,
     storeAssetError,
@@ -218,7 +220,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
 
   useEffect(() => {
     console.log("approveError: ", approveError);
-    if (approveError && approveStatus === "error") {
+    if (approveError) {
       toast({
         variant: "danger",
         title: approveError?.name,
@@ -232,24 +234,24 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
         ),
       });
     }
-  }, [approveError, approveStatus, toast]);
+  }, [approveError, approvalSuccess, toast]);
 
-  // useEffect(() => {
-  //   if (approveStatus === "success") {
-  //     toast({
-  //       variant: "success",
-  //       duration: 5000,
-  //       position: "bottom",
-  //       render: () => (
-  //         <SuccessToast message={`You have approved ${amount} USDC`} />
-  //       ),
-  //     });
-  //   }
-  // }, [approveStatus]);
+  useEffect(() => {
+    if (approveStatus === "success" && isApproved) {
+      toast({
+        variant: "success",
+        duration: 5000,
+        position: "bottom",
+        render: () => (
+          <SuccessToast message={`You have approved ${amount} USDC`} />
+        ),
+      });
+    }
+  }, [approveStatus, isApproved, isApproving]);
 
   // HANDLES DEPOSIT function on button click
   const handleDeposit = async () => {
-    if (!isAllowed) {
+    if (!isApproved) {
       return;
     }
     try {
@@ -280,19 +282,6 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
     }
   };
 
-  // CHECKS DEPOSIT TXN UNTIL IT SUCCEEDS
-  const { isLoading } = useWaitForTransaction({
-    hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
-    enabled: typeof depositData?.hash === "string",
-    // onSuccess never fails
-    //https://github.com/wagmi-dev/wagmi/discussions/428
-    onSuccess: (data) => {
-      if (data.status === 1) {
-        setDepositSuccess(true);
-      }
-    },
-  });
-
   useEffect(() => {
     if (depositSuccess) {
       toast({
@@ -318,7 +307,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
   const canDeposit = useContractRead({
     ...vaultConfig,
     functionName: "canDeposit",
-    args: [address, parseUnits(amount === "" ? "0" : amount, 6)],
+    args: [address, parseUnits(amount === "" ? "0" : noSpecialCharacters(amount), 6)],
   });
   const depositAllowed = canDeposit.data?.toString() === "true";
 
@@ -333,6 +322,21 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
       ? +formatUnits(BigNumber.from(minimumDeposit?.data?._hex!).toNumber(), 6)
       : 25000);
 
+
+    // CHECKS DEPOSIT TXN UNTIL IT SUCCEEDS
+    const { isLoading } = useWaitForTransaction({
+      hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
+      enabled: typeof depositData?.hash === "string",
+      // onSuccess never fails
+      //https://github.com/wagmi-dev/wagmi/discussions/428
+      onSuccess: (data) => {
+        if (data.status === 1) {
+          setDepositSuccess(true);
+        }
+      },
+    });
+  
+    // CHECKS APPROVE TXN UNTIL IT SUCCEEDS
   const { isLoading: isLoadingApprove } = useWaitForTransaction({
     hash: typeof approveData?.hash === "string" ? approveData?.hash : "",
     enabled: typeof approveData?.hash === "string",
@@ -371,7 +375,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                 meetsMinimum={meetsMinimum}
                 minimumDeposit={minimumDeposit}
               />
-              <Grid templateColumns="repeat(1, 1fr)">
+              <Grid templateColumns="repeat(1, 1fr)" gap="0.5rem">
                 <GridItem>
                   <Flex alignItems="center" justify="space-between">
                     <Text fontSize={"lg"} fontWeight="bold">
@@ -379,18 +383,18 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                     </Text>
 
                     <Text fontSize={"lg"} fontWeight="bold" alignSelf="center">
-                      {commify(truncate(amount, 2))} USDC
+                      {commify(truncate(noSpecialCharacters(amount), 2))} USDC
                     </Text>
                   </Flex>
                 </GridItem>
                 <GridItem>
                   <Flex alignItems="center" justify="space-between">
-                    <Text fontSize="lg" fontWeight="bold" alignSelf="center">
+                    <Text fontSize="lg" alignSelf="center">
                       Fees
                     </Text>
                     <Flex alignItems='center' gap={2}>
                       <Text>
-                        {commify(truncate(((+amount / 100) * 2).toString(), 2))}{" "}
+                        {commify(truncate(((+noSpecialCharacters(amount) / 100) * 2).toString(), 2))}{" "}
                         USDC
                       </Text>
                       <Tooltip
@@ -402,69 +406,35 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                       </Tooltip>
                     </Flex>
                   </Flex>
-                </GridItem>
+                  </GridItem>
+                  <GridItem>
+                  <Flex alignItems="center" justify="space-between">
+                    <Text fontSize="lg" alignSelf="center">
+                      To deposit
+                    </Text>
+                    <Flex alignItems='center' gap={2}>
+                      <Text>
+                        {commify(truncate(((+noSpecialCharacters(amount) / 100) * 98).toString(), 2))}{" "}
+                        USDC
+                      </Text>
+                      <Tooltip
+                        hasArrow
+                        label="Amount that goes into the vault (what you deposit minus the 2% fees)."
+                        bg={colorMode === "dark" ? "white" : "black"}
+                      >
+                        <InfoOutlineIcon w={3.5} h={3.5} />
+                      </Tooltip>
+                    </Flex>
+                    </Flex>
+                  </GridItem>
               </Grid>
-              {/* <TableContainer>
-                <Table>
-                  <Tbody>
-                    <Tr>
-                      <Td px={2} py={2} border="0">
-                        <Text fontSize={"lg"} fontWeight="bold">
-                          Total
-                        </Text>
-                      </Td>
-                      <Td px={2} py={2} border="0">
-                        <Flex justifyContent={"space-between"}>
-                          <Text
-                            fontSize={"lg"}
-                            fontWeight="bold"
-                            alignSelf="center"
-                          >
-                            {commify(truncate(amount, 2))} USDC
-                          </Text>
-                        </Flex>
-                      </Td>
-                    </Tr>
-                    <Tr>
-                      <Td px={2} py={1} border="0">
-                        <Stack direction="row" alignItems="center">
-                          <Text
-                            fontSize={"lg"}
-                            fontWeight="bold"
-                            alignSelf="center"
-                          >
-                            Fees
-                          </Text>
-                          <Tooltip
-                            hasArrow
-                            label="REFI takes 2% of the amount you deposit to the vault as management fees."
-                            bg={colorMode === "dark" ? "white" : "black"}
-                          >
-                            <InfoOutlineIcon w={3.5} h={3.5} />
-                          </Tooltip>
-                        </Stack>
-                      </Td>
-                      <Td px={2} py={1} border="0">
-                        <Flex justifyContent={"space-between"}>
-                          <Text>
-                            {commify(
-                              truncate(((+amount / 100) * 2).toString(), 2)
-                            )}{" "}
-                            USDC
-                          </Text>
-                        </Flex>
-                      </Td>
-                    </Tr>
-                  </Tbody>
-                </Table>
-              </TableContainer> */}
             </Stack>
           </ModalBody>
           <ModalFooter>
             <Stack w="full" textAlign={"left"}>
-              {+amount + totalDeposited < 25000 ||
+              {/* {+amount + totalDeposited < 25000 ||
               isApproving ||
-              canDeposit.isLoading ? null : (
+              canDeposit.isLoading ? null : ( */}
                 <Button
                   isDisabled={
                     amount === "" ||
@@ -472,14 +442,15 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                     isApproving ||
                     canDeposit.isLoading
                   }
-                  isLoading={isApproving}
-                  onClick={handleApprove}
+                  isLoading={isApproving || isLoading || isLoadingApprove || isStoring}
+                  onClick={!isApproved ? handleApprove : handleDeposit}
                   w={"full"}
+                  variant={isApproved ? "primary" : "secondary"}
                 >
-                  Approve
+                  {isApproved ? "Deposit" : "Approve"}
                 </Button>
-              )}
-              {amount === "" ||
+              {/* )} */}
+              {/* {amount === "" ||
               isApproving ||
               !isAllowed ||
               !depositAllowed ? null : (
@@ -500,7 +471,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                     {amount && `${commify(truncate(amount, 2))} USDC`}
                   </Text>
                 </Button>
-              )}
+              )} */}
               <Button variant={"ghost"} w={"full"} onClick={onClose}>
                 Cancel
               </Button>

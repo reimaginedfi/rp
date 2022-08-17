@@ -11,6 +11,7 @@ import {
 } from "wagmi";
 import { ContractConfig } from "../../contracts";
 import { useContractConfig } from "../Vault/ContractContext";
+import {noSpecialCharacters} from "../utils/stringsAndNumbers";
 
 // export const useVault = (addressOrName: string) => {
 //   const vault = useMemo(() => {
@@ -152,9 +153,9 @@ export const useVaultDeposit = (
     watch: true,
   });
 
-  const isAllowed =
+  const isApproved =
     BigNumber.isBigNumber(allowance) &&
-    allowance.gte(parseUnits(depositAmount, assetToken.data?.decimals) ?? "0");
+    allowance.gte(parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals) ?? "0");
 
   const {
     data: approveData,
@@ -169,12 +170,12 @@ export const useVaultDeposit = (
     mode: "recklesslyUnprepared",
     args: [
       contractConfig?.addressOrName,
-      parseUnits(depositAmount, assetToken.data?.decimals),
+      parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals),
     ],
     onSuccess(data: any, variables: any, context: any) {
       addRecentTransaction({
         hash: data?.hash,
-        description: `Approve REFI Pro to spend ${commify(depositAmount)} USDC`,
+        description: `Approve REFI Pro to spend ${commify(noSpecialCharacters(depositAmount))} USDC`,
         confirmations: 1,
       });
     },
@@ -214,12 +215,12 @@ export const useVaultDeposit = (
   } = useContractWrite({
     ...contractConfig,
     functionName: "deposit",
-    args: [parseUnits(depositAmount, assetToken.data?.decimals)],
+    args: [parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals)],
 
     onSuccess(data: any, variables: any, context: any) {
       addRecentTransaction({
         hash: data?.hash,
-        description: `Deposit ${commify(depositAmount)} USDC`,
+        description: `Deposit ${commify(noSpecialCharacters(depositAmount))} USDC`,
         confirmations: 1,
       });
     },
@@ -266,7 +267,7 @@ export const useVaultDeposit = (
       },
     ],
     functionName: "deposit",
-    args: [parseUnits(depositAmount, assetToken.data?.decimals), _for],
+    args: [parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals), _for],
     mode: "recklesslyUnprepared",
   });
 
@@ -274,7 +275,7 @@ export const useVaultDeposit = (
     balance,
     balanceDisplay,
     allowance,
-    isAllowed,
+    isApproved,
     approve,
     isApproving,
     approveMax,
