@@ -21,8 +21,8 @@ export default function ProgressBar({
 }: ProgressBarProps) {
   const { colorMode } = useColorMode();
 
-  const [totalPercentage, setTotalPercentage] = useState<number>();
-  const [remainingPercentage, setRemainingPercentage] = useState<number>();
+  // const [totalPercentage, setTotalPercentage] = useState<number>();
+  // const [remainingPercentage, setRemainingPercentage] = useState<number>();
 
   // useEffect(() => {
   //   setTotalPercentage((100 * partial) / total);
@@ -55,7 +55,7 @@ export default function ProgressBar({
           borderRightRadius={
             item.name === "TOTAL" && !remaining
               ? item.radius
-              : remainingPercentage && item.name === "REMAINING"
+              : remaining && item.name === "REMAINING"
               ? item.radius
               : (null as any)
           }
