@@ -5,7 +5,7 @@ import { Number } from "../Number";
 import { truncate } from "../utils/stringsAndNumbers";
 import { useReadVault, useWatchVault } from "../Vault/ContractContext";
 import { useVaultAssetToken } from "../Vault/hooks/useVaultAsset";
-import VaultProgressBar from "./VaultProgressBar";
+import ProgressBar from "../ui/ProgressBar";
 
 // TODO: show pending deposits
 const useVaultTruncated = () => {
@@ -49,10 +49,10 @@ export const VaultTruncated = () => {
   }
   return (
     <>
-      <VaultProgressBar
-        currentAum={+currentAum}
-        aumCap={+aumCap}
-        remainingDeposits={"0"}
+      <ProgressBar
+        partial={+currentAum}
+        total={+aumCap}
+        remaining={"0"}
       />
       <Flex alignItems={"center"} justifyContent="space-between">
         <Badge colorScheme={"green"} variant="outline">

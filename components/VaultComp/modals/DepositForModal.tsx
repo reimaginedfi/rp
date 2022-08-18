@@ -53,7 +53,7 @@ export default function DepositForModal({
 
   const {
     balanceDisplay,
-    isAllowed,
+    isApproved,
     approve,
     isApproving,
     storeAsset,
@@ -75,7 +75,7 @@ export default function DepositForModal({
   const toast = useToast();
 
   useEffect(() => {
-    if (isAllowed && approveStatus === "success") {
+    if (isApproved && approveStatus === "success") {
       toast({
         variant: "success",
         duration: 5000,
@@ -85,7 +85,7 @@ export default function DepositForModal({
         ),
       });
     }
-  }, [approveStatus, isAllowed]);
+  }, [approveStatus, isApproved]);
 
   useEffect(() => {
     console.log("approveMaxError: ", approveMaxError);
@@ -167,7 +167,7 @@ export default function DepositForModal({
   }, [depositSuccess]);
 
   const handleDeposit = async () => {
-    if (!isAllowed) {
+    if (!isApproved) {
       return;
     }
     try {
@@ -298,7 +298,7 @@ export default function DepositForModal({
                   borderRadius="xl"
                   variant="tertiary"
                   isDisabled={
-                    +amount + totalDeposited < 0 || isApproving || isAllowed
+                    +amount + totalDeposited < 0 || isApproving || isApproved
                   }
                   isLoading={isApproving}
                   onClick={handleApprove}
@@ -317,7 +317,7 @@ export default function DepositForModal({
             )}
             <Button
               disabled={
-                !isAllowed ||
+                !isApproved ||
                 amount === "" ||
                 isApproving ||
                 isApprovingMax ||

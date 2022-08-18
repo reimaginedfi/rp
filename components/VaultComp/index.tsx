@@ -32,9 +32,8 @@ import moment from "moment";
 import useWindowSize from "react-use/lib/useWindowSize";
 import { useAccount, useContractRead } from "wagmi";
 import { ContractConfig } from "../../contracts";
-import DepositModal from "./modals/depositModal";
 import WithdrawModal from "./modals/withdrawModal";
-import VaultProgressBar from "./VaultProgressBar";
+import ProgressBar from "../ui/ProgressBar";
 
 import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
@@ -50,6 +49,7 @@ import { InfoOutlineIcon } from "@chakra-ui/icons";
 
 import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
 import { HiSave } from "react-icons/hi";
+import { DepositButton } from "./modals/DepositButton";
 
 //Fetching stuff
 import axios from "axios";
@@ -105,7 +105,8 @@ const VaultComp = ({
 }: VaultProps) => {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
-  const [depositSuccess, setDepositSuccess] = useState<boolean>(false);
+  const [depositSuccess, setDepositSuccess] = useState<string>("");
+  const [approvalSuccess, setApprovalSuccess] = useState<string>('');
 
   //MODAL OPEN/CLOSE STATES
   const {
@@ -200,9 +201,12 @@ const VaultComp = ({
                   </GridItem>
 
                   <GridItem alignItems="center">
-                    <Button w="full" variant="primary" onClick={onOpenDeposit}>
-                      Deposit
-                    </Button>
+                    <DepositButton
+                      depositSuccess={depositSuccess}
+                      setDepositSuccess={setDepositSuccess}
+                      approvalSuccess={approvalSuccess}
+                      setApprovalSuccess={setApprovalSuccess}
+                    />
                   </GridItem>
                   <GridItem>
                     <Button w="full" variant="ghost" onClick={onOpenWithdraw}>
@@ -262,10 +266,10 @@ const VaultComp = ({
                 </Flex>
 
                 <Flex px="1rem">
-                  <VaultProgressBar
-                    currentAum={parseInt(currentAum)}
-                    aumCap={parseInt(aumCap)}
-                    remainingDeposits={pendingDeposit}
+                  <ProgressBar
+                    partial={parseInt(currentAum)}
+                    total={parseInt(aumCap)}
+                    remaining={pendingDeposit}
                   />
                 </Flex>
                 <Flex px="1rem" alignItems={"center"}>
@@ -601,24 +605,16 @@ const VaultComp = ({
       </Accordion>
 
       <Confetti
-        run={depositSuccess}
+        run={depositSuccess === "true"}
         recycle={false}
         width={width}
         height={height}
         numberOfPieces={500}
         onConfettiComplete={() => {
-          setDepositSuccess(false);
+          setDepositSuccess("");
         }}
       />
 
-      {depositIsOpen && (
-        <DepositModal
-          onClose={onCloseDeposit}
-          isOpen={depositIsOpen}
-          depositSuccess={depositSuccess!}
-          setDepositSuccess={setDepositSuccess}
-        />
-      )}
       {withdrawIsOpen && (
         <WithdrawModal onClose={onCloseWithdraw} isOpen={withdrawIsOpen} />
       )}
