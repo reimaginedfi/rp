@@ -43,7 +43,7 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import { vaultConfigs, vaults } from "../../../contracts";
-import { useVaultDeposit, useVaultUser } from "../../hooks/useVault";
+import { useVaultDeposit, useVaultUser, useVaultMeta } from "../../hooks/useVault";
 import { DangerToast, SuccessToast } from "../../Toasts";
 import getErrorMessage from "../../utils/errors";
 
@@ -67,10 +67,6 @@ const TokenInput: React.FC<TokenInputProps> = ({
   minimumDeposit,
 }) => {
   const { colorMode } = useColorMode();
-
-  useEffect(() => {
-    console.log({ amount });
-  }, [amount]);
 
   return (
     <Stack
@@ -153,8 +149,8 @@ const TokenInput: React.FC<TokenInputProps> = ({
 };
 
 interface DepositButtonProps {
-  depositSuccess: boolean;
-  setDepositSuccess: React.Dispatch<React.SetStateAction<boolean>>;
+  depositSuccess: string;
+  setDepositSuccess: React.Dispatch<React.SetStateAction<string>>;
   approvalSuccess: string;
   setApprovalSuccess: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -170,6 +166,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
   const toast = useToast();
   const { chain } = useNetwork();
   const [contractConfig, setContractConfig] = useState<any>();
+  const { epoch } = useVaultMeta(contractConfig);
 
   //CONTRACT READ FOR DEPOSIT FUNCTIONS
   const {
@@ -186,6 +183,39 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
     depositData,
     approveData,
   } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
+
+      // CHECKS DEPOSIT TXN UNTIL IT SUCCEEDS
+      const { isLoading } = useWaitForTransaction({
+        hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
+        enabled: typeof depositData?.hash === "string",
+        // onSuccess never fails
+        //https://github.com/wagmi-dev/wagmi/discussions/428
+        onSuccess: (data) => {
+          if (data.status === 1) {
+            setDepositSuccess("true");
+          } else if (data.status === 0) {
+            setDepositSuccess("false")
+          }
+        },
+      });
+    
+      // CHECKS APPROVE TXN UNTIL IT SUCCEEDS
+    const { isLoading: isLoadingApprove } = useWaitForTransaction({
+      hash: typeof approveData?.hash === "string" ? approveData?.hash : "",
+      enabled: typeof approveData?.hash === "string",
+      // onSuccess never fails
+      //https://github.com/wagmi-dev/wagmi/discussions/428
+      onSuccess: (data) => {
+        if (data.status === 1) {
+          setApprovalSuccess("true");
+        } else {
+          data.status === 0;
+        }
+        {
+          setApprovalSuccess("false");
+        }
+      },
+    });
 
   const { colorMode } = useColorMode();
 
@@ -237,6 +267,21 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
   }, [approveError, approvalSuccess, toast]);
 
   useEffect(() => {
+    if (!isLoading && depositSuccess === "false") {
+      toast({
+        variant: "danger",
+        title: storeAssetError?.name,
+        duration: 5000,
+        render: () => (
+          <DangerToast
+            message="Transaction error. Please, try again."
+          />
+        ),
+      });
+    }
+  }, [toast, storeAssetError, isLoading, depositSuccess]);
+
+  useEffect(() => {
     if (!isApproving && approveStatus === "success") {
       toast({
         variant: "success",
@@ -283,7 +328,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
   };
 
   useEffect(() => {
-    if (!isStoring && storeAssetStatus === "success") {
+    if (!isLoading && depositSuccess === "true") {
       toast({
         variant: "success",
         duration: 5000,
@@ -298,7 +343,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
 
       onClose!();
     }
-  }, [isStoring, depositSuccess]);
+  }, [isLoading, depositSuccess]);
 
   //VAULT CONTRAG CONFIG
   const vaultConfig = vaultConfigs[chain!.id][0];
@@ -321,38 +366,6 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
     (minimumDeposit.data!
       ? +formatUnits(BigNumber.from(minimumDeposit?.data?._hex!).toNumber(), 6)
       : 25000);
-
-
-    // CHECKS DEPOSIT TXN UNTIL IT SUCCEEDS
-    const { isLoading } = useWaitForTransaction({
-      hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
-      enabled: typeof depositData?.hash === "string",
-      // onSuccess never fails
-      //https://github.com/wagmi-dev/wagmi/discussions/428
-      onSuccess: (data) => {
-        if (data.status === 1) {
-          setDepositSuccess(true);
-        }
-      },
-    });
-  
-    // CHECKS APPROVE TXN UNTIL IT SUCCEEDS
-  const { isLoading: isLoadingApprove } = useWaitForTransaction({
-    hash: typeof approveData?.hash === "string" ? approveData?.hash : "",
-    enabled: typeof approveData?.hash === "string",
-    // onSuccess never fails
-    //https://github.com/wagmi-dev/wagmi/discussions/428
-    onSuccess: (data) => {
-      if (data.status === 1) {
-        setApprovalSuccess("true");
-      } else {
-        data.status === 0;
-      }
-      {
-        setApprovalSuccess("false");
-      }
-    },
-  });
 
   return (
     <>
@@ -432,9 +445,6 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
           </ModalBody>
           <ModalFooter>
             <Stack w="full" textAlign={"left"}>
-              {/* {+amount + totalDeposited < 25000 ||
-              isApproving ||
-              canDeposit.isLoading ? null : ( */}
                 <Button
                   isDisabled={
                     amount === "" ||

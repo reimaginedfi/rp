@@ -50,6 +50,7 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
   const meta = useVaultMeta(contractConfig);
 
   const aumCapModal = useDisclosure();
+  const startVaultModal = useDisclosure();
   const aumCapAlert = useDisclosure();
   const cancelUpdateAumCapRef = useRef(null);
 
@@ -61,6 +62,7 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
       ...contractConfig,
       functionName: "updateAumCap",
       args: [parseUnits(aumCap ?? 0, meta.assetToken.data?.decimals)],
+      mode: "recklesslyUnprepared",
     }
   );
 

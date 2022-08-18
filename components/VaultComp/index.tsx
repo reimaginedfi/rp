@@ -105,7 +105,7 @@ const VaultComp = ({
 }: VaultProps) => {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
-  const [depositSuccess, setDepositSuccess] = useState<boolean>(false);
+  const [depositSuccess, setDepositSuccess] = useState<string>("");
   const [approvalSuccess, setApprovalSuccess] = useState<string>('');
 
   //MODAL OPEN/CLOSE STATES
@@ -605,13 +605,13 @@ const VaultComp = ({
       </Accordion>
 
       <Confetti
-        run={depositSuccess}
+        run={depositSuccess === "true"}
         recycle={false}
         width={width}
         height={height}
         numberOfPieces={500}
         onConfettiComplete={() => {
-          setDepositSuccess(false);
+          setDepositSuccess("");
         }}
       />
 

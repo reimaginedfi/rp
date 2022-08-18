@@ -33,6 +33,9 @@ import {
 import { ContractConfig } from "../../../contracts";
 import { useVaultMeta } from "../../hooks/useVault";
 import { truncate } from "../../utils/stringsAndNumbers";
+import getErrorMessage from "../../utils/errors";
+import { DangerToast, SuccessToast } from "../../Toasts";
+import { BigNumber } from "ethers";
 
 export const EndEpochModal = ({
   disclosure,
@@ -61,6 +64,21 @@ export const EndEpochModal = ({
     mode: "recklesslyUnprepared",
   });
 
+  const handleEpoch = async () => {
+    try {
+      await progressEpoch.write();
+    } catch (error) {
+      console.log(error)
+      const errorMessage = getErrorMessage(error);
+      toast({
+        variant: "danger",
+        duration: 5000,
+        position: "bottom",
+        render: () => <DangerToast message={errorMessage} />,
+      });
+    }
+  };
+
   useWaitForTransaction({
     confirmations: 1,
     wait: progressEpoch.data?.wait,
@@ -72,6 +90,7 @@ export const EndEpochModal = ({
           status: "success",
           duration: 9000,
           isClosable: true,
+          render: () => <SuccessToast message={`You've successfuly progressed to ${BigNumber.from(epoch.data)}`}/>,
         });
         disclosure.onClose();
       }
@@ -157,7 +176,7 @@ export const EndEpochModal = ({
                 colorScheme="red"
                 disabled={preview.isLoading || preview.isError || !epoch.data}
                 onClick={() => {
-                  progressEpoch.write();
+                  handleEpoch();
                 }}
               >
                 End Epoch {epoch.data?.toString()}
