@@ -24,21 +24,21 @@ export default function ProgressBar({
   const [totalPercentage, setTotalPercentage] = useState<number>();
   const [remainingPercentage, setRemainingPercentage] = useState<number>();
 
-  useEffect(() => {
-    setTotalPercentage((100 * partial) / total);
-    if (remaining) setRemainingPercentage((100 * parseFloat(remaining)) / total);
-  }, [total, partial]);
+  // useEffect(() => {
+  //   setTotalPercentage((100 * partial) / total);
+  //   if (remaining) setRemainingPercentage(();
+  // }, [total, partial]);
 
   const progressValues = [
     {
       name: "TOTAL",
-      value: totalPercentage!,
+      value: total && partial && ((100 * partial) / total),
       color: totalColor ?? "#C51E25",
       radius: "1rem",
     },
     {
       name: "REMAINING",
-      value: remainingPercentage,
+      value: remaining && ((100 * parseFloat(remaining)) / total),
       color: partialColor ?? "#E9A9AB",
       radius: "1rem",
     },
@@ -53,7 +53,7 @@ export default function ProgressBar({
           bgColor={item.color}
           width={item.value + "%"}
           borderRightRadius={
-            item.name === "TOTAL" && !remainingPercentage
+            item.name === "TOTAL" && !remaining
               ? item.radius
               : remainingPercentage && item.name === "REMAINING"
               ? item.radius
@@ -62,7 +62,7 @@ export default function ProgressBar({
           borderLeftRadius={
             item.name === "TOTAL"
               ? item.radius
-              : item.name === "REMAINING" && !totalPercentage
+              : item.name === "REMAINING" && !total
               ? item.radius
               : (null as any)
           }

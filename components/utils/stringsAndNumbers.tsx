@@ -10,6 +10,5 @@ export function truncate(str: string, maxDecimalDigits: number)  {
 }
 
 export const noSpecialCharacters = (str: string) => {
-  console.log(str)
   return str.replace(/[^0-9.]/g, '');
 }
