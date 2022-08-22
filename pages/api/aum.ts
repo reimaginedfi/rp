@@ -30,7 +30,7 @@ const handler: NextApiHandler = async (req, res) => {
   res.status(200).json({
     total_usd_value,
     usdPerUsdc: price,
-    total_usdc_value: BigNumber.from(785_918 * 1e6),
+    total_usdc_value: BigNumber.from(760_101 * 1e6),
     total_usdc_value_debank: BigNumber.from(
       Math.ceil((total_usd_value / price) * 1e6)
     ),
