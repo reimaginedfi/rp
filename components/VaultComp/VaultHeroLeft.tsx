@@ -16,9 +16,9 @@ import { BigNumber } from "ethers";
 import { commify, formatUnits } from "ethers/lib/utils";
 import { useBlockNumber } from "wagmi";
 import { useVaultState } from "../hooks/useVault";
+import ProgressBar from "../ui/ProgressBar";
 import { truncate } from "../utils/stringsAndNumbers";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
-import ProgressBar from "../ui/ProgressBar";
 
 export const VaultHeroLeft = () => {
   // VAULT META DATA - used to display vault info
@@ -97,8 +97,8 @@ export const VaultHeroLeft = () => {
       <Stat mt={"0.5rem"}>
         <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
           <StatNumber>
-            {factor > 0 ? "+" : ""}
-            {(factor * 100).toFixed(2)}%
+            {factor >= 1 ? "+" : ""}
+            {((factor - 1) * 100).toFixed(2)}%
           </StatNumber>
         </Skeleton>
         <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
