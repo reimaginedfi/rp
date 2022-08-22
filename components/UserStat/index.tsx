@@ -1,22 +1,22 @@
+import { InfoOutlineIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Button,
   Flex,
   Heading,
   Stack,
   Text,
-  Button,
   Tooltip,
   useColorMode,
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
-import { formatUnits, commify } from "ethers/lib/utils";
+import { commify, formatUnits } from "ethers/lib/utils";
 import { useAccount, useContractWrite } from "wagmi";
 import { useVaultUser } from "../hooks/useVault";
+import { truncate } from "../utils/stringsAndNumbers";
 import { useContractConfig, useWatchVault } from "../Vault/ContractContext";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../Vault/hooks/useVaultAsset";
-import { truncate } from "../utils/stringsAndNumbers";
-import { InfoOutlineIcon } from "@chakra-ui/icons";
 
 const UserStat = () => {
   const { colorMode } = useColorMode();
@@ -52,17 +52,18 @@ const UserStat = () => {
   // total value: pd + vt * totalAssets / totalSupply
   const totalValue = isLoading
     ? BigNumber.from(0)
-    : userResult.data?.[0].toNumber() !== 0 ? BigNumber.from(userResult.data?.[2] ?? 0)
+    : userResult.data?.[0].toNumber() !== 0
+    ? BigNumber.from(userResult.data?.[2] ?? 0)
         .mul(totalAssets.data!)
         .div(totalSupply.data!)
-        .add(userResult.data?.[0] ?? 0) : BigNumber.from(0);
-
+        .add(userResult.data?.[0] ?? 0)
+    : BigNumber.from(0);
 
   const { factor, isAumLoading } = useCompleteAum();
 
   const unrealizedBN = isAumLoading
     ? totalValue.toNumber()
-    : totalValue.toNumber() * (1 + factor);
+    : totalValue.toNumber() * factor;
 
   const unrealized = (unrealizedBN / 1000000).toFixed(2);
 
