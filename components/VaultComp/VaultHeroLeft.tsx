@@ -106,7 +106,9 @@ export const VaultHeroLeft = () => {
         </Skeleton>
         <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
           <Tooltip
-            label={`Projected AUM: ${formatUnits(previewValue, 6)} USDC`}
+            label={`Projected AUM: ${commify(
+              formatUnits(previewValue, 6)
+            )} USDC`}
             aria-label="A tooltip"
           >
             <Link
