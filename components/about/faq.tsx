@@ -129,12 +129,29 @@ export default function FAQ() {
 
 export const FrequentlyAskedQuestions = [
   {
+    question: "How does a deposit work?",
+    answer: (
+      <Text>
+        {" "}
+        After clicking on the deposit button on the vault and filling the inputs, the user needs to approve the transaction (ERC20 contracts require wallet owners to approve the use of their tokens). Once approved, the deposit button will appear. Clicking this button will perform a transaction which the user needs to accept on their wallet. Once the transaction is complete, the user will be able to see the amount of tokens they have deposited and how they integrate with the AuM/Pending Deposits bar. 
+      </Text>
+    ),
+  },
+  {
+    question: "How does a withdraw work?",
+    answer: (
+      <Text>
+        {" "}
+        After clicking on the deposit button on the vault and filling the inputs, the user needs to approve the transaction (ERC20 contracts require wallet owners to approve the use of their tokens). Once approved, the deposit button will appear. Clicking this button will perform a transaction which the user needs to accept on their wallet. Once the transaction is complete, the user will be able to see the amount of tokens they have deposited and how they integrate with the AuM/Pending Deposits bar. 
+      </Text>
+    ),
+  },
+  {
     question: "What is the minimum deposit for REFI Pro?",
     answer: (
       <Text>
         {" "}
-        Minimum buy-in of <b>US$25,000+</b> for a start. Note that we can also
-        customize the buy-in amount on a case-by-case basis.
+        For our current vault, you will need a minimum of <b>25,000 USDC</b> for a start. This amount may change over time (in the same vault) and other vaults may have different minimum deposit amounts. 
       </Text>
     ),
   },
