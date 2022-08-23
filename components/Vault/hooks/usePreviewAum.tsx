@@ -25,11 +25,10 @@ export const useCompleteAum = () => {
 
   const isAumLoading = !aum.data || !previewAum.data;
 
-  //
-
-  const factor =
-    previewValue.div(aumValue).toNumber() +
-    previewValue.mod(aumValue).toNumber() / aumValue.toNumber();
+  const factor = aumValue.isZero()
+    ? 1
+    : previewValue.div(aumValue).toNumber() +
+      previewValue.mod(aumValue).toNumber() / aumValue.toNumber();
 
   return {
     aum,
@@ -39,5 +38,6 @@ export const useCompleteAum = () => {
     rawGains,
     factor,
     isAumLoading,
+    previewValue,
   };
 };
