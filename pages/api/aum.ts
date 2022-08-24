@@ -26,14 +26,20 @@ const handler: NextApiHandler = async (req, res) => {
 
   const { total_usd_value } = await totalBalance.json();
   const { price } = await usdc.json();
+
+  const debank = BigNumber.from(Math.ceil((total_usd_value / price) * 1e6));
+  // EDIT THIS for adjustments (not from debank)
+  const adjustments = BigNumber.from(197_222 * 1e6);
+  const adjustmentsNotes = "MLP Position";
+
   res.setHeader("Cache-Control", "s-maxage=14400"); // cache server-side every 4 hours
   res.status(200).json({
     total_usd_value,
     usdPerUsdc: price,
-    total_usdc_value: BigNumber.from(760_101 * 1e6),
-    total_usdc_value_debank: BigNumber.from(
-      Math.ceil((total_usd_value / price) * 1e6)
-    ),
+    debank,
+    adjustments,
+    total_usdc_value: debank.add(adjustments),
+    adjustmentsNotes,
   });
 };
 
