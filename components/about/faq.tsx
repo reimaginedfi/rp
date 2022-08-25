@@ -197,6 +197,14 @@ export const FrequentlyAskedQuestions = [
     ),
   },
   {
+    question: "What are VT tokens and how do they work?",
+    answer: (
+      <Text>
+        These are Vault Tokens REFI Pro uses to transform your USDC into a wrapped alternative within the vault. They signify the amount of USDC you deposited. These VT tokens will stay in the vault as long as you do not withdraw them. That is, the will stay for as many epochs as you desire. 
+      </Text>
+    )
+  },
+  {
     question: "How much does each EPOCH last?",
     answer: (
       <Text>

@@ -68,6 +68,7 @@ export default function About() {
           variant="large"
           w={{ base: "90%", md: "70%" }}
           alignSelf="center"
+          textAlign={"center"}
         >
           ReFi Pro is the first crypto institutional on-chain asset management
           service for large institutional and retail investors 
@@ -77,6 +78,7 @@ export default function About() {
           variant="large"
           w={{ base: "90%", md: "70%" }}
           alignSelf="center"
+          textAlign={"center"}
         >
         Investors simply deposit capital into ReFi Pro vaults, which are built on the Ethereum
           chain.
@@ -86,6 +88,7 @@ export default function About() {
           variant="large"
           w={{ base: "90%", md: "70%" }}
           alignSelf="center"
+          textAlign={"center"}
         >
           {" "}
           The ReFi investment team subsequently deploys investor capital from
@@ -97,6 +100,7 @@ export default function About() {
           variant="large"
           w={{ base: "90%", md: "70%" }}
           alignSelf="center"
+          textAlign={"center"}
         >
         For more information about the main ReFi project,
           $REFI token and team, kindly visit our{" "}
@@ -113,6 +117,7 @@ export default function About() {
           variant="large"
           w={{ base: "90%", md: "70%" }}
           alignSelf="center"
+          textAlign={"center"}
         >
           We answer the most common questions below:
         </Text>
