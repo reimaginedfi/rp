@@ -68,7 +68,7 @@ const UserStat = () => {
   const value = !sharesValue
     ? BigNumber.from(0)
     : sharesValue?.data?._hex! !== "0"
-    ? BigNumber.from(sharesValue?.data! ?? 0)
+    ? BigNumber.from(sharesValue?.data?._hex! ?? 0)
         .mul(totalAssets.data!)
         .div(totalSupply.data!)
     : BigNumber.from(0);
