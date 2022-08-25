@@ -17,6 +17,7 @@ import { truncate } from "../utils/stringsAndNumbers";
 import { useContractConfig, useWatchVault } from "../Vault/ContractContext";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../Vault/hooks/useVaultAsset";
+import {millify} from 'millify'
 
 const UserStat = () => {
   const { colorMode } = useColorMode();
