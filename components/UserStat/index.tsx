@@ -64,14 +64,8 @@ const UserStat = () => {
     : totalValue.toNumber() * factor;
 
   const unrealized = (unrealizedBN / 1000000).toFixed(2);
-    
-  const value = !sharesValue
-    ? BigNumber.from(0)
-    : sharesValue?.data?._hex! !== "0"
-    ? BigNumber.from(sharesValue?.data?._hex! ?? 0)
-        .mul(totalAssets.data!)
-        .div(totalSupply.data!)
-    : BigNumber.from(0);
+
+  const value = BigNumber.from(sharesValue?.data?._hex! ?? 0)
 
   const totalValueVT = isAumLoading
     ? 0
