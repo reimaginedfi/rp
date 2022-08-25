@@ -24,9 +24,7 @@ const UserStat = () => {
   const contractConfig = useContractConfig();
   const {
     sharesValue,
-    user,
     hasPendingDeposit,
-    hasPendingDepositValue,
     totalDeposited,
   } = useVaultUser(contractConfig, address ?? "");
 
@@ -65,21 +63,28 @@ const UserStat = () => {
     ? totalValue.toNumber()
     : totalValue.toNumber() * factor;
 
-  const unrealized = unrealizedBN ? (unrealizedBN / 1000000).toFixed(2) : commify(
-    formatUnits(
-      sharesValue.data ? parseInt(sharesValue!.data!._hex!, 16) : 0,
-      6
-    )
-  );
+  const unrealized = unrealizedBN
+    ? (unrealizedBN / 1000000).toFixed(2)
+    : commify(
+        formatUnits(
+          sharesValue.data ? parseInt(sharesValue!.data!._hex!, 16) : 0,
+          6
+        )
+      );
 
-  const value = isLoading ? BigNumber.from(0) : sharesValue!.data!._hex! !== "0" ? BigNumber.from(sharesValue!.data!._hex! ?? 0)
-      .mul(totalAssets.data!)
-      .div(totalSupply.data!)
-  : BigNumber.from(0);
+  const value = isLoading
+    ? BigNumber.from(0)
+    : sharesValue!.data!._hex! !== "0"
+    ? BigNumber.from(sharesValue!.data!._hex! ?? 0)
+        .mul(totalAssets.data!)
+        .div(totalSupply.data!)
+    : BigNumber.from(0);
 
-  const totalValueVT = isAumLoading ? BigNumber.from(0) : value.toNumber() * factor / 1000000;
+  const totalValueVT = isAumLoading
+    ? 0
+    : (value.toNumber() * factor) / 1000000;
 
-  const pnlVT = totalValueVT as number - (value.toNumber() / 1000000);
+  const pnlVT = totalValueVT - value.toNumber() / 1000000;
 
   return (
     <Stack p={{ base: 1, md: 3 }}>
@@ -111,7 +116,7 @@ const UserStat = () => {
           my={0}
           py={0}
         >
-          {unrealizedBN ? unrealized : (totalValueVT as number).toFixed(2) }
+          {unrealizedBN ? unrealized : totalValueVT && totalValueVT.toFixed(2)}
         </Heading>
         <Text textAlign={"center"} mt={-2} mb={4}>
           {asset.data?.symbol}
@@ -144,8 +149,9 @@ const UserStat = () => {
           my={0}
           py={0}
         >
-          {unrealizedBN ? (+unrealized - totalValue.toNumber() / 1000000).toFixed(2)
-           : pnlVT.toFixed(2)}
+          {unrealizedBN
+            ? (+unrealized - totalValue.toNumber() / 1000000).toFixed(2)
+            : pnlVT.toFixed(2)}
         </Heading>
         <Text textAlign={"center"} mt={-2} mb={4}>
           {asset.data?.symbol}
@@ -164,7 +170,7 @@ const UserStat = () => {
           <Tooltip
             justifySelf="center"
             hasArrow
-            label="How much you've deposited so far (not including any gains from AUM)"
+            label="How much you've deposited so far (not including any gains from AUM or VT tokens)"
             bg={colorMode === "dark" ? "white" : "black"}
           >
             <InfoOutlineIcon w={3.5} h={3.5} />
