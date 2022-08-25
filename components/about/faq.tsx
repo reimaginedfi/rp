@@ -47,7 +47,7 @@ export default function FAQ() {
         variant="medium"
         fontSize="1.25rem"
         fontWeight="600"
-        lineHeight={{base: "1.5rem", md: "1rem"}}
+        lineHeight={{ base: "1.5rem", md: "1rem" }}
       >
         Q: {children}
       </Heading>
@@ -160,9 +160,8 @@ export const FrequentlyAskedQuestions = [
   },
   {
     question: "Who will audit REFI Pro?",
-    answer: 
-"We've already had numerous internal and external developers audit ReFi Pro's smart contract, and the feedback has been great. We will also engage several auditors for 1 month to audit the smart contract."
-    
+    answer:
+      "We've already had numerous internal and external developers audit ReFi Pro's smart contract, and the feedback has been great. We will also engage several auditors for 1 month to audit the smart contract.",
   },
   {
     question: "Will ReFi Pro be secured by FireBlocks??",
@@ -177,23 +176,23 @@ export const FrequentlyAskedQuestions = [
       "When will the vault tokenomics be released (maximum AUM, maximum token supply)?",
     answer: (
       <Text>
-        Max <b>AuM</b> will be at the investment {"manager's"} discretion. There is
-        no maximum token supply.
+        Max <b>AuM</b> will be at the investment {"manager's"} discretion. There
+        is no maximum token supply.
       </Text>
     ),
   },
   {
     question:
-      "      Will the ReFi Pro vaults have different strategies than the ReFi Core Portfolio  ?",
+      "Will the ReFi Pro vaults have different strategies than the ReFi Core Portfolio  ?",
     answer: (
       <VStack spacing="0.875rem">
         <Text>
           The strategy for ReFi Pro capital will differ slightly from the ReFi
           Core Portfolio as the investment managers will focus primarily on{" "}
           <b>low-to-medium risk strategies </b>for ReFi Pro. There will be lower
-          risk tolerance on ReFi Pro, so {"we're"} aiming for annualised returns of
-          35-40%.
-        <br/>
+          risk tolerance on ReFi Pro, so {"we're"} aiming for annualised returns
+          of 35-40%.
+          <br />
           On the other hand, the investment managers will continue to target
           strategies across the low-to-high risk spectrum for the ReFi Core
           Portfolio.
@@ -208,7 +207,7 @@ export const FrequentlyAskedQuestions = [
     ),
   },
   {
-    question: "  How do $ReFi token holders benefit from ReFi Pro?",
+    question: "How do $ReFi token holders benefit from ReFi Pro?",
     answer: (
       <VStack spacing="0.875rem">
         <Text>
