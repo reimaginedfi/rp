@@ -63,19 +63,12 @@ const UserStat = () => {
     ? totalValue.toNumber()
     : totalValue.toNumber() * factor;
 
-  const unrealized = unrealizedBN
-    ? (unrealizedBN / 1000000).toFixed(2)
-    : commify(
-        formatUnits(
-          sharesValue.data ? parseInt(sharesValue!.data!._hex!, 16) : 0,
-          6
-        )
-      );
-
-  const value = isLoading
+  const unrealized = (unrealizedBN / 1000000).toFixed(2);
+    
+  const value = !sharesValue
     ? BigNumber.from(0)
-    : sharesValue!.data!._hex! !== "0"
-    ? BigNumber.from(sharesValue!.data!._hex! ?? 0)
+    : sharesValue?.data?._hex! !== "0"
+    ? BigNumber.from(sharesValue?.data! ?? 0)
         .mul(totalAssets.data!)
         .div(totalSupply.data!)
     : BigNumber.from(0);
