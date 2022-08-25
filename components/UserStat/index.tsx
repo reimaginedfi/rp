@@ -17,6 +17,7 @@ import { truncate } from "../utils/stringsAndNumbers";
 import { useContractConfig, useWatchVault } from "../Vault/ContractContext";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../Vault/hooks/useVaultAsset";
+import {millify} from 'millify'
 
 const UserStat = () => {
   const { colorMode } = useColorMode();
@@ -24,9 +25,7 @@ const UserStat = () => {
   const contractConfig = useContractConfig();
   const {
     sharesValue,
-    user,
     hasPendingDeposit,
-    hasPendingDepositValue,
     totalDeposited,
   } = useVaultUser(contractConfig, address ?? "");
 
@@ -67,6 +66,14 @@ const UserStat = () => {
 
   const unrealized = (unrealizedBN / 1000000).toFixed(2);
 
+  const value = BigNumber.from(sharesValue?.data?._hex! ?? 0)
+
+  const totalValueVT = isAumLoading
+    ? 0
+    : (value.toNumber() * factor) / 1000000;
+
+  const pnlVT = totalValueVT - value.toNumber() / 1000000;
+
   return (
     <Stack p={{ base: 1, md: 3 }}>
       <Stack
@@ -97,7 +104,7 @@ const UserStat = () => {
           my={0}
           py={0}
         >
-          {unrealized}
+          {unrealizedBN ? unrealized : totalValueVT && totalValueVT.toFixed(2)}
         </Heading>
         <Text textAlign={"center"} mt={-2} mb={4}>
           {asset.data?.symbol}
@@ -130,7 +137,9 @@ const UserStat = () => {
           my={0}
           py={0}
         >
-          {(+unrealized - totalValue.toNumber() / 1000000).toFixed(2)}
+          {unrealizedBN
+            ? (+unrealized - totalValue.toNumber() / 1000000).toFixed(2)
+            : pnlVT.toFixed(2)}
         </Heading>
         <Text textAlign={"center"} mt={-2} mb={4}>
           {asset.data?.symbol}
@@ -149,7 +158,7 @@ const UserStat = () => {
           <Tooltip
             justifySelf="center"
             hasArrow
-            label="How much you've deposited so far (not including any gains from AUM)"
+            label="How much you've deposited so far (not including any gains from AUM or VT tokens)"
             bg={colorMode === "dark" ? "white" : "black"}
           >
             <InfoOutlineIcon w={3.5} h={3.5} />
