@@ -1,22 +1,23 @@
+import { InfoOutlineIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Button,
   Flex,
   Heading,
   Stack,
   Text,
-  Button,
   Tooltip,
   useColorMode,
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
-import { formatUnits, commify } from "ethers/lib/utils";
+import { commify, formatUnits } from "ethers/lib/utils";
 import { useAccount, useContractWrite } from "wagmi";
 import { useVaultUser } from "../hooks/useVault";
+import { truncate } from "../utils/stringsAndNumbers";
 import { useContractConfig, useWatchVault } from "../Vault/ContractContext";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../Vault/hooks/useVaultAsset";
-import { truncate } from "../utils/stringsAndNumbers";
-import { InfoOutlineIcon } from "@chakra-ui/icons";
+import {millify} from 'millify'
 
 const UserStat = () => {
   const { colorMode } = useColorMode();
@@ -24,9 +25,7 @@ const UserStat = () => {
   const contractConfig = useContractConfig();
   const {
     sharesValue,
-    user,
     hasPendingDeposit,
-    hasPendingDepositValue,
     totalDeposited,
   } = useVaultUser(contractConfig, address ?? "");
 
@@ -52,19 +51,28 @@ const UserStat = () => {
   // total value: pd + vt * totalAssets / totalSupply
   const totalValue = isLoading
     ? BigNumber.from(0)
-    : userResult.data?.[0].toNumber() !== 0 ? BigNumber.from(userResult.data?.[2] ?? 0)
+    : userResult.data?.[0].toNumber() !== 0
+    ? BigNumber.from(userResult.data?.[2] ?? 0)
         .mul(totalAssets.data!)
         .div(totalSupply.data!)
-        .add(userResult.data?.[0] ?? 0) : BigNumber.from(0);
-
+        .add(userResult.data?.[0] ?? 0)
+    : BigNumber.from(0);
 
   const { factor, isAumLoading } = useCompleteAum();
 
   const unrealizedBN = isAumLoading
     ? totalValue.toNumber()
-    : totalValue.toNumber() * (1 + factor);
+    : totalValue.toNumber() * factor;
 
   const unrealized = (unrealizedBN / 1000000).toFixed(2);
+
+  const value = BigNumber.from(sharesValue?.data?._hex! ?? 0)
+
+  const totalValueVT = isAumLoading
+    ? 0
+    : (value.toNumber() * factor) / 1000000;
+
+  const pnlVT = totalValueVT - value.toNumber() / 1000000;
 
   return (
     <Stack p={{ base: 1, md: 3 }}>
@@ -96,7 +104,7 @@ const UserStat = () => {
           my={0}
           py={0}
         >
-          {unrealized}
+          {unrealizedBN ? unrealized : totalValueVT && totalValueVT.toFixed(2)}
         </Heading>
         <Text textAlign={"center"} mt={-2} mb={4}>
           {asset.data?.symbol}
@@ -129,7 +137,9 @@ const UserStat = () => {
           my={0}
           py={0}
         >
-          {(+unrealized - totalValue.toNumber() / 1000000).toFixed(2)}
+          {unrealizedBN
+            ? (+unrealized - totalValue.toNumber() / 1000000).toFixed(2)
+            : pnlVT.toFixed(2)}
         </Heading>
         <Text textAlign={"center"} mt={-2} mb={4}>
           {asset.data?.symbol}
@@ -148,7 +158,7 @@ const UserStat = () => {
           <Tooltip
             justifySelf="center"
             hasArrow
-            label="How much you've deposited so far (not including any gains from AUM)"
+            label="How much you've deposited so far (not including any gains from AUM or VT tokens)"
             bg={colorMode === "dark" ? "white" : "black"}
           >
             <InfoOutlineIcon w={3.5} h={3.5} />

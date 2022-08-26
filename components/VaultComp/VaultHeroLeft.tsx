@@ -3,6 +3,7 @@ import {
   Flex,
   GridItem,
   Heading,
+  Link,
   Skeleton,
   Spinner,
   Stack,
@@ -11,18 +12,20 @@ import {
   StatHelpText,
   StatNumber,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
 import { commify, formatUnits } from "ethers/lib/utils";
 import { useBlockNumber } from "wagmi";
 import { useVaultState } from "../hooks/useVault";
+import ProgressBar from "../ui/ProgressBar";
 import { truncate } from "../utils/stringsAndNumbers";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
-import ProgressBar from "../ui/ProgressBar";
 
 export const VaultHeroLeft = () => {
   // VAULT META DATA - used to display vault info
-  const { epoch, aum, aumCap, previewAum, rawGains, factor } = useCompleteAum();
+  const { epoch, aum, aumCap, previewAum, rawGains, factor, previewValue } =
+    useCompleteAum();
 
   // VAULT CONTRACT - fetches current vault state
   const vaultState = useVaultState(BigNumber.from(epoch.data ?? 0).toNumber());
@@ -97,19 +100,33 @@ export const VaultHeroLeft = () => {
       <Stat mt={"0.5rem"}>
         <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
           <StatNumber>
-            {factor > 0 ? "+" : ""}
-            {(factor * 100).toFixed(2)}%
+            {factor >= 1 ? "+" : ""}
+            {((factor - 1) * 100).toFixed(2)}%
           </StatNumber>
         </Skeleton>
         <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
-          <StatHelpText>
-            <StatArrow type={rawGains.isNegative() ? "decrease" : "increase"} />
-            {truncate(
-              commify(formatUnits(rawGains.abs().toString(), 6)),
-              2
-            )}{" "}
-            USDC
-          </StatHelpText>
+          <Tooltip
+            label={`Projected AUM: ${commify(
+              formatUnits(previewValue, 6)
+            )} USDC`}
+            aria-label="A tooltip"
+          >
+            <Link
+              isExternal
+              href="https://debank.com/profile/0x4457df4a5bccf796662b6374d5947c881cc83ac7"
+            >
+              <StatHelpText>
+                <StatArrow
+                  type={rawGains.isNegative() ? "decrease" : "increase"}
+                />
+                {truncate(
+                  commify(formatUnits(rawGains.abs().toString(), 6)),
+                  2
+                )}{" "}
+                USDC
+              </StatHelpText>
+            </Link>
+          </Tooltip>
         </Skeleton>
       </Stat>
       <Text

@@ -16,16 +16,19 @@ export const useCompleteAum = () => {
   const contractConfig = useContractConfig();
   const { aum, epoch, aumCap } = useVaultMeta(contractConfig);
   const previewAum = usePreviewAum();
+  const previewValue = BigNumber.from(previewAum.data?.total_usdc_value ?? 0);
+  const aumValue = BigNumber.from(aum.data ?? 0);
 
-  const rawGains = aum.data?.toNumber() !== 0 ? BigNumber.from(previewAum.data?.total_usdc_value ?? 0).sub(
-    BigNumber.from(aum.data ?? 0)
-  ) : BigNumber.from(0);
-  
-  const percentageGainDivisor = rawGains.toNumber() !== 0 ? rawGains.div(aum.data ?? 1) : 0;
-  const percentageGainRemainder = rawGains.toNumber() !== 0 ? rawGains.mod(aum.data ?? 1).toNumber() /
-    BigNumber.from(aum.data ?? 1).toNumber() : 0;
+  const rawGains = !aumValue.isZero()
+    ? previewValue.sub(aumValue)
+    : BigNumber.from(0);
 
-  const factor = percentageGainDivisor !== 0 ? percentageGainDivisor.toNumber() + percentageGainRemainder : 0;
+  const isAumLoading = !aum.data || !previewAum.data;
+
+  const factor = aumValue.isZero()
+    ? 1
+    : previewValue.div(aumValue).toNumber() +
+      previewValue.mod(aumValue).toNumber() / aumValue.toNumber();
 
   return {
     aum,
@@ -33,9 +36,8 @@ export const useCompleteAum = () => {
     aumCap,
     previewAum,
     rawGains,
-    percentageGainDivisor,
-    percentageGainRemainder,
     factor,
-    isAumLoading: !aum.data || !previewAum.data,
+    isAumLoading,
+    previewValue,
   };
 };

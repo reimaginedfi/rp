@@ -259,6 +259,7 @@ export const FrequentlyAskedQuestions = [
   },
   {
     question:
+<<<<<<< HEAD
       "Are ReFi Pro vaults strategies different than the ReFi Core Portfolio?",
     answer: (
       <VStack spacing="0.875rem">
@@ -283,7 +284,7 @@ export const FrequentlyAskedQuestions = [
     ),
   },
   {
-    question: "  How do $ReFi token holders benefit from ReFi Pro?",
+    question: "How do $ReFi token holders benefit from ReFi Pro?",
     answer: (
       <VStack spacing="0.875rem">
         <Text>

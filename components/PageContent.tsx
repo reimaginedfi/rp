@@ -34,7 +34,7 @@ export const PageContent = () => {
           </Grid>
         </>
       ) : chain && chain.id !== 1 ? (
-        <Stack m="auto" mt="20%" w="full" align="center" gap="0.5rem">
+        <Stack textAlign='center' m="auto" mt="20%" w="full" align="center" gap="0.5rem">
           <Heading>{chain.name} is not a supported chain.</Heading>
           <Button variant="primary" onClick={() => switchNetwork?.(1)}>
             Switch chains
