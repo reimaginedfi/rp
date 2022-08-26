@@ -248,7 +248,7 @@ export const FrequentlyAskedQuestions = [
     question: "Does ReFi PRO use audited smart contracts?",
     answer:
     <Text>
-        Yes. We've already had numerous internal and external developers audit ReFi Pro's smart contract, and the feedback has been great. We will also engage several auditors for 1 month to audit the smart contract.
+        Yes. {"We've"} already had numerous internal and external developers audit ReFi Pro's smart contract, and the feedback has been great. We will also engage several auditors for 1 month to audit the smart contract.
   </Text>
   },
   {
