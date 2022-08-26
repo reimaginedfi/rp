@@ -219,7 +219,7 @@ export const FrequentlyAskedQuestions = [
     answer: (
       <Text>
         {" "}
-        Each EPOCH lasts a month but this may change depending on the farmer's
+        Each EPOCH lasts a month but this may change depending on the {"farmer's"}
         decision (market conditions, important market events, etc.)
       </Text>
     ),
@@ -248,11 +248,11 @@ export const FrequentlyAskedQuestions = [
     question: "Does ReFi PRO use audited smart contracts?",
     answer:
     <Text>
-        Yes. {"We've"} already had numerous internal and external developers audit ReFi Pro's smart contract, and the feedback has been great. We will also engage several auditors for 1 month to audit the smart contract.
+        Yes. {"We've"} already had numerous internal and external developers audit ReFi {"Pro's"} smart contract, and the feedback has been great. We will also engage several auditors for 1 month to audit the smart contract.
   </Text>
   },
   {
-    question: "Is ReFi Pro secured by FireBlocks??",
+    question: "Is ReFi Pro secured by FireBlocks?",
     answer: (
       <Text>
         Yes. FireBlocks is one of the key foundations for ReFi Pro to operate.{" "}
@@ -292,7 +292,7 @@ export const FrequentlyAskedQuestions = [
   {
     question: "What is the fee structure for ReFi Pro?",
     answer: (
-      <Text>ReFi Pro charges 2% management fee and 20% performance fee.</Text>
+      <Text>ReFi Pro charges 1% management fee on deposits and 20% performance fee on withdrawals.</Text>
     ),
   },
   {
