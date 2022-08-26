@@ -22,6 +22,8 @@ import {
 import { NextSeo } from "next-seo";
 
 import React from "react";
+import {BigNumber} from "ethers";
+import {formatUnits} from "ethers/lib/utils";
 
 export default function FAQ() {
   const { colorMode } = useColorMode();
@@ -49,7 +51,7 @@ export default function FAQ() {
         fontWeight="600"
         lineHeight={{ base: "1.5rem", md: "1rem" }}
       >
-        Q: {children}
+        {children}
       </Heading>
       <AccordionIcon />
     </Flex>
@@ -131,10 +133,94 @@ export const FrequentlyAskedQuestions = [
   {
     question: "What is the minimum deposit for REFI Pro?",
     answer: (
+      <>
+            <Text>
+        {" "}
+        For our current vault, you will need a minimum of <b>25,000 USDC</b> for
+        a start. 
+      </Text>
+      <Text mt="1rem">
+        If a person owns 1M REFI tokens, they can also deposit with no minimum into vaults as a benefit. The same non-minimum advantage applies to people who have deposited 25,000 USDC beforehand. 
+      </Text>
+      <Text mt="1rem">
+      This amount of USDC may change over time (in the same vault) and other
+        vaults may have different minimum deposit amounts on discretion of the management team.
+      </Text>
+      </>
+    ),
+  },
+  {
+    question: "How does a deposit work?",
+    answer: (
       <Text>
         {" "}
-        Minimum buy-in of <b>US$25,000+</b> for a start. Note that we can also
-        customize the buy-in amount on a case-by-case basis.
+        Each vault on the main page has a deposit button. The process of depositing goes like this: 
+        <OrderedList mt="1rem" spacing="1rem">
+          <ListItem>
+            Clicking on the deposit button will open a modal
+            with a deposit form with inputs and all data regarding fees and
+            total deposit going to the vault.
+          </ListItem>
+          <ListItem>
+            After filling the inputs, the user needs to approve the
+            transaction for the amount of USDC or token being used (ERC20
+            contracts require wallet owners to approve the use of their tokens).
+          </ListItem>
+          <ListItem>
+            Once approved, the deposit button will appear. Clicking this
+            button will perform a transaction which the user needs to accept on
+            their wallet.
+          </ListItem>
+
+          <ListItem>
+            Once the transaction is complete, the user will be able to see
+            the amount of tokens they have deposited and how they integrate with
+            the AuM/Pending Deposits bar.
+          </ListItem>
+        </OrderedList>
+      </Text>
+    ),
+  },
+  // {
+  //   question: "How does a withdraw work?",
+  //   answer: (
+  //     <Text>
+  //     {" "}
+  //     Each vault on the main page has a withdraw button. The process of wtihdrawing goes like this: 
+  //     <OrderedList mt="1rem" spacing="1rem">
+  //       <ListItem>
+  //         Clicking on the withdraw button on the vault will open a modal
+  //         describing the number of VT tokens the user currently has and an input where the user can enter the amount of these tokens they want to unlock.
+  //       </ListItem>
+  //       <ListItem>
+  //         After filling the VT token input, the user will receive a transaction confirmation on their wallet. This transaction will unlock the VT tokens from the vault so the user can withdraw them. 
+  //       </ListItem>
+  //       <ListItem>
+  //         Once unlocked, the withdraw button will appear. After clicking on the withdraw button and following the transaction process, the vault will transform the VT tokens into USDC the user will get on their wallet
+  //       </ListItem>
+  //       <ListItem>
+  //         Once the transaction is complete, the user should be able to see
+  //         the amount of USDC tokens they have withdrawn on their wallet. 
+  //       </ListItem>
+  //     </OrderedList>
+  //   </Text>
+  //   ),
+  // },
+  // {
+  //   question: "What are VT tokens and how do they work?",
+  //   answer: (
+  //     <Text>
+  //       These are Vault Tokens REFI Pro uses to transform your USDC into a wrapped alternative within the vault. They signify the amount of USDC you deposited. These VT tokens will stay in the vault as long as you do not withdraw them. That is, the will stay for as many epochs as you desire. 
+  //     </Text>
+  //   )
+  // },
+  {
+    question: "How much does each EPOCH last?",
+    answer: (
+      <Text>
+        {" "}
+        Each EPOCH lasts a month but this may change depending on the {"farmer's"}
+        decision (market conditions, important market events, etc.)
       </Text>
     ),
   },
@@ -150,7 +236,7 @@ export const FrequentlyAskedQuestions = [
   },
   {
     question:
-      "What protections are planned for ReFi token investors if institutions purchase all the ReFi tokens?",
+      "Can institutions purchase all the $REFI tokens?",
     answer: (
       <Text>
         There will be no requirements for institutions to purchase ReFi tokens
@@ -159,12 +245,14 @@ export const FrequentlyAskedQuestions = [
     ),
   },
   {
-    question: "Who will audit REFI Pro?",
+    question: "Does ReFi PRO use audited smart contracts?",
     answer:
-      "We've already had numerous internal and external developers audit ReFi Pro's smart contract, and the feedback has been great. We will also engage several auditors for 1 month to audit the smart contract.",
+    <Text>
+        Yes. {"We've"} already had numerous internal and external developers audit ReFi {"Pro's"} smart contract, and the feedback has been great. We will also engage several auditors for 1 month to audit the smart contract.
+  </Text>
   },
   {
-    question: "Will ReFi Pro be secured by FireBlocks??",
+    question: "Is ReFi Pro secured by FireBlocks?",
     answer: (
       <Text>
         Yes. FireBlocks is one of the key foundations for ReFi Pro to operate.{" "}
@@ -173,7 +261,7 @@ export const FrequentlyAskedQuestions = [
   },
   {
     question:
-      "When will the vault tokenomics be released (maximum AUM, maximum token supply)?",
+      "Is there a maximum AUM or maximum token supply (VT)?",
     answer: (
       <Text>
         Max <b>AuM</b> will be at the investment {"manager's"} discretion. There
@@ -183,33 +271,34 @@ export const FrequentlyAskedQuestions = [
   },
   {
     question:
-      "Will the ReFi Pro vaults have different strategies than the ReFi Core Portfolio  ?",
+      "Are ReFi Pro vaults strategies different than the ReFi Core Portfolio?",
     answer: (
-      <VStack spacing="0.875rem">
+      <>
         <Text>
-          The strategy for ReFi Pro capital will differ slightly from the ReFi
-          Core Portfolio as the investment managers will focus primarily on{" "}
-          <b>low-to-medium risk strategies </b>for ReFi Pro. There will be lower
+          The strategy for ReFi Pro capital differs slightly from the ReFi
+          Core Portfolio as the investment managers are focusing primarily on{" "}
+          <b>low-to-medium risk strategies </b>for ReFi Pro. There are lower
           risk tolerance on ReFi Pro, so {"we're"} aiming for annualised returns
           of 35-40%.
-          <br />
+          </Text>
+          <Text mt="1rem">
           On the other hand, the investment managers will continue to target
           strategies across the low-to-high risk spectrum for the ReFi Core
           Portfolio.
         </Text>
-      </VStack>
+      </>
     ),
   },
   {
     question: "What is the fee structure for ReFi Pro?",
     answer: (
-      <Text>ReFi Pro charges 2% management fee and 20% performance fee.</Text>
+      <Text>ReFi Pro charges 1% management fee on deposits and 20% performance fee on withdrawals.</Text>
     ),
   },
   {
     question: "How do $ReFi token holders benefit from ReFi Pro?",
     answer: (
-      <VStack spacing="0.875rem">
+      <VStack spacing="1rem">
         <Text>
           $ReFi token holders benefit from the fees received from ReFi Pro.
           Those fees will feed through to the ReFi Core Portfolio, which leads
