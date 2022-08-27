@@ -109,15 +109,17 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   const handleUnlockShares = async () => {
     console.log("unlocking shares");
     try {
-      await unlockShares();
-    } catch (error) {}
+      await unlockShares?.();
+    } catch (error) {
+      console.log("error while unlocking share: ", error);
+    }
   };
 
   const handleClaim = async () => {
     if (!withdrawable) {
       return;
     }
-    await claim();
+    await claim?.();
   };
 
   return (
@@ -189,6 +191,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
               </VStack>
               {!hasPendingWithdrawal && (
                 <Button
+                  disabled={!unlockShares}
                   isLoading={unlockingShares}
                   onClick={handleUnlockShares}
                   mt={"4rem"}
@@ -202,7 +205,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                 <Button
                   onClick={handleClaim}
                   isLoading={claiming}
-                  isDisabled={!withdrawable || !hasPendingWithdrawal}
+                  isDisabled={!withdrawable || !hasPendingWithdrawal || !claim}
                   mt={"4rem"}
                   variant="primary"
                 >

@@ -6,12 +6,14 @@ import {
   useAccount,
   useContractRead,
   useContractWrite,
+  usePrepareContractWrite,
   useToken,
   useWaitForTransaction,
 } from "wagmi";
 import { ContractConfig } from "../../contracts";
 import { useContractConfig } from "../Vault/ContractContext";
 import {noSpecialCharacters} from "../utils/stringsAndNumbers";
+import { useEffect } from "react";
 
 // export const useVault = (addressOrName: string) => {
 //   const vault = useMemo(() => {
@@ -298,11 +300,14 @@ export const useVaultWithdraw = (
   contractConfig: ContractConfig,
   unlockAmount: string
 ) => {
+  useEffect(() => {
+    console.log("unlockAmount", unlockAmount);
+  }, [unlockAmount]);
   const { address } = useAccount();
   const { assetToken } = useVaultMeta(contractConfig);
   const userHasPendingRedeem = useContractRead({
     ...contractConfig,
-    functionName: "userHasPendingRedeem",
+    functionName: "userHasPendingWithdrawal",
     watch: true,
     args: [address ?? ""],
   });
@@ -315,25 +320,31 @@ export const useVaultWithdraw = (
 
   const { user } = useVaultUser(contractConfig, address ?? "");
 
+  const  { config } = usePrepareContractWrite({
+    ...contractConfig,
+    functionName: "unlock",
+    args: [parseUnits(unlockAmount ? unlockAmount : "0", 6)],
+  })
+
   const {
     write: unlockShares,
     isLoading: unlockingShares,
     error: unlockingError,
     isSuccess: unlockingSuccess,
     status: unlockingStatus,
-  } = useContractWrite({
-    ...contractConfig,
-    functionName: "unlock",
-    args: [parseUnits(unlockAmount ?? "0", 6)],
-    mode: "recklesslyUnprepared",
-  });
+  } = useContractWrite(config);
   const hasPendingWithdrawal = userHasPendingRedeem.data;
 
-  const { data: withdrawable } = useContractRead({
+  const { data: withdrawable, error } = useContractRead({
     ...contractConfig,
-    functionName: "previewClaim",
+    functionName: "previewWithdraw",
     args: [address],
   });
+
+  const {config: withdrawConfig} = usePrepareContractWrite({
+    ...contractConfig,
+    functionName: "withdraw",
+  })
 
   const {
     write: claim,
@@ -341,11 +352,11 @@ export const useVaultWithdraw = (
     error: claimError,
     isSuccess: claimSuccess,
     status: claimStatus,
-  } = useContractWrite({
-    ...contractConfig,
-    functionName: "withdraw",
-    mode: "recklesslyUnprepared",
-  });
+  } = useContractWrite(withdrawConfig);
+
+  useEffect(() => {
+    console.log("error while previewing Claim: ", error);
+  }, [error])
 
   return {
     hasPendingWithdrawal,
