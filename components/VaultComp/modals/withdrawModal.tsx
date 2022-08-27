@@ -24,7 +24,7 @@ import { vaults } from "../../../contracts";
 import { useAccount, useContractWrite, useNetwork } from "wagmi";
 import { useVaultWithdraw } from "../../hooks/useVault";
 import { formatUnits } from "ethers/lib/utils";
-import { DangerToast } from "../../Toasts";
+import { DangerToast, SuccessToast } from "../../Toasts";
 
 type ModalProps = {
   onClose?: () => void;
@@ -81,6 +81,21 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   }, [unlockingError, unlockingStatus, toast]);
 
   useEffect(() => {
+    console.log("unlocking Success: ", unlockingStatus);
+    if (unlockingStatus === "success") {
+      toast({
+        variant: "success",
+        title: "Unlock Successful",
+        duration: 5000,
+        render: () => (
+          <SuccessToast message="Unlock Successful" />
+        
+        ),
+      });
+    }
+  }, [unlockingError, unlockingStatus, toast]);
+
+  useEffect(() => {
     console.log("claimError: ", claimError?.message);
     if (claimError?.name === "Error" && claimStatus === "error") {
       toast({
@@ -114,6 +129,10 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
       console.log("error while unlocking share: ", error);
     }
   };
+
+  useEffect(() => {
+    console.log("unlockingShares: ", unlockingShares)
+  }, [unlockingShares])
 
   const handleClaim = async () => {
     if (!withdrawable) {
@@ -192,7 +211,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
               {!hasPendingWithdrawal && (
                 <Button
                   disabled={!unlockShares}
-                  isLoading={unlockingShares}
+                  isLoading={unlockingShares || unlockingStatus === "loading"}
                   onClick={handleUnlockShares}
                   mt={"4rem"}
                   variant="primary"
