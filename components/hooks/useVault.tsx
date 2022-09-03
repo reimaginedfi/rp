@@ -352,7 +352,22 @@ export const useVaultWithdraw = (
     error: claimError,
     isSuccess: claimSuccess,
     status: claimStatus,
-  } = useContractWrite(withdrawConfig);
+  } = useContractWrite({
+    ...contractConfig,
+    functionName: "withdraw",
+    mode: "recklesslyUnprepared",
+    overrides: {
+      gasLimit: 500000,
+    },
+  });
+
+  // const {
+  //   write: claim,
+  //   isLoading: claiming,
+  //   error: claimError,
+  //   isSuccess: claimSuccess,
+  //   status: claimStatus,
+  // } = useContractWrite(withdrawConfig);
 
   useEffect(() => {
     console.log("error while previewing Claim: ", error);

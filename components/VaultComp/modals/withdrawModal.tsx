@@ -25,6 +25,7 @@ import { useAccount, useContractWrite, useNetwork } from "wagmi";
 import { useVaultWithdraw } from "../../hooks/useVault";
 import { formatUnits } from "ethers/lib/utils";
 import { DangerToast, SuccessToast } from "../../Toasts";
+import {BigNumber} from 'ethers';
 
 type ModalProps = {
   onClose?: () => void;
@@ -42,22 +43,21 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     hasPendingWithdrawal,
     user,
     unlockShares,
-    claim,
     unlockingShares,
+    unlockingError,
     withdrawable,
+    claim,
     claiming,
     claimError,
-    unlockingError,
-    unlockingStatus,
+    claimSuccess,
+    unlockingSuccess,
     claimStatus,
+    unlockingStatus,
     userHasPendingDeposit,
+    userHasPendingRedeem,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
 
-  const updatePendingDeposit = useContractWrite({
-    ...contractConfig,
-    functionName: "updatePendingDepositState",
-    args: [address],
-  });
+  console.log(claimStatus, claimError)
 
   const toast = useToast();
 
@@ -210,7 +210,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
               </VStack>
               {!hasPendingWithdrawal && (
                 <Button
-                  disabled={!unlockShares}
+                  // disabled={!unlockShares}
                   isLoading={unlockingShares || unlockingStatus === "loading"}
                   onClick={handleUnlockShares}
                   mt={"4rem"}
@@ -221,15 +221,20 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
               )}
 
               {withdrawable && (
+                <>
+                <Heading variant="medium">Amount to Withdraw</Heading>
+                <Text fontWeight={600} fontSize={{ base: "1rem", md: "1.5rem" }}>{parseInt(formatUnits(withdrawable._hex, 16))}</Text>
                 <Button
                   onClick={handleClaim}
                   isLoading={claiming}
-                  isDisabled={!withdrawable || !hasPendingWithdrawal || !claim}
+                  isDisabled={!withdrawable}
                   mt={"4rem"}
                   variant="primary"
                 >
                   Withdraw
                 </Button>
+
+                </>
               )}
             </VStack>
             <Flex gap={10} alignItems="center"></Flex>
