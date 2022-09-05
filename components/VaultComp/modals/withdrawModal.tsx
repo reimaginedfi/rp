@@ -181,7 +181,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
               p={2}
               mb={6}
             >
-              <Box>
+              <Box w='full'>
                 <Flex
                   w="full"
                   justifyContent={"space-between"}
