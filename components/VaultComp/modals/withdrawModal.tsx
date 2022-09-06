@@ -149,7 +149,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   };
 
   // console.log(parseInt(epoch.data!._hex), parseInt(user.data?.epochToRedeem))
-  console.log(parseInt(user?.data?.sharesToRedeem));
+  // console.log(parseInt(user?.data?.sharesToRedeem));
 
   useEffect(() => {
     if (parseInt(user.data?.epochToRedeem) === parseInt(epoch!.data?._hex)) {
@@ -236,7 +236,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
               <VStack w="full" alignSelf="start">
                 <Text
                   variant="extralarge"
-                  fontSize="sm"
+                  fontSize="medium"
+                  fontWeight={600}
                   mr={2}
                   alignSelf="start"
                 >
