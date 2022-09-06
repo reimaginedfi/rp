@@ -190,13 +190,13 @@ export const FrequentlyAskedQuestions = [
       <OrderedList my="1rem" spacing="1rem">
         <ListItem>
           Clicking on the withdraw button on the vault will open a modal
-          displaying the user's VT token balance and an input where the user can enter the amount of these tokens they want to unlock.
+          displaying the {"user's"} VT token balance and an input where the user can enter the amount of these tokens they want to unlock.
         </ListItem>
         <ListItem>
           After filling the VT token input and clicking the unlock button, the user will receive a transaction confirmation on their wallet. This transaction will unlock the VT tokens from the vault. 
         </ListItem>
         <ListItem>
-          Once unlocked, the withdraw step will appear, showing withdrawable balance, fees, and total amount (in USDC) that will reach the user's wallet. After clicking on the withdraw button below and waiting for the transaction to process, the vault will transform the VT tokens into USDC the user will get on their wallet.
+          Once unlocked, the withdraw step will appear, showing withdrawable balance, fees, and total amount (in USDC) that will reach the {"user's"} wallet. After clicking on the withdraw button below and waiting for the transaction to process, the vault will transform the VT tokens into USDC the user will get on their wallet.
         </ListItem>
         <ListItem>
           Once the transaction is complete, the user should be able to see
