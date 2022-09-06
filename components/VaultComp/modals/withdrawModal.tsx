@@ -414,7 +414,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     mt={"4rem"}
                     variant="primary"
                   >
-                    Withdraw {withdrawable && commify(formatUnits(withdrawable![0]._hex, 6))} USDC
+                    Withdraw {withdrawable && commify(truncate(formatUnits(withdrawable![0]._hex, 6), 2))} USDC
                   </Button>
                 </Stack>
               )}
