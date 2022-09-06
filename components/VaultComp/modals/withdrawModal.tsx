@@ -156,9 +156,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
           />
         ),
       });
+      onClose && onClose();
     }
-
-   
   }, [claimError, claimStatus, toast]);
 
   useEffect(() => {
