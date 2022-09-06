@@ -181,45 +181,54 @@ export const FrequentlyAskedQuestions = [
       </Text>
     ),
   },
-  // {
-  //   question: "How does a withdraw work?",
-  //   answer: (
-  //     <Text>
-  //     {" "}
-  //     Each vault on the main page has a withdraw button. The process of wtihdrawing goes like this: 
-  //     <OrderedList mt="1rem" spacing="1rem">
-  //       <ListItem>
-  //         Clicking on the withdraw button on the vault will open a modal
-  //         describing the number of VT tokens the user currently has and an input where the user can enter the amount of these tokens they want to unlock.
-  //       </ListItem>
-  //       <ListItem>
-  //         After filling the VT token input, the user will receive a transaction confirmation on their wallet. This transaction will unlock the VT tokens from the vault so the user can withdraw them. 
-  //       </ListItem>
-  //       <ListItem>
-  //         Once unlocked, the withdraw button will appear. After clicking on the withdraw button and following the transaction process, the vault will transform the VT tokens into USDC the user will get on their wallet
-  //       </ListItem>
-  //       <ListItem>
-  //         Once the transaction is complete, the user should be able to see
-  //         the amount of USDC tokens they have withdrawn on their wallet. 
-  //       </ListItem>
-  //     </OrderedList>
-  //   </Text>
-  //   ),
-  // },
-  // {
-  //   question: "What are VT tokens and how do they work?",
-  //   answer: (
-  //     <Text>
-  //       These are Vault Tokens REFI Pro uses to transform your USDC into a wrapped alternative within the vault. They signify the amount of USDC you deposited. These VT tokens will stay in the vault as long as you do not withdraw them. That is, the will stay for as many epochs as you desire. 
-  //     </Text>
-  //   )
-  // },
+  {
+    question: "How does a withdrawal work?",
+    answer: (
+      <Text>
+      {" "}
+      Each vault on the main page has a withdraw button. The process of withdrawing locked USDC goes like this: 
+      <OrderedList my="1rem" spacing="1rem">
+        <ListItem>
+          Clicking on the withdraw button on the vault will open a modal
+          displaying the user's VT token balance and an input where the user can enter the amount of these tokens they want to unlock.
+        </ListItem>
+        <ListItem>
+          After filling the VT token input and clicking the unlock button, the user will receive a transaction confirmation on their wallet. This transaction will unlock the VT tokens from the vault. 
+        </ListItem>
+        <ListItem>
+          Once unlocked, the withdraw step will appear, showing withdrawable balance, fees, and total amount (in USDC) that will reach the user's wallet. After clicking on the withdraw button below and waiting for the transaction to process, the vault will transform the VT tokens into USDC the user will get on their wallet.
+        </ListItem>
+        <ListItem>
+          Once the transaction is complete, the user should be able to see
+          the amount of USDC tokens they have withdrawn in their wallet. 
+        </ListItem>
+      </OrderedList>
+      <b>NOTE:</b> The user {"won't"} be able to deposit or unlock further VT tokens if they have unlocked VT tokens and/or withdrawable balance.
+    </Text>
+    ),
+  },
+  {
+    question: "What are VT tokens and how do they work?",
+    answer: (
+      <VStack spacing="1rem">
+      <Text>
+      REFI Pro uses these Vault Tokens to transform deposited USDC into a wrapped version within the vault. They signify the amount of USDC you deposited and currently being used in the AuM. 
+      </Text>
+      <Text>
+      Once the user transforms their deposited USDC into VT tokens, they can unlock and withdraw their USDC. VT tokens are automatically unlocked when the EPOCH progresses. 
+    </Text>
+    <Text>
+    <b>NOTE:</b> It is not necessary to transform deposited USDC into VT tokens unless the user wants to withdraw. Once the user transforms their USDC into VT tokens, they will not be able to transform them back into USDC unless they withdraw.
+    </Text>
+      </VStack>
+    )
+  },
   {
     question: "How much does each EPOCH last?",
     answer: (
       <Text>
         {" "}
-        Each EPOCH lasts a month but this may change depending on the {"farmer's"}
+        Each EPOCH lasts a month but this may change depending on the {"farmer's "} 
         decision (market conditions, important market events, etc.)
       </Text>
     ),
