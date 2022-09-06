@@ -274,15 +274,13 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   <Text
                     variant="extralarge"
                     fontSize="medium"
-                    fontWeight={600}
                     mr={2}
                     alignSelf="start"
                   >
-                    Unlockable Balance:{" "}
-                    {formatUnits(user.data?.vaultShares ?? 0, 6)} VT{" "}
+                    <b>VT Tokens:</b>{" "}                    {formatUnits(user.data?.vaultShares ?? 0, 6)} VT{" "}
                     <Tooltip
                       hasArrow
-                      label="Total VT token balance currently locked in the vault."
+                      label="Total VT token balance (locked and unlocked tokens)."
                       bg={colorMode === "dark" ? "white" : "black"}
                     >
                       <InfoOutlineIcon w={3.5} h={3.5} />
@@ -290,8 +288,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   </Text>
                   <Text
                     variant="extralarge"
-                    fontSize="medium"
-                    fontWeight={600}
+                    fontSize="sm"
                     mr={2}
                     alignSelf="start"
                   >
