@@ -35,6 +35,8 @@ import { formatUnits } from "ethers/lib/utils";
 import { DangerToast, SuccessToast } from "../../Toasts";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { commify } from "ethers/lib/utils";
+import getErrorMessage from "../../utils/errors";
+import {truncate} from "../../utils/stringsAndNumbers";
 
 type ModalProps = {
   onClose?: () => void;
@@ -69,17 +71,17 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     claimData,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
 
-  const [claimDataSuccess, setClaimDataSuccess] = useState<boolean>(false);
-  const [unlockDataSuccess, setUnlockDataSuccess] = useState<boolean>(false);
+  const [claimDataSuccess, setClaimDataSuccess] = useState<string>("");
+  const [unlockDataSuccess, setUnlockDataSuccess] = useState<string>("");
 
   const { isLoading: claimDataLoading } = useWaitForTransaction({
     hash: typeof claimData?.hash === "string" ? claimData?.hash : "",
     enabled: typeof claimData?.hash === "string",
     onSuccess: (data) => {
       if (data.status === 1) {
-        setClaimDataSuccess(true);
+        setClaimDataSuccess("true");
       } else if (data.status === 0) {
-        setClaimDataSuccess(false);
+        setClaimDataSuccess("false");
       }
     },
   });
@@ -89,9 +91,9 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     enabled: typeof unlockData?.hash === "string",
     onSuccess: (data) => {
       if (data.status === 1) {
-        setUnlockDataSuccess(true);
+        setUnlockDataSuccess("true");
       } else if (data.status === 0) {
-        setUnlockDataSuccess(false);
+        setUnlockDataSuccess("false");
       }
     },
   });
@@ -102,75 +104,64 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
 
   useEffect(() => {
     // Unlock error
-    if (unlockingError && unlockingStatus === "error") {
-      console.log("unlockingError: ", unlockingError?.message);
+    if (unlockDataSuccess === "false") {
       toast({
         variant: "danger",
         title: unlockingError?.name,
         duration: 5000,
         render: () => (
           <DangerToast
-            message={unlockingError?.message.substring(
-              0,
-              unlockingError?.message.indexOf(";")
-            )}
+          message="Unlock unsuccessful, try again."
           />
         ),
       });
     }
-  }, [unlockingError, toast, unlockingStatus]);
+  }, [unlockDataSuccess]);
 
   useEffect(() => {
     // unlock success
     console.log("unlocking Success: ", unlockingStatus);
-    if (!unlockDataLoading && unlockingStatus === "success") {
+    if (unlockDataSuccess === "true") {
       toast({
         variant: "success",
-        title: "Unlock Successful",
+        title: "Unlock successful",
         duration: 5000,
         render: () => <SuccessToast message="Unlock Successful" />,
       });
     }
   }, [
-    unlockingError,
-    unlockDataLoading,
-    unlockDataSuccess,
-    unlockingStatus,
-    toast,
+    unlockDataSuccess
   ]);
 
   useEffect(() => {
     // Claim error
     console.log("claimError: ", claimError);
-    if (claimError && claimStatus === "error") {
+    if (claimDataSuccess === "false") {
       toast({
         variant: "danger",
         title: claimError?.name,
         duration: 5000,
         render: () => (
           <DangerToast
-            message={claimError?.message.substring(
-              0,
-              claimError?.message.indexOf(";")
-            )}
+          message="Withdraw unsuccessful, try again."
           />
         ),
       });
       onClose && onClose();
     }
-  }, [claimError, claimStatus, toast]);
+  }, [claimDataSuccess]);
 
   useEffect(() => {
-     // Claim success
-     if (!claimDataLoading && claimStatus === "success") {
+    // Claim success
+    if (claimDataSuccess === "true") {
       toast({
         variant: "success",
-        title: "Withdraw Successful",
+        title: "Withdraw successful",
         duration: 5000,
         render: () => <SuccessToast message="Withdraw Successful" />,
       });
     }
-  },[claimDataLoading, claimDataSuccess, toast])
+  }, [claimDataSuccess]);
 
   useEffect(() => {
     vaults[chain!.id].map((contract) => {
@@ -196,7 +187,17 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     if (!withdrawable) {
       return;
     }
-    await claim?.();
+    try {
+      await claim?.();
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      toast({
+        variant: "danger",
+        duration: 5000,
+        position: "bottom",
+        render: () => <DangerToast message={errorMessage} />,
+      });
+    }
   };
 
   // console.log(parseInt(epoch.data!._hex), parseInt(user.data?.epochToRedeem))
@@ -335,7 +336,11 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
               disabled={
                 !unlockShares || parseInt(user.data!.sharesToRedeem) === 0
               }
-              isLoading={unlockingShares || unlockingStatus === "loading" || unlockDataLoading}
+              isLoading={
+                unlockingShares ||
+                unlockingStatus === "loading" ||
+                unlockDataLoading
+              }
               onClick={handleUnlockShares}
               variant="primary"
               my={2}
@@ -359,7 +364,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                       Withdrawable Amount
                     </Heading>
                     <Text fontSize={"lg"} fontWeight="bold" alignSelf="center">
-                      {formatUnits(withdrawable![0]._hex, 6)} USDC
+                      {commify(parseInt(withdrawable![0]._hex))} USDC
                     </Text>
                   </Flex>
                   <Flex
@@ -372,7 +377,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     <Flex alignItems="center" gap={2}>
                       <Text>
                         {withdrawable &&
-                          (parseInt(withdrawable![0]._hex) / 100) * 1}{" "}
+                          commify(truncate(((parseInt(withdrawable![0]) / 100) * 1).toString(), 2))}{" "}
                         USDC
                       </Text>
                       <Tooltip
@@ -385,12 +390,12 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     </Flex>
                   </Flex>
                   <Flex alignItems="center" justify="space-between">
-                    <Text>To withdraw</Text>
+                    <Text>To wallet</Text>
                     <Flex alignItems="center" gap={2}>
                       <Text>
                         {" "}
                         {withdrawable &&
-                          (parseInt(withdrawable![0]) / 100) * 1}{" "}
+                          commify(truncate(((parseInt(withdrawable![0]) / 100) * 99).toString(), 2))}{" "}
                         USDC
                       </Text>
                       <Tooltip
@@ -409,7 +414,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     mt={"4rem"}
                     variant="primary"
                   >
-                    Withdraw {withdrawable && parseInt(withdrawable![0])} USDC
+                    Withdraw {withdrawable && commify(parseInt(withdrawable![0]._hex))} USDC
                   </Button>
                 </Stack>
               )}
