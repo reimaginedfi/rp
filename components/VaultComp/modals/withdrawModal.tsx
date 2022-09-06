@@ -49,7 +49,6 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   const [withdrawActive, setWithdrawActive] = useState<boolean>(false);
   const { chain } = useNetwork();
   const [contractConfig, setContractConfig] = useState<any>();
-  const { address } = useAccount();
 
   const {
     hasPendingWithdrawal,
@@ -61,12 +60,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     claim,
     claiming,
     claimError,
-    claimSuccess,
-    unlockingSuccess,
-    claimStatus,
     unlockingStatus,
-    userHasPendingDeposit,
-    userHasPendingRedeem,
     unlockData,
     claimData,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
@@ -209,8 +203,6 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     }
   }, [user, epoch, withdrawable]);
 
-  console.log(parseInt(user.data?.vaultShares))
-
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
       <ModalOverlay />
@@ -286,11 +278,28 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     mr={2}
                     alignSelf="start"
                   >
-                    Withdrawable Balance:{" "}
+                    Unlockable Balance:{" "}
                     {formatUnits(user.data?.vaultShares ?? 0, 6)} VT{" "}
                     <Tooltip
                       hasArrow
                       label="Total VT token balance currently locked in the vault."
+                      bg={colorMode === "dark" ? "white" : "black"}
+                    >
+                      <InfoOutlineIcon w={3.5} h={3.5} />
+                    </Tooltip>
+                  </Text>
+                  <Text
+                    variant="extralarge"
+                    fontSize="medium"
+                    fontWeight={600}
+                    mr={2}
+                    alignSelf="start"
+                  >
+                    Unlocked Balance:{" "}
+                    {formatUnits(user.data?.sharesToRedeem ?? 0, 6)} VT{" "}
+                    <Tooltip
+                      hasArrow
+                      label="Balance available for withdrawal at epoch below."
                       bg={colorMode === "dark" ? "white" : "black"}
                     >
                       <InfoOutlineIcon w={3.5} h={3.5} />
@@ -305,7 +314,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     EPOCH to withdraw: {parseInt(user.data?.epochToRedeem)}{" "}
                     <Tooltip
                       hasArrow
-                      label="Can only unlock and withdraw in this epoch."
+                      label="Can only withdraw at this epoch."
                       bg={colorMode === "dark" ? "white" : "black"}
                     >
                       <InfoOutlineIcon w={3.5} h={3.5} />
@@ -336,7 +345,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
             <Button
               w="100%"
               disabled={
-                parseInt(user.data?.vaultShares) === 0
+                parseInt(user.data?.vaultShares) === 0 && parseInt(user.data?.sharesToRedeem) === 0
               }
               isLoading={
                 unlockingShares ||
