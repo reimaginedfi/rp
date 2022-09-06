@@ -97,7 +97,7 @@ export const useVaultUser = (
 
   const sharesValue = useContractRead({
     ...contractConfig,
-    functionName: "previewRedeem",
+    functionName: "getStoredValue",
     args: [user.data?.vaultShares],
   });
 
@@ -305,12 +305,16 @@ export const useVaultWithdraw = (
   }, [unlockAmount]);
   const { address } = useAccount();
   const { assetToken } = useVaultMeta(contractConfig);
+  
   const userHasPendingRedeem = useContractRead({
     ...contractConfig,
     functionName: "userHasPendingWithdrawal",
     watch: true,
     args: [address ?? ""],
   });
+
+  const hasPendingWithdrawal = userHasPendingRedeem.data;
+
   const userHasPendingDeposit = useContractRead({
     ...contractConfig,
     functionName: "userHasPendingDeposit",
@@ -333,12 +337,11 @@ export const useVaultWithdraw = (
     isSuccess: unlockingSuccess,
     status: unlockingStatus,
   } = useContractWrite(config);
-  const hasPendingWithdrawal = userHasPendingRedeem.data;
 
   const { data: withdrawable, error } = useContractRead({
     ...contractConfig,
-    functionName: "previewWithdraw",
-    args: [address],
+    functionName: "getWithdrawalAmount",
+    args: [address ?? ""],
   });
 
   const {config: withdrawConfig} = usePrepareContractWrite({
