@@ -364,7 +364,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                       Withdrawable Amount
                     </Heading>
                     <Text fontSize={"lg"} fontWeight="bold" alignSelf="center">
-                      {commify(parseInt(withdrawable![0]._hex))} USDC
+                      {commify(parseInt(formatUnits(withdrawable![0]._hex, 6)))} USDC
                     </Text>
                   </Flex>
                   <Flex
@@ -377,7 +377,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     <Flex alignItems="center" gap={2}>
                       <Text>
                         {withdrawable &&
-                          commify(truncate(((parseInt(withdrawable![0]) / 100) * 1).toString(), 2))}{" "}
+                          commify(truncate(((parseInt(formatUnits(withdrawable![0], 6)) / 100) * 1).toString(), 2))}{" "}
                         USDC
                       </Text>
                       <Tooltip
@@ -395,7 +395,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                       <Text>
                         {" "}
                         {withdrawable &&
-                          commify(truncate(((parseInt(withdrawable![0]) / 100) * 99).toString(), 2))}{" "}
+                          commify(truncate(((parseInt(formatUnits(withdrawable![0], 6)) / 100) * 99).toString(), 2))}{" "}
                         USDC
                       </Text>
                       <Tooltip
@@ -414,7 +414,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     mt={"4rem"}
                     variant="primary"
                   >
-                    Withdraw {withdrawable && commify(parseInt(withdrawable![0]._hex))} USDC
+                    Withdraw {withdrawable && commify(formatUnits(withdrawable![0]._hex, 6))} USDC
                   </Button>
                 </Stack>
               )}
