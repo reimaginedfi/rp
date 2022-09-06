@@ -180,7 +180,6 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
               align="center"
               w="full"
             >
-              <Heading variant="large">Amount To Unlock</Heading>
               <Flex
                 w="full"
                 justify="space-between"
@@ -193,9 +192,11 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   w="full"
                   fontSize={{ base: "1rem", md: "2rem" }}
                   justifyItems={"space-between"}
-                  gap="1rem"
+                  alignItems="center"
+                  gap="0.5rem"
                   mb={2}
                 >
+                  <Text variant="medium">Amount To Unlock</Text>
                   <NumberInput
                     fontWeight={600}
                     min={0}
@@ -220,19 +221,12 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                       <NumberDecrementStepper />
                     </NumberInputStepper>
                   </NumberInput>
-
-                  <Button
-                    onClick={() =>
-                      setAmount(formatUnits(user.data?.sharesToRedeem ?? 0, 6))
-                    }
-                    variant={"tertiary"}
-                    p={4}
-                    fontSize="1rem"
-                  >
-                    Max
-                  </Button>
                 </Flex>
               </Flex>
+              <Flex
+              justify={"space-between"}
+              w="full"
+              >
               <VStack w="full" alignSelf="start">
                 <Text
                   variant="extralarge"
@@ -241,7 +235,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   mr={2}
                   alignSelf="start"
                 >
-                  Balance: {formatUnits(user.data?.vaultShares ?? 0, 6)} VT{" "}
+                  Withdrawable Balance: {formatUnits(user.data?.vaultShares ?? 0, 6)} VT{" "}
                   <Tooltip
                     hasArrow
                     label="Total VT token balance currently locked in the vault."
@@ -250,7 +244,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     <InfoOutlineIcon w={3.5} h={3.5} />
                   </Tooltip>
                 </Text>
-                <Text
+                {/* <Text
                   variant="extralarge"
                   fontSize="sm"
                   mr={2}
@@ -265,7 +259,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   >
                     <InfoOutlineIcon w={3.5} h={3.5} />
                   </Tooltip>
-                </Text>
+                </Text> */}
                 <Text
                   variant="extralarge"
                   fontSize="sm"
@@ -282,6 +276,17 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   </Tooltip>
                 </Text>
               </VStack>
+              <Button
+                    onClick={() =>
+                      setAmount(formatUnits(user.data?.sharesToRedeem ?? 0, 6))
+                    }
+                    variant={"tertiary"}
+                    p={4}
+                    fontSize="1rem"
+                  >
+                    Max
+                  </Button>
+              </Flex>
 
               {user?.data && +amount > +formatUnits(user.data?.vaultShares, 6) && (
                 <Text fontSize="xs" color={"red"} textAlign="start">

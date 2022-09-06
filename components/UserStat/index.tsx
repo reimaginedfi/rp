@@ -24,6 +24,7 @@ const UserStat = () => {
   const { address } = useAccount();
   const contractConfig = useContractConfig();
   const {
+    user,
     sharesValue,
     hasPendingDeposit,
     totalDeposited,
@@ -222,7 +223,7 @@ const UserStat = () => {
         >
           {commify(
             formatUnits(
-              sharesValue.data ? parseInt(sharesValue!.data!._hex!, 16) : 0,
+              sharesValue.data ? parseInt(sharesValue!.data!._hex!, 16) : parseInt(user?.data!.vaultShares),
               6
             )
           )}

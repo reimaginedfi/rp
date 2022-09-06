@@ -97,7 +97,7 @@ export const useVaultUser = (
 
   const sharesValue = useContractRead({
     ...contractConfig,
-    functionName: "getStoredValue",
+    functionName: "previewRedeem",
     args: [user.data?.vaultShares],
   });
 
