@@ -29,7 +29,7 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { vaults } from "../../../contracts";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount, useNetwork, useWaitForTransaction } from "wagmi";
 import { useVaultWithdraw, useVaultMeta } from "../../hooks/useVault";
 import { formatUnits } from "ethers/lib/utils";
 import { DangerToast, SuccessToast } from "../../Toasts";
@@ -65,15 +65,45 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     unlockingStatus,
     userHasPendingDeposit,
     userHasPendingRedeem,
+    unlockData,
+    claimData,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
+
+  const [claimDataSuccess, setClaimDataSuccess] = useState<boolean>(false);
+  const [unlockDataSuccess, setUnlockDataSuccess] = useState<boolean>(false);
+
+  const { isLoading: claimDataLoading } = useWaitForTransaction({
+    hash: typeof claimData?.hash === "string" ? claimData?.hash : "",
+    enabled: typeof claimData?.hash === "string",
+    onSuccess: (data) => {
+      if (data.status === 1) {
+        setClaimDataSuccess(true);
+      } else if (data.status === 0) {
+        setClaimDataSuccess(false);
+      }
+    },
+  });
+
+  const { isLoading: unlockDataLoading } = useWaitForTransaction({
+    hash: typeof unlockData?.hash === "string" ? unlockData?.hash : "",
+    enabled: typeof unlockData?.hash === "string",
+    onSuccess: (data) => {
+      if (data.status === 1) {
+        setUnlockDataSuccess(true);
+      } else if (data.status === 0) {
+        setUnlockDataSuccess(false);
+      }
+    },
+  });
 
   const { epoch } = useVaultMeta(contractConfig);
 
   const toast = useToast();
 
   useEffect(() => {
-    console.log("unlockingError: ", unlockingError?.message);
-    if (unlockingError?.name === "Error" && unlockingStatus === "error") {
+    // Unlock error
+    if (unlockingError && unlockingStatus === "error") {
+      console.log("unlockingError: ", unlockingError?.message);
       toast({
         variant: "danger",
         title: unlockingError?.name,
@@ -88,11 +118,12 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
         ),
       });
     }
-  }, [unlockingError, unlockingStatus, toast]);
+  }, [unlockingError, toast, unlockingStatus]);
 
   useEffect(() => {
+    // unlock success
     console.log("unlocking Success: ", unlockingStatus);
-    if (unlockingStatus === "success") {
+    if (!unlockDataLoading && unlockingStatus === "success") {
       toast({
         variant: "success",
         title: "Unlock Successful",
@@ -100,11 +131,18 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
         render: () => <SuccessToast message="Unlock Successful" />,
       });
     }
-  }, [unlockingError, unlockingStatus, toast]);
+  }, [
+    unlockingError,
+    unlockDataLoading,
+    unlockDataSuccess,
+    unlockingStatus,
+    toast,
+  ]);
 
   useEffect(() => {
-    console.log("claimError: ", claimError?.message);
-    if (claimError?.name === "Error" && claimStatus === "error") {
+    // Claim error
+    console.log("claimError: ", claimError);
+    if (claimError && claimStatus === "error") {
       toast({
         variant: "danger",
         title: claimError?.name,
@@ -119,7 +157,21 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
         ),
       });
     }
+
+   
   }, [claimError, claimStatus, toast]);
+
+  useEffect(() => {
+     // Claim success
+     if (!claimDataLoading && claimStatus === "success") {
+      toast({
+        variant: "success",
+        title: "Withdraw Successful",
+        duration: 5000,
+        render: () => <SuccessToast message="Withdraw Successful" />,
+      });
+    }
+  },[claimDataLoading, claimDataSuccess, toast])
 
   useEffect(() => {
     vaults[chain!.id].map((contract) => {
@@ -223,69 +275,51 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   </NumberInput>
                 </Flex>
               </Flex>
-              <Flex
-              justify={"space-between"}
-              w="full"
-              >
-              <VStack w="full" alignSelf="start">
-                <Text
-                  variant="extralarge"
-                  fontSize="medium"
-                  fontWeight={600}
-                  mr={2}
-                  alignSelf="start"
+              <Flex justify={"space-between"} w="full">
+                <VStack w="full" alignSelf="start">
+                  <Text
+                    variant="extralarge"
+                    fontSize="medium"
+                    fontWeight={600}
+                    mr={2}
+                    alignSelf="start"
+                  >
+                    Withdrawable Balance:{" "}
+                    {formatUnits(user.data?.vaultShares ?? 0, 6)} VT{" "}
+                    <Tooltip
+                      hasArrow
+                      label="Total VT token balance currently locked in the vault."
+                      bg={colorMode === "dark" ? "white" : "black"}
+                    >
+                      <InfoOutlineIcon w={3.5} h={3.5} />
+                    </Tooltip>
+                  </Text>
+                  <Text
+                    variant="extralarge"
+                    fontSize="sm"
+                    mr={2}
+                    alignSelf="start"
+                  >
+                    EPOCH to withdraw: {parseInt(user.data?.epochToRedeem)}{" "}
+                    <Tooltip
+                      hasArrow
+                      label="Can only unlock and withdraw in this epoch."
+                      bg={colorMode === "dark" ? "white" : "black"}
+                    >
+                      <InfoOutlineIcon w={3.5} h={3.5} />
+                    </Tooltip>
+                  </Text>
+                </VStack>
+                <Button
+                  onClick={() =>
+                    setAmount(formatUnits(user.data?.sharesToRedeem ?? 0, 6))
+                  }
+                  variant={"tertiary"}
+                  p={4}
+                  fontSize="1rem"
                 >
-                  Withdrawable Balance: {formatUnits(user.data?.vaultShares ?? 0, 6)} VT{" "}
-                  <Tooltip
-                    hasArrow
-                    label="Total VT token balance currently locked in the vault."
-                    bg={colorMode === "dark" ? "white" : "black"}
-                  >
-                    <InfoOutlineIcon w={3.5} h={3.5} />
-                  </Tooltip>
-                </Text>
-                {/* <Text
-                  variant="extralarge"
-                  fontSize="sm"
-                  mr={2}
-                  alignSelf="start"
-                >
-                  Withdrawable: {formatUnits(user.data?.sharesToRedeem ?? 0, 6)}{" "}
-                  VT{" "}
-                  <Tooltip
-                    hasArrow
-                    label="Amount locked in the vault that can be unlocked for withdrawals."
-                    bg={colorMode === "dark" ? "white" : "black"}
-                  >
-                    <InfoOutlineIcon w={3.5} h={3.5} />
-                  </Tooltip>
-                </Text> */}
-                <Text
-                  variant="extralarge"
-                  fontSize="sm"
-                  mr={2}
-                  alignSelf="start"
-                >
-                  EPOCH to withdraw: {parseInt(user.data?.epochToRedeem)}{" "}
-                  <Tooltip
-                    hasArrow
-                    label="Can only unlock and withdraw in this epoch."
-                    bg={colorMode === "dark" ? "white" : "black"}
-                  >
-                    <InfoOutlineIcon w={3.5} h={3.5} />
-                  </Tooltip>
-                </Text>
-              </VStack>
-              <Button
-                    onClick={() =>
-                      setAmount(formatUnits(user.data?.sharesToRedeem ?? 0, 6))
-                    }
-                    variant={"tertiary"}
-                    p={4}
-                    fontSize="1rem"
-                  >
-                    Max
-                  </Button>
+                  Max
+                </Button>
               </Flex>
 
               {user?.data && +amount > +formatUnits(user.data?.vaultShares, 6) && (
@@ -302,7 +336,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
               disabled={
                 !unlockShares || parseInt(user.data!.sharesToRedeem) === 0
               }
-              isLoading={unlockingShares || unlockingStatus === "loading"}
+              isLoading={unlockingShares || unlockingStatus === "loading" || unlockDataLoading}
               onClick={handleUnlockShares}
               variant="primary"
               my={2}
@@ -371,15 +405,15 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   </Flex>
                   <Button
                     onClick={handleClaim}
-                    isLoading={claiming}
+                    isLoading={claiming || claimDataLoading}
                     isDisabled={!withdrawable}
                     mt={"4rem"}
                     variant="primary"
                   >
-                    Withdraw {withdrawable && parseInt(withdrawable![0])}{" "}USDC
+                    Withdraw {withdrawable && parseInt(withdrawable![0])} USDC
                   </Button>
                 </Stack>
-              )} 
+              )}
             <Button variant={"ghost"} w={"full"} onClick={onClose}>
               Cancel
             </Button>

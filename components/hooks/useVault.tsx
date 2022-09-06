@@ -12,7 +12,7 @@ import {
 } from "wagmi";
 import { ContractConfig } from "../../contracts";
 import { useContractConfig } from "../Vault/ContractContext";
-import {noSpecialCharacters} from "../utils/stringsAndNumbers";
+import { noSpecialCharacters } from "../utils/stringsAndNumbers";
 import { useEffect } from "react";
 
 // export const useVault = (addressOrName: string) => {
@@ -146,7 +146,7 @@ export const useVaultDeposit = (
     balance ?? 0,
     assetToken.data?.decimals ?? 0
   );
-  
+
   const { data: allowance } = useContractRead({
     addressOrName: assetToken.data?.address ?? "",
     contractInterface: erc20ABI,
@@ -157,7 +157,12 @@ export const useVaultDeposit = (
 
   const isApproved =
     BigNumber.isBigNumber(allowance) &&
-    allowance.gte(parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals) ?? "0");
+    allowance.gte(
+      parseUnits(
+        noSpecialCharacters(depositAmount),
+        assetToken.data?.decimals
+      ) ?? "0"
+    );
 
   const {
     data: approveData,
@@ -177,7 +182,9 @@ export const useVaultDeposit = (
     onSuccess(data: any, variables: any, context: any) {
       addRecentTransaction({
         hash: data?.hash,
-        description: `Approve REFI Pro to spend ${commify(noSpecialCharacters(depositAmount))} USDC`,
+        description: `Approve REFI Pro to spend ${commify(
+          noSpecialCharacters(depositAmount)
+        )} USDC`,
         confirmations: 1,
       });
     },
@@ -217,12 +224,16 @@ export const useVaultDeposit = (
   } = useContractWrite({
     ...contractConfig,
     functionName: "deposit",
-    args: [parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals)],
+    args: [
+      parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals),
+    ],
 
     onSuccess(data: any, variables: any, context: any) {
       addRecentTransaction({
         hash: data?.hash,
-        description: `Deposit ${commify(noSpecialCharacters(depositAmount))} USDC`,
+        description: `Deposit ${commify(
+          noSpecialCharacters(depositAmount)
+        )} USDC`,
         confirmations: 1,
       });
     },
@@ -269,7 +280,10 @@ export const useVaultDeposit = (
       },
     ],
     functionName: "deposit",
-    args: [parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals), _for],
+    args: [
+      parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals),
+      _for,
+    ],
     mode: "recklesslyUnprepared",
   });
 
@@ -292,7 +306,7 @@ export const useVaultDeposit = (
     storeAssetStatus,
     depositData,
     depositFor,
-    approveData
+    approveData,
   };
 };
 
@@ -305,7 +319,7 @@ export const useVaultWithdraw = (
   }, [unlockAmount]);
   const { address } = useAccount();
   const { assetToken } = useVaultMeta(contractConfig);
-  
+
   const userHasPendingRedeem = useContractRead({
     ...contractConfig,
     functionName: "userHasPendingWithdrawal",
@@ -324,11 +338,11 @@ export const useVaultWithdraw = (
 
   const { user } = useVaultUser(contractConfig, address ?? "");
 
-  const  { config } = usePrepareContractWrite({
+  const { config } = usePrepareContractWrite({
     ...contractConfig,
     functionName: "unlock",
     args: [parseUnits(unlockAmount ? unlockAmount : "0", 6)],
-  })
+  });
 
   const {
     write: unlockShares,
@@ -336,6 +350,7 @@ export const useVaultWithdraw = (
     error: unlockingError,
     isSuccess: unlockingSuccess,
     status: unlockingStatus,
+    data: unlockData,
   } = useContractWrite(config);
 
   const { data: withdrawable, error } = useContractRead({
@@ -344,10 +359,13 @@ export const useVaultWithdraw = (
     args: [address ?? ""],
   });
 
-  const {config: withdrawConfig} = usePrepareContractWrite({
+  const { config: withdrawConfig } = usePrepareContractWrite({
     ...contractConfig,
     functionName: "withdraw",
-  })
+    overrides: {
+      gasLimit: 500000,
+    },
+  });
 
   const {
     write: claim,
@@ -355,26 +373,14 @@ export const useVaultWithdraw = (
     error: claimError,
     isSuccess: claimSuccess,
     status: claimStatus,
-  } = useContractWrite({
-    ...contractConfig,
-    functionName: "withdraw",
-    mode: "recklesslyUnprepared",
-    overrides: {
-      gasLimit: 500000,
-    },
-  });
+    data: claimData,
+  } = useContractWrite(withdrawConfig);
 
-  // const {
-  //   write: claim,
-  //   isLoading: claiming,
-  //   error: claimError,
-  //   isSuccess: claimSuccess,
-  //   status: claimStatus,
-  // } = useContractWrite(withdrawConfig);
+
 
   useEffect(() => {
     console.log("error while previewing Claim: ", error);
-  }, [error])
+  }, [error]);
 
   return {
     hasPendingWithdrawal,
@@ -392,6 +398,8 @@ export const useVaultWithdraw = (
     unlockingStatus,
     userHasPendingDeposit,
     userHasPendingRedeem,
+    claimData,
+    unlockData,
   };
 };
 
