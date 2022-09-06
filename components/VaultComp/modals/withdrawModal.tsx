@@ -209,6 +209,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     }
   }, [user, epoch, withdrawable]);
 
+  console.log(parseInt(user.data?.vaultShares))
+
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
       <ModalOverlay />
@@ -312,7 +314,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                 </VStack>
                 <Button
                   onClick={() =>
-                    setAmount(formatUnits(user.data?.sharesToRedeem ?? 0, 6))
+                    setAmount(formatUnits(user.data?.vaultShares ?? 0, 6))
                   }
                   variant={"tertiary"}
                   p={4}
@@ -334,7 +336,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
             <Button
               w="100%"
               disabled={
-                !unlockShares || parseInt(user.data!.sharesToRedeem) === 0
+                parseInt(user.data?.vaultShares) === 0
               }
               isLoading={
                 unlockingShares ||
