@@ -342,7 +342,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
             <Button
               w="100%"
               disabled={
-                parseInt(user.data?.vaultShares) === 0 && parseInt(user.data?.sharesToRedeem) === 0
+                parseInt(user.data?.vaultShares) === 0 || parseInt(user.data?.sharesToRedeem) !== 0
               }
               isLoading={
                 unlockingShares ||

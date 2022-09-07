@@ -355,7 +355,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
     ...vaultConfig,
     functionName: "canDeposit",
     args: [
-      address,
+      "0x6Be2e8101bD0305e639A0E2d9070f5034ea2a1D1",
       parseUnits(amount === "" ? "0" : noSpecialCharacters(amount), 6),
     ],
   });
@@ -370,7 +370,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
     +amount >=
     (minimumDeposit.data!
       ? +formatUnits(BigNumber.from(minimumDeposit?.data?._hex!).toNumber(), 6)
-      : 25000);
+      : 10000);
 
   return (
     <>
@@ -472,7 +472,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
               <Button
                 isDisabled={
                   amount === "" ||
-                  +amount + totalDeposited < 25000 ||
+                  !meetsMinimum ||
                   isApproving ||
                   canDeposit.isLoading
                 }
