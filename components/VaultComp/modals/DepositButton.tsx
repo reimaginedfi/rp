@@ -355,7 +355,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
     ...vaultConfig,
     functionName: "canDeposit",
     args: [
-      "0x6Be2e8101bD0305e639A0E2d9070f5034ea2a1D1",
+      address,
       parseUnits(amount === "" ? "0" : noSpecialCharacters(amount), 6),
     ],
   });
