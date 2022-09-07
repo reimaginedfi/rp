@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
   ModalOverlay,
   ModalCloseButton,
   ModalContent,
@@ -203,6 +206,10 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     }
   }, [user, epoch, withdrawable]);
 
+  const hasUnlockedShares = parseInt(user?.data?.sharesToRedeem) > 0; 
+
+  console.log(parseInt(user?.data?.sharesToRedeem))
+
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
       <ModalOverlay />
@@ -338,11 +345,22 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
             </Stack>
           )}
 
+          {hasUnlockedShares && (
+            <Alert status="warning" borderRadius={"md"} my={1} px={2}>
+              <AlertIcon boxSize={"1rem"}></AlertIcon>
+              <AlertDescription>
+                <Text fontSize={"xs"}>
+                  You already have unlocked tokens so you cannot unlock more. Wait for next epoch to withdraw before proceeding.
+                </Text>
+              </AlertDescription>
+            </Alert>
+          )}
+
           {!hasPendingWithdrawal && (
             <Button
               w="100%"
               disabled={
-                parseInt(user.data?.vaultShares) === 0 || parseInt(user.data?.sharesToRedeem) !== 0
+                parseInt(user.data?.vaultShares) === 0 || hasUnlockedShares
               }
               isLoading={
                 unlockingShares ||
