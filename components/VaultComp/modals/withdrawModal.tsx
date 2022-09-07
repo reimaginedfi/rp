@@ -144,7 +144,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
           />
         ),
       });
-      onClose && onClose();
+      onClose;
     }
   }, [claimDataSuccess]);
 
@@ -207,6 +207,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   }, [user, epoch, withdrawable]);
 
   const hasUnlockedShares = parseInt(user?.data?.sharesToRedeem) > 0 && !withdrawActive; 
+
+  const exceedsHoldings = user?.data && +amount > +formatUnits(user.data?.vaultShares, 6)
 
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
@@ -335,7 +337,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                 </Button>
               </Flex>
 
-              {user?.data && +amount > +formatUnits(user.data?.vaultShares, 6) && (
+              {exceedsHoldings && (
                 <Text fontSize="xs" color={"red"} textAlign="start">
                   Exceeds your holdings
                 </Text>
@@ -348,7 +350,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
               <AlertIcon boxSize={"1rem"}></AlertIcon>
               <AlertDescription>
                 <Text fontSize={"xs"}>
-                  You already have unlocked tokens so you cannot unlock more. Wait for next epoch to withdraw before proceeding.
+                  You already have unlocked tokens but you need to wait for next epoch to withdraw.
                 </Text>
               </AlertDescription>
             </Alert>
@@ -358,8 +360,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
             <Button
               w="100%"
               disabled={
-                parseInt(user.data?.vaultShares) === 0 || hasUnlockedShares
-              }
+                parseInt(user.data?.vaultShares) === 0 || exceedsHoldings         }
               isLoading={
                 unlockingShares ||
                 unlockingStatus === "loading" ||

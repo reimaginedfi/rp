@@ -374,6 +374,8 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
 
   // const depositedBefore = totalDeposited >= +formatUnits(minimumDeposit?.data?._hex!, 6)
 
+  const exceedsBalance = +amount > +balanceDisplay;
+
   return (
     <>
       <Button variant="primary" w={"full"} onClick={onOpen}>
@@ -477,7 +479,8 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                   !meetsMinimum ||
                   // !depositedBefore ||
                   isApproving ||
-                  canDeposit.isLoading
+                  canDeposit.isLoading ||
+                  exceedsBalance
                 }
                 isLoading={
                   isApproving || isLoading || isLoadingApprove || isStoring
