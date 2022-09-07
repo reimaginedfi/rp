@@ -208,8 +208,6 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
 
   const hasUnlockedShares = parseInt(user?.data?.sharesToRedeem) > 0; 
 
-  console.log(parseInt(user?.data?.sharesToRedeem))
-
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
       <ModalOverlay />
