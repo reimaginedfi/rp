@@ -206,7 +206,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     }
   }, [user, epoch, withdrawable]);
 
-  const hasUnlockedShares = parseInt(user?.data?.sharesToRedeem) > 0; 
+  const hasUnlockedShares = parseInt(user?.data?.sharesToRedeem) > 0 && !withdrawActive; 
 
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
