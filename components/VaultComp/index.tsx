@@ -292,7 +292,7 @@ const VaultComp = ({
                   </Tooltip>
                 </Flex>
 
-                <UserSection />
+                {/* <UserSection /> */}
                 <Accordion
                   borderRadius="1rem"
                   pt="1rem"
@@ -318,7 +318,7 @@ const VaultComp = ({
                         {feeReceiver.isLoading ? (
                           <SkeletonText />
                         ) : (
-                          <Text variant="medium">2%</Text>
+                          <Text variant="medium">1%</Text>
                         )}
                       </Flex>
                       <Flex alignItems={"center"}>
@@ -327,7 +327,7 @@ const VaultComp = ({
                         {feeReceiver.isLoading ? (
                           <SkeletonText />
                         ) : (
-                          <Text variant="medium">0%</Text>
+                          <Text variant="medium">1%</Text>
                         )}
                       </Flex>
                       <Flex alignItems={"center"}>

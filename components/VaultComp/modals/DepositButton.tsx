@@ -43,7 +43,11 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import { vaultConfigs, vaults } from "../../../contracts";
-import { useVaultDeposit, useVaultUser, useVaultMeta } from "../../hooks/useVault";
+import {
+  useVaultDeposit,
+  useVaultUser,
+  useVaultMeta,
+} from "../../hooks/useVault";
 import { DangerToast, SuccessToast } from "../../Toasts";
 import getErrorMessage from "../../utils/errors";
 
@@ -184,38 +188,38 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
     approveData,
   } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
 
-      // CHECKS DEPOSIT TXN UNTIL IT SUCCEEDS
-      const { isLoading } = useWaitForTransaction({
-        hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
-        enabled: typeof depositData?.hash === "string",
-        // onSuccess never fails
-        //https://github.com/wagmi-dev/wagmi/discussions/428
-        onSuccess: (data) => {
-          if (data.status === 1) {
-            setDepositSuccess("true");
-          } else if (data.status === 0) {
-            setDepositSuccess("false")
-          }
-        },
-      });
-    
-      // CHECKS APPROVE TXN UNTIL IT SUCCEEDS
-    const { isLoading: isLoadingApprove } = useWaitForTransaction({
-      hash: typeof approveData?.hash === "string" ? approveData?.hash : "",
-      enabled: typeof approveData?.hash === "string",
-      // onSuccess never fails
-      //https://github.com/wagmi-dev/wagmi/discussions/428
-      onSuccess: (data) => {
-        if (data.status === 1) {
-          setApprovalSuccess("true");
-        } else {
-          data.status === 0;
-        }
-        {
-          setApprovalSuccess("false");
-        }
-      },
-    });
+  // CHECKS DEPOSIT TXN UNTIL IT SUCCEEDS
+  const { isLoading } = useWaitForTransaction({
+    hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
+    enabled: typeof depositData?.hash === "string",
+    // onSuccess never fails
+    //https://github.com/wagmi-dev/wagmi/discussions/428
+    onSuccess: (data) => {
+      if (data.status === 1) {
+        setDepositSuccess("true");
+      } else if (data.status === 0) {
+        setDepositSuccess("false");
+      }
+    },
+  });
+
+  // CHECKS APPROVE TXN UNTIL IT SUCCEEDS
+  const { isLoading: isLoadingApprove } = useWaitForTransaction({
+    hash: typeof approveData?.hash === "string" ? approveData?.hash : "",
+    enabled: typeof approveData?.hash === "string",
+    // onSuccess never fails
+    //https://github.com/wagmi-dev/wagmi/discussions/428
+    onSuccess: (data) => {
+      if (data.status === 1) {
+        setApprovalSuccess("true");
+      } else {
+        data.status === 0;
+      }
+      {
+        setApprovalSuccess("false");
+      }
+    },
+  });
 
   const { colorMode } = useColorMode();
 
@@ -273,9 +277,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
         title: storeAssetError?.name,
         duration: 5000,
         render: () => (
-          <DangerToast
-            message="Transaction error. Please, try again."
-          />
+          <DangerToast message="Transaction error. Please, try again." />
         ),
       });
     }
@@ -352,7 +354,10 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
   const canDeposit = useContractRead({
     ...vaultConfig,
     functionName: "canDeposit",
-    args: [address, parseUnits(amount === "" ? "0" : noSpecialCharacters(amount), 6)],
+    args: [
+      address,
+      parseUnits(amount === "" ? "0" : noSpecialCharacters(amount), 6),
+    ],
   });
   const depositAllowed = canDeposit.data?.toString() === "true";
 
@@ -364,8 +369,12 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
   const meetsMinimum =
     +amount >=
     (minimumDeposit.data!
-      ? +formatUnits(BigNumber.from(minimumDeposit?.data?._hex!).toNumber(), 6)
-      : 25000);
+      ? formatUnits(minimumDeposit?.data?._hex!, 6)
+      : 10000);
+
+  // const depositedBefore = totalDeposited >= +formatUnits(minimumDeposit?.data?._hex!, 6)
+
+  const exceedsBalance = +amount > +balanceDisplay;
 
   return (
     <>
@@ -373,12 +382,15 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
         Deposit
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay></ModalOverlay>
+        <ModalOverlay />
         <ModalContent>
           <ModalHeader>
             Deposit to Vault <ModalCloseButton />
           </ModalHeader>
-          <ModalBody>
+          <ModalBody
+            borderTop="solid 1px"
+            borderColor={colorMode === "dark" ? "#232323" : "#F3F3F3"}
+          >
             <Stack spacing={3}>
               <TokenInput
                 amount={amount}
@@ -405,9 +417,17 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                     <Text fontSize="lg" alignSelf="center">
                       Fees
                     </Text>
-                    <Flex alignItems='center' gap={2}>
+                    <Flex alignItems="center" gap={2}>
                       <Text>
-                        {commify(truncate(((+noSpecialCharacters(amount) / 100) * 1).toString(), 2))}{" "}
+                        {commify(
+                          truncate(
+                            (
+                              (+noSpecialCharacters(amount) / 100) *
+                              1
+                            ).toString(),
+                            2
+                          )
+                        )}{" "}
                         USDC
                       </Text>
                       <Tooltip
@@ -419,15 +439,23 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                       </Tooltip>
                     </Flex>
                   </Flex>
-                  </GridItem>
-                  <GridItem>
+                </GridItem>
+                <GridItem>
                   <Flex alignItems="center" justify="space-between">
                     <Text fontSize="lg" alignSelf="center">
                       To deposit
                     </Text>
-                    <Flex alignItems='center' gap={2}>
+                    <Flex alignItems="center" gap={2}>
                       <Text>
-                        {commify(truncate(((+noSpecialCharacters(amount) / 100) * 99).toString(), 2))}{" "}
+                        {commify(
+                          truncate(
+                            (
+                              (+noSpecialCharacters(amount) / 100) *
+                              99
+                            ).toString(),
+                            2
+                          )
+                        )}{" "}
                         USDC
                       </Text>
                       <Tooltip
@@ -438,27 +466,31 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                         <InfoOutlineIcon w={3.5} h={3.5} />
                       </Tooltip>
                     </Flex>
-                    </Flex>
-                  </GridItem>
+                  </Flex>
+                </GridItem>
               </Grid>
             </Stack>
           </ModalBody>
           <ModalFooter>
             <Stack w="full" textAlign={"left"}>
-                <Button
-                  isDisabled={
-                    amount === "" ||
-                    +amount + totalDeposited < 25000 ||
-                    isApproving ||
-                    canDeposit.isLoading
-                  }
-                  isLoading={isApproving || isLoading || isLoadingApprove || isStoring}
-                  onClick={!isApproved ? handleApprove : handleDeposit}
-                  w={"full"}
-                  variant={isApproved ? "primary" : "secondary"}
-                >
-                  {isApproved ? "Deposit" : "Approve"}
-                </Button>
+              <Button
+                isDisabled={
+                  amount === "" ||
+                  !meetsMinimum ||
+                  // !depositedBefore ||
+                  isApproving ||
+                  canDeposit.isLoading ||
+                  exceedsBalance
+                }
+                isLoading={
+                  isApproving || isLoading || isLoadingApprove || isStoring
+                }
+                onClick={!isApproved ? handleApprove : handleDeposit}
+                w={"full"}
+                variant={isApproved ? "primary" : "secondary"}
+              >
+                {isApproved ? "Deposit" : "Approve"}
+              </Button>
               {/* )} */}
               {/* {amount === "" ||
               isApproving ||
