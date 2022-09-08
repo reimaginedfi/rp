@@ -29,7 +29,7 @@ const handler: NextApiHandler = async (req, res) => {
 
   const debank = BigNumber.from(Math.ceil((total_usd_value / price) * 1e6));
   // EDIT THIS for adjustments (not from debank)
-  const adjustments = BigNumber.from(199_270.2 * 1e6);
+  const adjustments = BigNumber.from(1 * 1e6);
   const adjustmentsNotes = "MLP Position";
 
   res.setHeader("Cache-Control", "s-maxage=14400"); // cache server-side every 4 hours
