@@ -292,7 +292,7 @@ const VaultComp = ({
                   </Tooltip>
                 </Flex>
 
-                <UserSection />
+                {/* <UserSection /> */}
                 <Accordion
                   borderRadius="1rem"
                   pt="1rem"
