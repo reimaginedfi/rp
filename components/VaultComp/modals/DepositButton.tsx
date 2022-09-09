@@ -1,9 +1,9 @@
 import {
-  Alert,
-  AlertIcon,
-  Image,
   Button,
   Flex,
+  Grid,
+  GridItem,
+  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -17,39 +17,31 @@ import {
   NumberInputField,
   NumberInputStepper,
   Stack,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
   Text,
   Tooltip,
-  Tr,
+  useColorMode,
   useDisclosure,
   useToast,
-  useColorMode,
-  Grid,
-  GridItem,
-  Box,
 } from "@chakra-ui/react";
-import ProgressBar from "../../ui/ProgressBar";
-import { BigNumber } from "ethers";
 import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
-import { truncate, noSpecialCharacters } from "../../utils/stringsAndNumbers";
 import { useEffect, useState } from "react";
 import {
   useAccount,
   useContractRead,
   useNetwork,
+  useToken,
   useWaitForTransaction,
 } from "wagmi";
 import { vaultConfigs, vaults } from "../../../contracts";
 import {
   useVaultDeposit,
-  useVaultUser,
   useVaultMeta,
+  useVaultUser,
 } from "../../hooks/useVault";
 import { DangerToast, SuccessToast } from "../../Toasts";
+import ProgressBar from "../../ui/ProgressBar";
 import getErrorMessage from "../../utils/errors";
+import { noSpecialCharacters, truncate } from "../../utils/stringsAndNumbers";
 
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 
@@ -57,21 +49,23 @@ interface TokenInputProps {
   amount: string;
   setAmount: (amount: string) => void;
   balanceDisplay: string;
-  meetsMinimum: boolean;
-  depositAllowed: boolean;
-  minimumDeposit: any;
+  errorMessage?: string;
+  tokenAddress: string;
 }
 
 const TokenInput: React.FC<TokenInputProps> = ({
   amount,
   setAmount,
   balanceDisplay,
-  meetsMinimum,
-  depositAllowed,
-  minimumDeposit,
+  errorMessage = "",
+  tokenAddress,
 }) => {
   const { colorMode } = useColorMode();
 
+  const { data } = useToken({ address: tokenAddress });
+  const images: Record<string, string> = {
+    USDC: "/icons/usdc.svg",
+  };
   return (
     <Stack
       w={"full"}
@@ -87,8 +81,15 @@ const TokenInput: React.FC<TokenInputProps> = ({
         my={1}
       >
         <Flex alignItems={"center"} py={1} px={2} mr={2} alignSelf="stretch">
-          <Image mr="0.25rem" w="1.5rem" h="1.5rem" src="/icons/usdc.svg" />
-          <Text fontSize="1.5rem">USDC</Text>
+          {data?.symbol && images[data?.symbol] && (
+            <Image
+              mr="0.25rem"
+              w="1.5rem"
+              h="1.5rem"
+              src={images[data?.symbol]}
+            />
+          )}
+          <Text fontSize="1.5rem">{data?.symbol}</Text>
         </Flex>
         <NumberInput
           placeholder={"0.0"}
@@ -116,7 +117,7 @@ const TokenInput: React.FC<TokenInputProps> = ({
       </Flex>
       <Flex justifyContent={"space-between"} alignContent="center">
         <Text variant="extralarge" fontSize="sm" mr={2} alignSelf="center">
-          Balance: {commify(truncate(balanceDisplay, 2))} USDC
+          Balance: {commify(truncate(balanceDisplay, 2))} {data?.symbol}
         </Text>
         <Button
           onClick={() => setAmount(balanceDisplay)}
@@ -128,7 +129,12 @@ const TokenInput: React.FC<TokenInputProps> = ({
         </Button>
       </Flex>
       <ProgressBar total={+balanceDisplay} partial={+amount} size="0.5rem" />
-      {+amount > +balanceDisplay && (
+      {errorMessage && errorMessage !== "" && (
+        <Text fontSize="xs" color={"red"}>
+          {errorMessage}
+        </Text>
+      )}
+      {/* {+amount > +balanceDisplay && (
         <Text fontSize="xs" color={"red"}>
           Exceeds wallet balance
         </Text>
@@ -147,7 +153,7 @@ const TokenInput: React.FC<TokenInputProps> = ({
             : "25,000"}{" "}
           USDC
         </Text>
-      )}
+      )} */}
     </Stack>
   );
 };
@@ -170,7 +176,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
   const toast = useToast();
   const { chain } = useNetwork();
   const [contractConfig, setContractConfig] = useState<any>();
-  const { epoch } = useVaultMeta(contractConfig);
+  const { epoch, asset } = useVaultMeta(contractConfig);
 
   //CONTRACT READ FOR DEPOSIT FUNCTIONS
   const {
@@ -396,9 +402,10 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                 amount={amount}
                 setAmount={setAmount}
                 balanceDisplay={balanceDisplay}
-                depositAllowed={depositAllowed}
-                meetsMinimum={meetsMinimum}
-                minimumDeposit={minimumDeposit}
+                errorMessage={
+                  +amount > +balanceDisplay ? "Exceeds wallet balance" : ""
+                }
+                tokenAddress={asset.data?.toString() ?? ""}
               />
               <Grid templateColumns="repeat(1, 1fr)" gap="0.5rem">
                 <GridItem>

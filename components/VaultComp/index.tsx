@@ -32,8 +32,8 @@ import moment from "moment";
 import useWindowSize from "react-use/lib/useWindowSize";
 import { useAccount, useContractRead } from "wagmi";
 import { ContractConfig } from "../../contracts";
-import WithdrawModal from "./modals/withdrawModal";
 import ProgressBar from "../ui/ProgressBar";
+import WithdrawModal from "./modals/withdrawModal";
 
 import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
@@ -106,7 +106,7 @@ const VaultComp = ({
   const { colorMode } = useColorMode();
   const { address } = useAccount();
   const [depositSuccess, setDepositSuccess] = useState<string>("");
-  const [approvalSuccess, setApprovalSuccess] = useState<string>('');
+  const [approvalSuccess, setApprovalSuccess] = useState<string>("");
 
   //MODAL OPEN/CLOSE STATES
   const {
@@ -292,7 +292,7 @@ const VaultComp = ({
                   </Tooltip>
                 </Flex>
 
-                {/* <UserSection /> */}
+                <UserSection />
                 <Accordion
                   borderRadius="1rem"
                   pt="1rem"

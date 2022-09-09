@@ -4,12 +4,7 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  Badge,
   Heading,
-  Text,
   useColorMode,
 } from "@chakra-ui/react";
 import { useAccount } from "wagmi";
@@ -47,11 +42,11 @@ export const UserSection = () => {
         >
           <Heading variant="medium">
             Your Stats{" "}
-            {shouldShowNotification && (
+            {/* {shouldShowNotification && (
               <Badge borderRadius={"md"} colorScheme="orange">
                 1
               </Badge>
-            )}
+            )} */}
           </Heading>
           <AccordionIcon />
         </AccordionButton>
@@ -60,19 +55,9 @@ export const UserSection = () => {
           borderRadius="1rem"
           bg={accordionBg}
         >
-          {shouldShowNotification && (
-            <Alert status="warning" borderRadius={"md"} py={1} px={2}>
-              <AlertIcon boxSize={"1rem"}></AlertIcon>
-              <AlertDescription>
-                <Text fontSize={"xs"}>
-                  You have claimable Vault Tokens. They will be automatically
-                  claimed when you do another deposit, or you can claim them
-                  manually. Unclaimed VT will still count towards this epoch
-                  {"'"}s progressions.
-                </Text>
-              </AlertDescription>
-            </Alert>
-          )}
+          {/* {shouldShowNotification && (
+            
+          )} */}
           <UserStat />
         </AccordionPanel>
       </AccordionItem>
