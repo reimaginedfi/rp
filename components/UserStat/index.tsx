@@ -7,6 +7,10 @@ import {
   Text,
   Tooltip,
   useColorMode,
+  Alert,
+  AlertIcon,
+  AlertDescription,
+  Button,
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
 import { useAccount, useContractWrite } from "wagmi";
@@ -14,6 +18,8 @@ import { useVaultUser } from "../hooks/useVault";
 import { useContractConfig, useWatchVault } from "../Vault/ContractContext";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../Vault/hooks/useVaultAsset";
+import {truncate} from "../utils/stringsAndNumbers"
+import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
 
 const UserStat = () => {
   const { colorMode } = useColorMode();
@@ -157,8 +163,8 @@ const UserStat = () => {
             <InfoOutlineIcon w={3.5} h={3.5} />
           </Tooltip>
         </Flex>
-      </Stack> */}
-      {/* <Box>
+      </Stack>
+      <Box>
         <Heading
           textAlign={"center"}
           variant={"big"}
@@ -172,17 +178,6 @@ const UserStat = () => {
           {asset.data?.symbol}
         </Text>
       </Box> */}
-      {/* <Alert status="warning" borderRadius={"md"} py={1} px={2}>
-        <AlertIcon boxSize={"1rem"}></AlertIcon>
-        <AlertDescription>
-          <Text fontSize={"xs"}>
-            You have claimable Vault Tokens. They will be automatically claimed
-            when you do another deposit, or you can claim them manually.
-            Unclaimed VT will still count towards this epoch
-            {"'"}s progressions.
-          </Text>
-        </AlertDescription>
-      </Alert>
       <Stack
         w="100%"
         direction="row"
@@ -237,7 +232,18 @@ const UserStat = () => {
         <Text textAlign={"center"} mt={-2} mb={4}>
           VT
         </Text>
-      </Box> */}
+        <Alert status="warning" borderRadius={"md"} py={1} px={2}>
+        <AlertIcon boxSize={"1rem"}></AlertIcon>
+        <AlertDescription>
+          <Text fontSize={"xs"}>
+            You have claimable Vault Tokens. They will be automatically claimed
+            when you do another deposit, or you can claim them manually.
+            Unclaimed VT will still count towards this epoch
+            {"'"}s progressions.
+          </Text>
+        </AlertDescription>
+      </Alert>
+      </Box>
     </Stack>
   );
 };
