@@ -1,45 +1,38 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
+import { InfoOutlineIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertDescription,
   AlertIcon,
-  ModalOverlay,
+  Button,
+  Flex,
+  Heading,
+  Modal,
+  ModalBody,
   ModalCloseButton,
   ModalContent,
-  Modal,
   ModalHeader,
-  ModalBody,
-  Heading,
-  Button,
-  Grid,
-  Text,
-  useColorMode,
-  VStack,
-  Flex,
-  Input,
-  Container,
-  InputRightElement,
-  InputGroup,
-  useToast,
+  ModalOverlay,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
   Stack,
-  Box,
+  Text,
   Tooltip,
+  useColorMode,
+  useToast,
+  VStack,
 } from "@chakra-ui/react";
+import { commify, formatUnits } from "ethers/lib/utils";
+import { useNetwork, useWaitForTransaction } from "wagmi";
 import { vaults } from "../../../contracts";
-import { useAccount, useNetwork, useWaitForTransaction } from "wagmi";
-import { useVaultWithdraw, useVaultMeta } from "../../hooks/useVault";
-import { formatUnits } from "ethers/lib/utils";
+import { useVaultMeta, useVaultWithdraw } from "../../hooks/useVault";
 import { DangerToast, SuccessToast } from "../../Toasts";
-import { InfoOutlineIcon } from "@chakra-ui/icons";
-import { commify } from "ethers/lib/utils";
 import getErrorMessage from "../../utils/errors";
-import {truncate} from "../../utils/stringsAndNumbers";
+import { truncate } from "../../utils/stringsAndNumbers";
 
 type ModalProps = {
   onClose?: () => void;
@@ -106,11 +99,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
         variant: "danger",
         title: unlockingError?.name,
         duration: 5000,
-        render: () => (
-          <DangerToast
-          message="Unlock unsuccessful, try again."
-          />
-        ),
+        render: () => <DangerToast message="Unlock unsuccessful, try again." />,
       });
     }
   }, [unlockDataSuccess]);
@@ -126,9 +115,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
         render: () => <SuccessToast message="Unlock Successful" />,
       });
     }
-  }, [
-    unlockDataSuccess
-  ]);
+  }, [unlockDataSuccess]);
 
   useEffect(() => {
     // Claim error
@@ -139,9 +126,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
         title: claimError?.name,
         duration: 5000,
         render: () => (
-          <DangerToast
-          message="Withdraw unsuccessful, try again."
-          />
+          <DangerToast message="Withdraw unsuccessful, try again." />
         ),
       });
       onClose;
@@ -206,9 +191,11 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     }
   }, [user, epoch, withdrawable]);
 
-  const hasUnlockedShares = parseInt(user?.data?.sharesToRedeem) > 0 && !withdrawActive; 
+  const hasUnlockedShares =
+    parseInt(user?.data?.sharesToRedeem) > 0 && !withdrawActive;
 
-  const exceedsHoldings = user?.data && +amount > +formatUnits(user.data?.vaultShares, 6)
+  const exceedsHoldings =
+    user?.data && +amount > +formatUnits(user.data?.vaultShares, 6);
 
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
@@ -284,7 +271,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     mr={2}
                     alignSelf="start"
                   >
-                    <b>VT Tokens:</b>{" "}                    {formatUnits(user.data?.vaultShares ?? 0, 6)} VT{" "}
+                    <b>VT Tokens:</b>{" "}
+                    {formatUnits(user.data?.vaultShares ?? 0, 6)} VT{" "}
                     <Tooltip
                       hasArrow
                       label="Total VT token balance (locked and unlocked tokens)."
@@ -350,7 +338,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
               <AlertIcon boxSize={"1rem"}></AlertIcon>
               <AlertDescription>
                 <Text fontSize={"xs"}>
-                  You already have unlocked tokens but you need to wait for next epoch to withdraw.
+                  You already have unlocked tokens but you need to wait for next
+                  epoch to withdraw.
                 </Text>
               </AlertDescription>
             </Alert>
@@ -360,7 +349,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
             <Button
               w="100%"
               disabled={
-                parseInt(user.data?.vaultShares) === 0 || exceedsHoldings         }
+                parseInt(user.data?.vaultShares) === 0 || exceedsHoldings
+              }
               isLoading={
                 unlockingShares ||
                 unlockingStatus === "loading" ||
@@ -389,7 +379,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                       Withdrawable Amount
                     </Heading>
                     <Text fontSize={"lg"} fontWeight="bold" alignSelf="center">
-                      {commify(parseInt(formatUnits(withdrawable![0]._hex, 6)))} USDC
+                      {commify(parseInt(formatUnits(withdrawable![0]._hex, 6)))}{" "}
+                      USDC
                     </Text>
                   </Flex>
                   <Flex
@@ -402,7 +393,16 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     <Flex alignItems="center" gap={2}>
                       <Text>
                         {withdrawable &&
-                          commify(truncate(((parseInt(formatUnits(withdrawable![0], 6)) / 100) * 1).toString(), 2))}{" "}
+                          commify(
+                            truncate(
+                              (
+                                (parseInt(formatUnits(withdrawable![0], 6)) /
+                                  100) *
+                                1
+                              ).toString(),
+                              2
+                            )
+                          )}{" "}
                         USDC
                       </Text>
                       <Tooltip
@@ -420,7 +420,16 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                       <Text>
                         {" "}
                         {withdrawable &&
-                          commify(truncate(((parseInt(formatUnits(withdrawable![0], 6)) / 100) * 99).toString(), 2))}{" "}
+                          commify(
+                            truncate(
+                              (
+                                (parseInt(formatUnits(withdrawable![0], 6)) /
+                                  100) *
+                                99
+                              ).toString(),
+                              2
+                            )
+                          )}{" "}
                         USDC
                       </Text>
                       <Tooltip
@@ -439,7 +448,12 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     mt={"4rem"}
                     variant="primary"
                   >
-                    Withdraw {withdrawable && commify(truncate(formatUnits(withdrawable![0]._hex, 6), 2))} USDC
+                    Withdraw{" "}
+                    {withdrawable &&
+                      commify(
+                        truncate(formatUnits(withdrawable![0]._hex, 6), 2)
+                      )}{" "}
+                    USDC
                   </Button>
                 </Stack>
               )}
