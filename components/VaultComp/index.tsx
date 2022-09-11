@@ -318,7 +318,7 @@ const VaultComp = ({
                         {feeReceiver.isLoading ? (
                           <SkeletonText />
                         ) : (
-                          <Text variant="medium">1%</Text>
+                          <Text variant="medium">2%</Text>
                         )}
                       </Flex>
                       <Flex alignItems={"center"}>
@@ -327,7 +327,7 @@ const VaultComp = ({
                         {feeReceiver.isLoading ? (
                           <SkeletonText />
                         ) : (
-                          <Text variant="medium">1%</Text>
+                          <Text variant="medium">0%</Text>
                         )}
                       </Flex>
                       <Flex alignItems={"center"}>
