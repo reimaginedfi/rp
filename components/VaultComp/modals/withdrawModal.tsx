@@ -197,7 +197,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   const exceedsHoldings =
     user?.data && +amount > +formatUnits(user.data?.vaultShares, 6);
 
-  console.log(formatUnits(user?.data?.assetsDeposited, 6))
+  // console.log(formatUnits(user?.data?.assetsDeposited, 6))
 
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
