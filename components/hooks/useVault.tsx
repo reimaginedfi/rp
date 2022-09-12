@@ -92,7 +92,7 @@ export const useVaultUser = (
     ...contractConfig,
     functionName: "vaultUsers",
     watch: true,
-    args: ["0x81c60F3030b7780F1a99D85b889403B8a2b83863"],
+    args: [vaultUserAddress],
   });
 
   const sharesValue = useContractRead({
@@ -104,7 +104,7 @@ export const useVaultUser = (
   const hasPendingDeposit = useContractRead({
     ...contractConfig,
     functionName: "userHasPendingDeposit",
-    args: ["0x81c60F3030b7780F1a99D85b889403B8a2b83863"],
+    args: [vaultUserAddress],
     watch: true,
   });
 
