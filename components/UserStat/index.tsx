@@ -73,6 +73,8 @@ const UserStat = () => {
 
   const pnlVT = totalValueVT - value.toNumber() / 1000000;
 
+  console.log(hasPendingDeposit.data);
+
   return (
     <Stack p={{ base: 1, md: 3 }}>
       <Stack
@@ -232,6 +234,7 @@ const UserStat = () => {
         <Text textAlign={"center"} mt={-2} mb={4}>
           VT
         </Text>
+        {hasPendingDeposit.data &&(
         <Alert status="warning" borderRadius={"md"} py={1} px={2}>
         <AlertIcon boxSize={"1rem"}></AlertIcon>
         <AlertDescription>
@@ -242,7 +245,7 @@ const UserStat = () => {
             {"'"}s progressions.
           </Text>
         </AlertDescription>
-      </Alert>
+      </Alert>)}
       </Box>
     </Stack>
   );
