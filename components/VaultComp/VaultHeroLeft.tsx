@@ -16,7 +16,10 @@ import {
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
 import { commify, formatUnits } from "ethers/lib/utils";
+import moment from "moment";
+import { useEffect } from "react";
 import { useBlockNumber } from "wagmi";
+import supabaseClient from "../../utils/supabaseClient";
 import { useVaultState } from "../hooks/useVault";
 import ProgressBar from "../ui/ProgressBar";
 import { truncate } from "../utils/stringsAndNumbers";
@@ -39,6 +42,54 @@ export const VaultHeroLeft = () => {
   const blockNumber = useBlockNumber({
     watch: true,
   });
+
+  useEffect(() => {
+
+    const storeData = async () => {
+      console.log("getData executing");
+      const { data, error } = await supabaseClient.from("rp_data").select("*");
+
+      if (data && !error) {
+        console.log("supabaseData: ", data);
+        if (factor && rawGains && epoch.data) {
+          const hours = moment().diff(
+            moment(data[data.length - 1].created_at),
+            "hours"
+          );
+          if (hours >= 24) {
+            console.log("inserting data");
+            // console.log("factor: ", factor);
+            // console.log("rawGains: ", rawGains);
+            // console.log("epoch: ", epoch.data);
+            const { data, error } = await supabaseClient
+              .from("rp_data")
+              .insert([
+                {
+                  epoch_number: epoch.data?.toString(),
+                  percentage_change:
+                    (factor >= 1 ? "+" : "") + ((factor - 1) * 100).toFixed(2),
+                  amount_change: truncate(
+                    commify(formatUnits(rawGains.abs().toString(), 6)),
+                    2
+                  ),
+                },
+              ]);
+            console.log("supabaseData after inserting: ", data);
+            console.log("supabaseError after inserting: ", error);
+          }
+        }
+      }
+      if (error) {
+        console.log("supabaseError: ", error);
+      }
+    };
+    if (
+      !(lastManagementBlock > (blockNumber.data ?? 0)) &&
+      !(aumCap.data?.toString() === "0.0")
+    ) {
+      storeData();
+    }
+  }, [factor, rawGains, epoch]);
 
   if (
     vaultState.isLoading ||
