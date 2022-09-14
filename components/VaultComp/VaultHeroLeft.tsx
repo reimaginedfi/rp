@@ -44,7 +44,6 @@ export const VaultHeroLeft = () => {
   });
 
   useEffect(() => {
-
     const storeData = async () => {
       console.log("getData executing");
       const { data, error } = await supabaseClient.from("rp_data").select("*");
@@ -52,26 +51,33 @@ export const VaultHeroLeft = () => {
       if (data && !error) {
         console.log("supabaseData: ", data);
         if (factor && rawGains && epoch.data) {
+          const epochData = epoch.data?.toString();
+          const percentageChange =
+            (factor >= 1 ? "+" : "") + ((factor - 1) * 100).toFixed(2);
+          const amountChange = truncate(
+            commify(formatUnits(rawGains.abs().toString(), 6)),
+            2
+          );
+
           const hours = moment().diff(
             moment(data[data.length - 1].created_at),
             "hours"
           );
-          if (hours >= 24) {
+          if (
+            hours >= 24 &&
+            data[data.length - 1].epoch_number !== epochData &&
+            data[data.length - 1].percentage_change !== percentageChange &&
+            data[data.length - 1].amount_change !== amountChange
+          ) {
             console.log("inserting data");
-            // console.log("factor: ", factor);
-            // console.log("rawGains: ", rawGains);
-            // console.log("epoch: ", epoch.data);
             const { data, error } = await supabaseClient
               .from("rp_data")
               .insert([
                 {
-                  epoch_number: epoch.data?.toString(),
-                  percentage_change:
-                    (factor >= 1 ? "+" : "") + ((factor - 1) * 100).toFixed(2),
-                  amount_change: truncate(
-                    commify(formatUnits(rawGains.abs().toString(), 6)),
-                    2
-                  ),
+                  epoch_number: epochData,
+                  percentage_change: percentageChange,
+
+                  amount_change: amountChange,
                 },
               ]);
             console.log("supabaseData after inserting: ", data);
