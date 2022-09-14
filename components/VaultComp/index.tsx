@@ -56,6 +56,7 @@ import axios from "axios";
 import axiosRetry from "axios-retry";
 import millify from "millify";
 import useSWR from "swr";
+import supabaseClient from "../../utils/supabaseClient";
 
 axiosRetry(axios, {
   retries: 10, // number of retries
@@ -149,6 +150,19 @@ const VaultComp = ({
     `https://api.etherscan.io/api?module=account&action=tokentx&tokenaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&address=${contractConfig?.addressOrName}&startblock=0&endblock=99999999999999999&page=1&offset=1000&sort=asc&apikey=${process.env.NEXT_PUBLIC_SC_ETHERSCAN}`,
     fetcher
   );
+  const [pastEpochData, setPastEpochData] = useState<any[]>([]);
+  useEffect(() => {
+    const getData = async () => {
+      const { data, error } = await supabaseClient.from("rp_data").select("*");
+      if (!data && error) {
+        console.log("Error while fetching epoch data", error);
+        alert("Error while fetching epoch data");
+        return;
+      }
+      setPastEpochData(data);
+    };
+    getData();
+  }, []);
 
   useEffect(() => {
     if (vaultActivity?.data)
@@ -587,6 +601,134 @@ const VaultComp = ({
                                   textAlign={"center"}
                                 >
                                   {truncate(commify(+txn.value / 1000000), 2)}
+                                </Text>
+                              </Flex>
+                            </Grid>
+                          );
+                        })
+                      ) : (
+                        <SkeletonText />
+                      )}
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+
+                {/* Past epoch data */}
+                <Accordion
+                  borderRadius="1rem"
+                  pt="1rem"
+                  allowToggle
+                  border="none"
+                >
+                  <AccordionItem border="none">
+                    <AccordionButton
+                      borderRadius="1rem"
+                      justifyItems="space-between"
+                      justifyContent="space-between"
+                    >
+                      <Heading variant="medium">Past Epoch Data</Heading>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel w="full" display={"grid"}>
+                      <Grid templateColumns="repeat(4, 1fr)">
+                        <Text
+                          variant="medium"
+                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
+                        >
+                          Epoch Number
+                        </Text>
+                        <Text
+                          variant="medium"
+                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
+                          textAlign={"center"}
+                        >
+                          Date
+                        </Text>
+                        <Text
+                          variant="medium"
+                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
+                          textAlign={"center"}
+                        >
+                          Percentage Change
+                        </Text>
+                        <Text
+                          variant="medium"
+                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
+                          textAlign={"center"}
+                        >
+                          Amount Change (USDC)
+                        </Text>
+                      </Grid>
+
+                      {pastEpochData.length > 1 ? (
+                        pastEpochData.map((data: any) => {
+                          return (
+                            <Grid
+                              key={data.id}
+                              templateColumns="repeat(4, 1fr)"
+                              alignContent="center"
+                              justifyContent={"center"}
+                              py="0.5rem"
+                            >
+                              <Flex
+                                direction="row"
+                                gap="0.25rem"
+                                alignItems="center"   
+                              >
+                                <Heading
+                                  fontWeight="400"
+                                  variant="small"
+                                  textAlign={"center"} w='full'
+                                >
+                                  {data.epoch_number}
+                                </Heading>
+                              </Flex>
+                              <Flex
+                                alignItems="center"
+                                justifyContent="center"
+                                textAlign={"center"}
+                              >
+                                
+                                  <Text
+                                    variant="medium"
+                                    color={
+                                      colorMode === "dark"
+                                        ? "#EDEDED"
+                                        : "#171717"
+                                    }
+                                  >
+                                    {new Date(data.created_at).toISOString().substring(0, 10)}
+                                  </Text>
+
+                              </Flex>
+                              <Flex
+                                alignItems="center"
+                                justifyContent="center"
+                                textAlign={"center"}
+                              >
+                                <Text
+                                  variant="medium"
+                                  color={
+                                    colorMode === "dark" ? "#EDEDED" : "#171717"
+                                  }
+                                  textAlign={"center"}
+                                >
+                                  {data.percentage_change}
+                                </Text>
+                              </Flex>
+                              <Flex
+                                alignItems="center"
+                                justifyContent="center"
+                                textAlign={"center"}
+                              >
+                                <Text
+                                  variant="medium"
+                                  color={
+                                    colorMode === "dark" ? "#EDEDED" : "#171717"
+                                  }
+                                  textAlign={"center"}
+                                >
+                                  {data.amount_change}
                                 </Text>
                               </Flex>
                             </Grid>
