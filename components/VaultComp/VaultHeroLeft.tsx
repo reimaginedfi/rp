@@ -65,7 +65,6 @@ export const VaultHeroLeft = () => {
           );
           if (
             hours >= 24 &&
-            data[data.length - 1].epoch_number !== epochData &&
             data[data.length - 1].percentage_change !== percentageChange &&
             data[data.length - 1].amount_change !== amountChange
           ) {
