@@ -45,11 +45,11 @@ export const VaultHeroLeft = () => {
 
   useEffect(() => {
     const storeData = async () => {
-      console.log("getData executing");
+      // console.log("getData executing");
       const { data, error } = await supabaseClient.from("rp_data").select("*");
 
       if (data && !error) {
-        console.log("supabaseData: ", data);
+        // console.log("supabaseData: ", data);
         if (factor && rawGains && epoch.data) {
           const epochData = epoch.data?.toString();
           const percentageChange =
@@ -68,7 +68,7 @@ export const VaultHeroLeft = () => {
             data[data.length - 1].percentage_change !== percentageChange &&
             data[data.length - 1].amount_change !== amountChange
           ) {
-            console.log("inserting data");
+            // console.log("inserting data");
             const { data, error } = await supabaseClient
               .from("rp_data")
               .insert([
@@ -79,13 +79,13 @@ export const VaultHeroLeft = () => {
                   amount_change: amountChange,
                 },
               ]);
-            console.log("supabaseData after inserting: ", data);
-            console.log("supabaseError after inserting: ", error);
+            // console.log("supabaseData after inserting: ", data);
+            // console.log("supabaseError after inserting: ", error);
           }
         }
       }
       if (error) {
-        console.log("supabaseError: ", error);
+        // console.log("supabaseError: ", error);
       }
     };
     if (

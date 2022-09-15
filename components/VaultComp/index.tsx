@@ -27,60 +27,39 @@ import {
   useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
-import { commify } from "ethers/lib/utils";
-import moment from "moment";
-import useWindowSize from "react-use/lib/useWindowSize";
-import { useAccount, useContractRead } from "wagmi";
-import { ContractConfig } from "../../contracts";
-import ProgressBar from "../ui/ProgressBar";
-import WithdrawModal from "./modals/withdrawModal";
 
+//Icons
+import { InfoOutlineIcon } from "@chakra-ui/icons";
+
+//Tools
+import { useAccount, useContractRead } from "wagmi";
 import dynamic from "next/dynamic";
-import Confetti from "react-confetti";
-import { useVaultMeta } from "../hooks/useVault";
+import { ContractConfig } from "../../contracts";
+import { commify } from "ethers/lib/utils";
+import { truncate } from "../utils/stringsAndNumbers";
 import { Number } from "../Number";
-import { trimAddress, truncate } from "../utils/stringsAndNumbers";
-import { UserSection } from "./sections/UserSection";
+import useWindowSize from "react-use/lib/useWindowSize";
+
+//Fetching stuff
+import millify from "millify";
+import { useVaultMeta } from "../hooks/useVault";
+
+//Components
+import VaultActivityAccordion from "./accordions/VaultActivityAccordion";
+import VaultPerformanceAccordion from "./accordions/VaultPerformanceAccordion";
+import UserStatsAccordion from "./accordions/UserStatsAccordion";
 import { VaultHeroLeft } from "./VaultHeroLeft";
 import { VaultTitle } from "./VaultTitle";
 import { VaultTruncated } from "./VaultTruncated";
 
-import { InfoOutlineIcon } from "@chakra-ui/icons";
+//UI 
+import Confetti from "react-confetti";
+import ProgressBar from "../ui/ProgressBar";
 
-import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
-import { HiSave } from "react-icons/hi";
+//Modals
+import WithdrawModal from "./modals/withdrawModal";
 import { DepositButton } from "./modals/DepositButton";
 
-//Fetching stuff
-import axios from "axios";
-import axiosRetry from "axios-retry";
-import millify from "millify";
-import useSWR from "swr";
-import supabaseClient from "../../utils/supabaseClient";
-
-axiosRetry(axios, {
-  retries: 10, // number of retries
-  retryDelay: (retryCount) => {
-    console.log(`retry attempt: ${retryCount}`);
-    return retryCount * 3000; // time interval between retries
-  },
-  retryCondition: (error) => {
-    // if retry condition is not specified, by default three requests are retried
-    return error!.response!.status === 503;
-  },
-});
-
-export const fetcher: any = async (url: string) =>
-  await axios({
-    method: "GET",
-    url: url,
-  }).catch((error) => {
-    if (error.response.status !== 200) {
-      throw new Error(
-        `API call failed with status code: ${error.response.status} after 3 retry attempts`
-      );
-    }
-  });
 
 type VaultProps = {
   currentAum: string;
@@ -91,7 +70,7 @@ type VaultProps = {
 };
 
 const FarmerSettingsAccordion = dynamic(
-  () => import("./FarmerSettingsAccordion"),
+  () => import("./accordions/FarmerSettingsAccordion"),
   {
     ssr: false,
   }
@@ -126,7 +105,6 @@ const VaultComp = ({
     defaultIsOpen: true,
   });
 
-  const [vaultTxns, setVaultTxns] = useState<any[]>([]);
 
   //VAULT META - fetches vault information from the contract
   const { assetToken, farmer } = useVaultMeta(contractConfig);
@@ -145,29 +123,6 @@ const VaultComp = ({
   //   hasPendingDepositValue,
   //   totalDeposited,
   // } = useVaultUser(contractConfig, address ?? "");
-
-  const { data: vaultActivity, error } = useSWR(
-    `https://api.etherscan.io/api?module=account&action=tokentx&tokenaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&address=${contractConfig?.addressOrName}&startblock=0&endblock=99999999999999999&page=1&offset=1000&sort=asc&apikey=${process.env.NEXT_PUBLIC_SC_ETHERSCAN}`,
-    fetcher
-  );
-  const [pastEpochData, setPastEpochData] = useState<any[]>([]);
-  useEffect(() => {
-    const getData = async () => {
-      const { data, error } = await supabaseClient.from("rp_data").select("*");
-      if (!data && error) {
-        console.log("Error while fetching epoch data", error);
-        alert("Error while fetching epoch data");
-        return;
-      }
-      setPastEpochData(data);
-    };
-    getData();
-  }, []);
-
-  useEffect(() => {
-    if (vaultActivity?.data)
-      setVaultTxns(vaultActivity.data?.result?.reverse?.());
-  }, [vaultActivity]);
 
   return (
     <>
@@ -306,7 +261,7 @@ const VaultComp = ({
                   </Tooltip>
                 </Flex>
 
-                <UserSection />
+                <UserStatsAccordion />
                 <Accordion
                   borderRadius="1rem"
                   pt="1rem"
@@ -464,282 +419,9 @@ const VaultComp = ({
                 {farmer.data && farmer.data.toString() === address && (
                   <FarmerSettingsAccordion contractConfig={contractConfig} />
                 )}
-                <Accordion
-                  borderRadius="1rem"
-                  pt="1rem"
-                  allowToggle
-                  border="none"
-                >
-                  <AccordionItem border="none">
-                    <AccordionButton
-                      borderRadius="1rem"
-                      justifyItems="space-between"
-                      justifyContent="space-between"
-                    >
-                      <Heading variant="medium">Vault Activity</Heading>
-                      <AccordionIcon />
-                    </AccordionButton>
-                    <AccordionPanel w="full" display={"grid"}>
-                      <Grid templateColumns="repeat(4, 1fr)">
-                        <Text
-                          variant="medium"
-                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
-                        >
-                          Action
-                        </Text>
-                        <Text
-                          variant="medium"
-                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
-                          textAlign={"center"}
-                        >
-                          TxN
-                        </Text>
-                        <Text
-                          variant="medium"
-                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
-                          textAlign={"center"}
-                        >
-                          Date
-                        </Text>
-                        <Text
-                          variant="medium"
-                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
-                          textAlign={"center"}
-                        >
-                          Value (USDC)
-                        </Text>
-                      </Grid>
-
-                      {vaultTxns.length > 1 ? (
-                        vaultTxns.map((txn: any) => {
-                          if (txn.tokenSymbol !== "USDC") {
-                            return;
-                          }
-                          return (
-                            <Grid
-                              key={txn.hash}
-                              templateColumns="repeat(4, 1fr)"
-                              alignContent="center"
-                              justifyContent={"center"}
-                              py="0.5rem"
-                            >
-                              <Flex
-                                direction="row"
-                                gap="0.25rem"
-                                alignItems="center"
-                              >
-                                {txn.to === contractConfig.addressOrName ? (
-                                  <HiSave />
-                                ) : txn.to ===
-                                  "0x4457df4a5bccf796662b6374d5947c881cc83ac7" ? (
-                                  <GiPayMoney />
-                                ) : (
-                                  <GiReceiveMoney />
-                                )}
-                                <Heading
-                                  fontWeight="400"
-                                  variant="small"
-                                  textAlign={"center"}
-                                >
-                                  {txn.to === contractConfig.addressOrName
-                                    ? "Deposit"
-                                    : txn.to ===
-                                      "0x4457df4a5bccf796662b6374d5947c881cc83ac7"
-                                    ? "Farmer"
-                                    : "Withdraw"}
-                                </Heading>
-                              </Flex>
-                              <Flex
-                                alignItems="center"
-                                justifyContent="center"
-                                textAlign={"center"}
-                              >
-                                <Link
-                                  target="_blank"
-                                  href={`https://etherscan.io/tx/` + txn.hash}
-                                >
-                                  <Text
-                                    variant="medium"
-                                    color={
-                                      colorMode === "dark"
-                                        ? "#EDEDED"
-                                        : "#171717"
-                                    }
-                                  >
-                                    {trimAddress(txn.hash, 4, -3)}
-                                  </Text>
-                                </Link>
-                              </Flex>
-                              <Flex
-                                alignItems="center"
-                                justifyContent="center"
-                                textAlign={"center"}
-                              >
-                                <Text
-                                  variant="medium"
-                                  color={
-                                    colorMode === "dark" ? "#EDEDED" : "#171717"
-                                  }
-                                  textAlign={"center"}
-                                >
-                                  {moment
-                                    .unix(txn.timeStamp)
-                                    .format("ll")
-                                    .toString()}
-                                </Text>
-                              </Flex>
-                              <Flex
-                                alignItems="center"
-                                justifyContent="center"
-                                textAlign={"center"}
-                              >
-                                <Text
-                                  variant="medium"
-                                  color={
-                                    colorMode === "dark" ? "#EDEDED" : "#171717"
-                                  }
-                                  textAlign={"center"}
-                                >
-                                  {truncate(commify(+txn.value / 1000000), 2)}
-                                </Text>
-                              </Flex>
-                            </Grid>
-                          );
-                        })
-                      ) : (
-                        <SkeletonText />
-                      )}
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
-
-                {/* Past epoch data */}
-                <Accordion
-                  borderRadius="1rem"
-                  pt="1rem"
-                  allowToggle
-                  border="none"
-                >
-                  <AccordionItem border="none">
-                    <AccordionButton
-                      borderRadius="1rem"
-                      justifyItems="space-between"
-                      justifyContent="space-between"
-                    >
-                      <Heading variant="medium">Past Epoch Data</Heading>
-                      <AccordionIcon />
-                    </AccordionButton>
-                    <AccordionPanel w="full" display={"grid"}>
-                      <Grid templateColumns="repeat(4, 1fr)">
-                        <Text
-                          variant="medium"
-                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
-                        >
-                          Epoch Number
-                        </Text>
-                        <Text
-                          variant="medium"
-                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
-                          textAlign={"center"}
-                        >
-                          Date
-                        </Text>
-                        <Text
-                          variant="medium"
-                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
-                          textAlign={"center"}
-                        >
-                          Percentage Change
-                        </Text>
-                        <Text
-                          variant="medium"
-                          color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
-                          textAlign={"center"}
-                        >
-                          Amount Change (USDC)
-                        </Text>
-                      </Grid>
-
-                      {pastEpochData.length > 1 ? (
-                        pastEpochData.map((data: any) => {
-                          return (
-                            <Grid
-                              key={data.id}
-                              templateColumns="repeat(4, 1fr)"
-                              alignContent="center"
-                              justifyContent={"center"}
-                              py="0.5rem"
-                            >
-                              <Flex
-                                direction="row"
-                                gap="0.25rem"
-                                alignItems="center"   
-                              >
-                                <Heading
-                                  fontWeight="400"
-                                  variant="small"
-                                  textAlign={"center"} w='full'
-                                >
-                                  {data.epoch_number}
-                                </Heading>
-                              </Flex>
-                              <Flex
-                                alignItems="center"
-                                justifyContent="center"
-                                textAlign={"center"}
-                              >
-                                
-                                  <Text
-                                    variant="medium"
-                                    color={
-                                      colorMode === "dark"
-                                        ? "#EDEDED"
-                                        : "#171717"
-                                    }
-                                  >
-                                    {new Date(data.created_at).toISOString().substring(0, 10)}
-                                  </Text>
-
-                              </Flex>
-                              <Flex
-                                alignItems="center"
-                                justifyContent="center"
-                                textAlign={"center"}
-                              >
-                                <Text
-                                  variant="medium"
-                                  color={
-                                    colorMode === "dark" ? "#EDEDED" : "#171717"
-                                  }
-                                  textAlign={"center"}
-                                >
-                                  {data.percentage_change}
-                                </Text>
-                              </Flex>
-                              <Flex
-                                alignItems="center"
-                                justifyContent="center"
-                                textAlign={"center"}
-                              >
-                                <Text
-                                  variant="medium"
-                                  color={
-                                    colorMode === "dark" ? "#EDEDED" : "#171717"
-                                  }
-                                  textAlign={"center"}
-                                >
-                                  {data.amount_change}
-                                </Text>
-                              </Flex>
-                            </Grid>
-                          );
-                        })
-                      ) : (
-                        <SkeletonText />
-                      )}
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
+                <VaultActivityAccordion contractConfig={contractConfig} />
+                <VaultPerformanceAccordion />
+                
               </AccordionPanel>
             </>
           )}

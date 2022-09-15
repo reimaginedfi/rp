@@ -1,5 +1,10 @@
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
   Flex,
   Heading,
@@ -14,14 +19,14 @@ import {
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
 import { useAccount, useContractWrite } from "wagmi";
-import { useVaultUser } from "../hooks/useVault";
-import { useContractConfig, useWatchVault } from "../Vault/ContractContext";
-import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
-import { useVaultAssetToken } from "../Vault/hooks/useVaultAsset";
-import {truncate} from "../utils/stringsAndNumbers"
+import { useVaultUser } from "../../hooks/useVault";
+import { useContractConfig, useWatchVault } from "../../Vault/ContractContext";
+import { useCompleteAum } from "../../Vault/hooks/usePreviewAum";
+import { useVaultAssetToken } from "../../Vault/hooks/useVaultAsset";
+import {truncate} from "../../utils/stringsAndNumbers"
 import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
 
-const UserStat = () => {
+export default function UserStatsAccordion() {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
   const contractConfig = useContractConfig();
@@ -29,6 +34,15 @@ const UserStat = () => {
     contractConfig,
     address ?? ""
   );
+
+     const accordionBg = colorMode === "dark" ? "#1C1C1C" : "#F8F8F8";
+  
+    const userHasPendingDeposit = useWatchVault("userHasPendingDeposit", {
+      args: [address],
+    });
+    const shouldShowNotification =
+      userHasPendingDeposit.data &&
+      userHasPendingDeposit.data.toString() === "true";
 
   const updatePendingDeposit = useContractWrite({
     ...contractConfig,
@@ -73,9 +87,33 @@ const UserStat = () => {
 
   const pnlVT = totalValueVT - value.toNumber() / 1000000;
 
-  console.log(hasPendingDeposit.data);
+  // console.log(hasPendingDeposit.data);
 
   return (
+    <Accordion borderRadius="1rem" mt="1rem" allowToggle border="none">
+    <AccordionItem border="none">
+      <AccordionButton
+        borderRadius="1rem"
+        justifyItems="space-between"
+        justifyContent="space-between"
+      >
+        <Heading variant="medium">
+          Your Stats{" "}
+          {/* {shouldShowNotification && (
+            <Badge borderRadius={"md"} colorScheme="orange">
+              1
+            </Badge>
+          )} */}
+        </Heading>
+        <AccordionIcon />
+      </AccordionButton>
+      <AccordionPanel
+        p={{ base: 1, md: 3 }}
+        borderRadius="1rem"
+        bg={accordionBg}
+      >
+
+        
     <Stack p={{ base: 1, md: 3 }}>
       <Stack
         w="100%"
@@ -248,7 +286,8 @@ const UserStat = () => {
       </Alert>)}
       </Box>
     </Stack>
+      </AccordionPanel>
+    </AccordionItem>
+  </Accordion>
   );
 };
-
-export default UserStat;
