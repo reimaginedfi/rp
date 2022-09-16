@@ -182,9 +182,6 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     }
   };
 
-  // console.log(parseInt(epoch.data!._hex), parseInt(user.data?.epochToRedeem))
-  // console.log(parseInt(user?.data?.sharesToRedeem));
-
   useEffect(() => {
     if (parseInt(user.data?.epochToRedeem) === parseInt(epoch!.data?._hex)) {
       setWithdrawActive(true);

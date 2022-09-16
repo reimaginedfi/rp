@@ -42,10 +42,6 @@ export const VaultHeroLeft = () => {
   const blockNumber = useBlockNumber({
     watch: true,
   });
-
-  console.log(commify(formatUnits(aum!.data!, 6)))
-  console.log(commify(formatUnits(previewValue, 6)))
-
   useEffect(() => {
     const storeData = async () => {
       // console.log("getData executing");
@@ -53,7 +49,7 @@ export const VaultHeroLeft = () => {
 
       if (data && !error) {
         // console.log("supabaseData: ", data);
-        if (factor && rawGains && epoch.data && previewValue && aum) {
+        if (factor && rawGains && epoch.data && previewValue && aum.data) {
           const epochData = epoch.data?.toString();
           const percentageChange =
             (factor >= 1 ? "+" : "") + ((factor - 1) * 100).toFixed(2);
@@ -62,8 +58,8 @@ export const VaultHeroLeft = () => {
             2
           );
 
-          const amountBefore = aum.data && commify(formatUnits(aum?.data!, 6));
-          const amountAfter = commify(formatUnits(previewValue, 6)); 
+          const amountBefore = truncate(commify(formatUnits(aum?.data?._hex, 6)), 2);
+          const amountAfter = truncate(commify(formatUnits(previewValue, 6)), 2); 
 
           const hours = moment().diff(
             moment(data[data.length - 1].created_at),
