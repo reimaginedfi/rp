@@ -17,7 +17,7 @@ import {
 
   import supabaseClient from "../../../utils/supabaseClient";
   import { commify } from "ethers/lib/utils";
-
+  import moment from "moment";
 export default function VaultPerformanceAccordion() {
     const { colorMode } = useColorMode();
 
@@ -79,7 +79,7 @@ export default function VaultPerformanceAccordion() {
                           color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
                           textAlign={"center"}
                         >
-                          PnL Amount
+                          PnL (USDC)
                         </Text>
                       </Grid>
 
@@ -107,7 +107,7 @@ export default function VaultPerformanceAccordion() {
                                         : "#171717"
                                     }
                                   >
-                                    {new Date(data.created_at).toISOString().substring(0, 10)}
+                                    {moment(new Date(data.created_at).toISOString().substring(0, 10)).format("ll")}
                                   </Text>
                               </Flex>
                               <Flex
@@ -150,7 +150,7 @@ export default function VaultPerformanceAccordion() {
                                   }
                                   textAlign={"center"}
                                 >
-                                  {data.amount_change.includes(",") ? data.amount_change : commify(data.amount_change)} USDC
+                                  {data.amount_change.includes(",") ? data.amount_change : commify(data.amount_change)}
                                 </Text>
                               </Flex>
                             </Grid>

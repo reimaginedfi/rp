@@ -62,7 +62,7 @@ export const VaultHeroLeft = () => {
             2
           );
 
-          const amountBefore = commify(formatUnits(aum!.data!, 6));
+          const amountBefore = aum.data && commify(formatUnits(aum?.data!, 6));
           const amountAfter = commify(formatUnits(previewValue, 6)); 
 
           const hours = moment().diff(
