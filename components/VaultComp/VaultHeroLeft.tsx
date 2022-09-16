@@ -43,6 +43,9 @@ export const VaultHeroLeft = () => {
     watch: true,
   });
 
+  console.log(commify(formatUnits(aum!.data!, 6)))
+  console.log(commify(formatUnits(previewValue, 6)))
+
   useEffect(() => {
     const storeData = async () => {
       // console.log("getData executing");
@@ -50,23 +53,24 @@ export const VaultHeroLeft = () => {
 
       if (data && !error) {
         // console.log("supabaseData: ", data);
-        if (factor && rawGains && epoch.data) {
+        if (factor && rawGains && epoch.data && previewValue && aum) {
           const epochData = epoch.data?.toString();
           const percentageChange =
             (factor >= 1 ? "+" : "") + ((factor - 1) * 100).toFixed(2);
-          const amountChange = truncate(
+          const amountChange =  (factor >= 1 ? "+" : "-") + truncate(
             commify(formatUnits(rawGains.abs().toString(), 6)),
             2
           );
+
+          const amountBefore = commify(formatUnits(aum!.data!, 6));
+          const amountAfter = commify(formatUnits(previewValue, 6)); 
 
           const hours = moment().diff(
             moment(data[data.length - 1].created_at),
             "hours"
           );
           if (
-            hours >= 24 &&
-            data[data.length - 1].percentage_change !== percentageChange &&
-            data[data.length - 1].amount_change !== amountChange
+            hours >= 24
           ) {
             // console.log("inserting data");
             const { data, error } = await supabaseClient
@@ -75,8 +79,9 @@ export const VaultHeroLeft = () => {
                 {
                   epoch_number: epochData,
                   percentage_change: percentageChange,
-
                   amount_change: amountChange,
+                  amount_before: amountBefore,
+                  amount_after: amountAfter,
                 },
               ]);
             // console.log("supabaseData after inserting: ", data);
