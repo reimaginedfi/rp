@@ -79,11 +79,12 @@ export const VaultHeroLeft = () => {
             2
           );
 
-          const hours = moment().diff(
+          const days = moment().diff(
             moment(data[data.length - 1].created_at),
-            "hours"
+            "days"
           );
-          if (hours >= 24) {
+
+          if (days >= 1) {
             // console.log("inserting data");
             const { data, error } = await supabaseClient
               .from("rp_data")
@@ -98,7 +99,7 @@ export const VaultHeroLeft = () => {
                 },
               ]);
             // console.log("supabaseData after inserting: ", data);
-            console.log("supabaseError after inserting: ", error);
+            // console.log("supabaseError after inserting: ", error);
           }
         }
       }
