@@ -13,6 +13,8 @@ import {
     SkeletonText,
     Text,
     useColorMode,
+    Stat,
+    StatArrow
   } from "@chakra-ui/react";
 
   import supabaseClient from "../../../utils/supabaseClient";
@@ -30,7 +32,8 @@ export default function VaultPerformanceAccordion() {
           alert("Error while fetching epoch data");
           return;
         }
-        setPastEpochData(data);
+        setPastEpochData(data.sort((a, b) => moment(b.created_at, 'DD-MM-YYYY').diff(moment(a.created_at, 'DD-MM-YYYY')))
+        );
       };
       getData();
     }, []);
@@ -138,7 +141,7 @@ export default function VaultPerformanceAccordion() {
                                   {data.percentage_change}%
                                 </Text>
                               </Flex>
-                              <Flex
+                              <Stat
                                 alignItems="center"
                                 justifyContent="center"
                                 textAlign={"center"}
@@ -149,10 +152,14 @@ export default function VaultPerformanceAccordion() {
                                     colorMode === "dark" ? "#EDEDED" : "#171717"
                                   }
                                   textAlign={"center"}
+
                                 >
-                                  {data.amount_change.includes(",") ? data.amount_change : commify(data.amount_change)}
+                                <StatArrow
+                                  type={data.amount_change.includes("-") ? "decrease" : "increase"}
+                                />
+                {data.amount_change.includes("-") ? data.amount_change.replace("-", "") : data.amount_change.includes(",") ? data.amount_change : commify(data.amount_change)}
                                 </Text>
-                              </Flex>
+                              </Stat>
                             </Grid>
                           );
                         })
