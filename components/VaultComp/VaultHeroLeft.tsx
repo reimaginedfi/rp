@@ -42,6 +42,19 @@ export const VaultHeroLeft = () => {
   const blockNumber = useBlockNumber({
     watch: true,
   });
+
+  const formatDate = () => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm: number | string = today.getMonth() + 1; // Months start at 0!
+    let dd: number | string = today.getDate();
+
+    if (dd < 10) dd = "0" + dd;
+    if (mm < 10) mm = "0" + mm;
+
+    const formattedToday = yyyy + "-" + mm + "-" + dd;
+    return formattedToday;
+  };
   useEffect(() => {
     const storeData = async () => {
       // console.log("getData executing");
@@ -53,26 +66,30 @@ export const VaultHeroLeft = () => {
           const epochData = epoch.data?.toString();
           const percentageChange =
             (factor >= 1 ? "+" : "") + ((factor - 1) * 100).toFixed(2);
-          const amountChange =  (factor >= 1 ? "+" : "-") + truncate(
-            commify(formatUnits(rawGains.abs().toString(), 6)),
+          const amountChange =
+            (factor >= 1 ? "+" : "-") +
+            truncate(commify(formatUnits(rawGains.abs().toString(), 6)), 2);
+
+          const amountBefore = truncate(
+            commify(formatUnits(aum?.data?._hex, 6)),
             2
           );
-
-          const amountBefore = truncate(commify(formatUnits(aum?.data?._hex, 6)), 2);
-          const amountAfter = truncate(commify(formatUnits(previewValue, 6)), 2); 
+          const amountAfter = truncate(
+            commify(formatUnits(previewValue, 6)),
+            2
+          );
 
           const hours = moment().diff(
             moment(data[data.length - 1].created_at),
             "hours"
           );
-          if (
-            hours >= 24
-          ) {
+          if (hours >= 24) {
             // console.log("inserting data");
             const { data, error } = await supabaseClient
               .from("rp_data")
               .insert([
                 {
+                  created_at: formatDate(),
                   epoch_number: epochData,
                   percentage_change: percentageChange,
                   amount_change: amountChange,
@@ -81,21 +98,24 @@ export const VaultHeroLeft = () => {
                 },
               ]);
             // console.log("supabaseData after inserting: ", data);
-            // console.log("supabaseError after inserting: ", error);
+            console.log("supabaseError after inserting: ", error);
           }
         }
       }
       if (error) {
-        // console.log("supabaseError: ", error);
+        console.log("supabaseError: ", error);
       }
     };
     if (
+      factor &&
+      rawGains &&
+      epoch &&
       !(lastManagementBlock > (blockNumber.data ?? 0)) &&
       !(aumCap.data?.toString() === "0.0")
     ) {
       storeData();
     }
-  }, [factor, rawGains, epoch]);
+  }, [factor]);
 
   if (
     vaultState.isLoading ||
