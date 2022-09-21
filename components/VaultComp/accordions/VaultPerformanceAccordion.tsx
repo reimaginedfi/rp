@@ -24,7 +24,7 @@ export default function VaultPerformanceAccordion() {
     const [pastEpochData, setPastEpochData] = useState<any[]>([]);
     useEffect(() => {
       const getData = async () => {
-        const { data, error } = await supabaseClient.from("rp_data").select("*");
+        const { data, error } = await supabaseClient.from("rp_data").select("*").order("created_at", { ascending: true });
         if (!data && error) {
           console.log("Error while fetching epoch data", error);
           alert("Error while fetching epoch data");
