@@ -41,9 +41,9 @@ import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
 import { truncate } from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useContractWrite } from "wagmi";
-import { useVaultMeta } from "../hooks/useVault";
-import DepositForModal from "./modals/DepositForModal";
-import { EndEpochModal } from "./modals/EndEpochModal";
+import { useVaultMeta } from "../../hooks/useVault";
+import DepositForModal from "../modals/DepositForModal";
+import { EndEpochModal } from "../modals/EndEpochModal";
 
 export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
   const { colorMode } = useColorMode();
