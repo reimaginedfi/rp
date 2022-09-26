@@ -90,7 +90,6 @@ export const VaultHeroLeft = () => {
               .from("rp_data")
               .insert([
                 {
-                  created_at: formatDate(),
                   epoch_number: epochData,
                   percentage_change: percentageChange,
                   amount_change: amountChange,
