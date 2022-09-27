@@ -254,6 +254,7 @@ const VaultComp = ({
                 </Flex>
                 <Accordion
                   borderRadius="1rem"
+                  defaultChecked={true}
                   pt="1rem"
                   allowToggle
                   border="none"

@@ -11,8 +11,7 @@ import {
 } from "recharts";
 import supabaseClient from "../../utils/supabaseClient";
 
-const Charts = () => {
-  const [pastEpochData, setPastEpochData] = useState<any[]>([]);
+const Charts = ({data, wholeData = false}: {data: any, wholeData?: boolean}) => {
 
   const CustomToolTip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -29,13 +28,13 @@ const Charts = () => {
             <chakra.span fontWeight="semibold" color="red">
               Date:
             </chakra.span>{" "}
-            {new Date(pastEpochData[label].Date).toISOString().split("T")[0]}
+            {new Date(data[label].Date).toISOString().split("T")[0]}
           </Text>
           <Text>
             <chakra.span fontWeight="semibold" color="red">
               Change:
             </chakra.span>{" "}
-            {pastEpochData[label].Change} %
+            {data[label].Change} %
           </Text>
         </Box>
       );
@@ -43,40 +42,19 @@ const Charts = () => {
     return null;
   };
 
-  useEffect(() => {
-    const getData = async () => {
-      const { data, error } = await supabaseClient
-        .from("rp_data")
-        .select("*")
-        .order("created_at", { ascending: true });
-      if (!data && error) {
-        console.log("Error while fetching epoch data", error);
-        alert("Error while fetching epoch data");
-        return;
-      }
-      setPastEpochData(
-        data
-          .map(({ percentage_change, created_at, ...rest }) => ({
-            ...rest,
-            Change: percentage_change,
-            Date: created_at,
-          }))
-      );
-    };
-    getData();
-  }, []);
+  
 
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
         width={500}
         height={400}
-        data={pastEpochData}
+        data={data}
         margin={{
           top: 10,
-          right: 30,
+          right: wholeData ? 170: 10,
           left: 0,
-          bottom: 0,
+          bottom: 25,
         }}
       >
         <defs>
@@ -93,7 +71,7 @@ const Charts = () => {
           fillOpacity={1}
           fill="url(#colorPrice)"
         />
-        <Tooltip />
+        {/* <Tooltip /> */}
       </AreaChart>
     </ResponsiveContainer>
   );
