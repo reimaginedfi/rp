@@ -58,7 +58,10 @@ export const VaultHeroLeft = () => {
   useEffect(() => {
     const storeData = async () => {
       // console.log("getData executing");
-      const { data, error } = await supabaseClient.from("rp_data").select("*");
+      const { data, error } = await supabaseClient
+        .from("rp_data")
+        .select("*")
+        .order("created_at", { ascending: true });
 
       if (data && !error) {
         // console.log("supabaseData: ", data);
@@ -83,6 +86,8 @@ export const VaultHeroLeft = () => {
             moment(data[data.length - 1].created_at),
             "days"
           );
+
+          console.log("days: ", days);
 
           if (days >= 1) {
             // console.log("inserting data");

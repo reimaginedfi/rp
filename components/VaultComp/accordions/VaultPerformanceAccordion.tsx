@@ -36,11 +36,12 @@ export default function VaultPerformanceAccordion() {
         return;
       }
       setPastEpochData(
-        data.sort((a, b) =>
-          moment(b.created_at, "DD-MM-YYYY").diff(
-            moment(a.created_at, "DD-MM-YYYY")
-          )
-        )
+        data
+        // .sort((a, b) =>
+        //   moment(b.created_at, "DD-MM-YYYY").diff(
+        //     moment(a.created_at, "DD-MM-YYYY")
+        //   )
+        // )
       );
     };
     getData();
