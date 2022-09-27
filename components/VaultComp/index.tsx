@@ -420,7 +420,7 @@ const VaultComp = ({
                   <FarmerSettingsAccordion contractConfig={contractConfig} />
                 )}
                 <VaultActivityAccordion contractConfig={contractConfig} />
-                <VaultPerformanceAccordion />
+                {/* <VaultPerformanceAccordion /> */}
                 
               </AccordionPanel>
             </>
