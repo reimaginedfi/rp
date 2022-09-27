@@ -59,6 +59,7 @@ import ProgressBar from "../ui/ProgressBar";
 //Modals
 import WithdrawModal from "./modals/withdrawModal";
 import { DepositButton } from "./modals/DepositButton";
+import Charts from "../Charts";
 
 
 type VaultProps = {
@@ -160,13 +161,16 @@ const VaultComp = ({
                 >
                   <VaultHeroLeft />
                   <GridItem textAlign="center">
-                    <Image
+                    {/* <Image
                       m="auto"
                       w="8rem"
                       h="8rem"
                       src="/usdc-logo.png"
                       alt="USDC"
-                    />
+                    /> */}
+                    <Box w='full' h='full'>
+                    <Charts />
+                    </Box>
                   </GridItem>
 
                   <GridItem alignItems="center">
