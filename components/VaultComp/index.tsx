@@ -52,7 +52,7 @@ import { VaultHeroLeft } from "./VaultHeroLeft";
 import { VaultTitle } from "./VaultTitle";
 import { VaultTruncated } from "./VaultTruncated";
 
-//UI 
+//UI
 import Confetti from "react-confetti";
 import ProgressBar from "../ui/ProgressBar";
 
@@ -60,7 +60,6 @@ import ProgressBar from "../ui/ProgressBar";
 import WithdrawModal from "./modals/withdrawModal";
 import { DepositButton } from "./modals/DepositButton";
 import Charts from "../Charts";
-
 
 type VaultProps = {
   currentAum: string;
@@ -105,7 +104,6 @@ const VaultComp = ({
   const { isOpen: isWarningVisible, onClose } = useDisclosure({
     defaultIsOpen: true,
   });
-
 
   //VAULT META - fetches vault information from the contract
   const { assetToken, farmer } = useVaultMeta(contractConfig);
@@ -154,22 +152,21 @@ const VaultComp = ({
                   mt="1rem"
                   mb="2rem"
                   gap={6}
-                  templateColumns="repeat(2, 1fr)"
+                  templateColumns={{
+                    base: "repeat(1, 1fr)",
+                    md: "repeat(2, 1fr)",
+                  }}
                   fontFamily={"Inter"}
                   w="full"
                   px="1rem"
                 >
+                  <GridItem>
                   <VaultHeroLeft />
+
+                  </GridItem>
                   <GridItem textAlign="center">
-                    {/* <Image
-                      m="auto"
-                      w="8rem"
-                      h="8rem"
-                      src="/usdc-logo.png"
-                      alt="USDC"
-                    /> */}
-                    <Box w='full' h='full'>
-                    <Charts />
+                    <Box w="full" h="full">
+                      <Charts />
                     </Box>
                   </GridItem>
 
@@ -425,7 +422,6 @@ const VaultComp = ({
                 )}
                 <VaultActivityAccordion contractConfig={contractConfig} />
                 <VaultPerformanceAccordion />
-                
               </AccordionPanel>
             </>
           )}
