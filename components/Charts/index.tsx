@@ -56,11 +56,6 @@ const Charts = () => {
       }
       setPastEpochData(
         data
-          // .sort((a, b) =>
-          //   moment(b.created_at, "DD-MM-YYYY").diff(
-          //     moment(a.created_at, "DD-MM-YYYY")
-          //   )
-          // )
           .map(({ percentage_change, created_at, ...rest }) => ({
             ...rest,
             Change: percentage_change,
@@ -98,8 +93,6 @@ const Charts = () => {
           fillOpacity={1}
           fill="url(#colorPrice)"
         />
-        {/* <XAxis dataKey="created_at" /> */}
-        {/* <YAxis /> */}
         <Tooltip />
       </AreaChart>
     </ResponsiveContainer>

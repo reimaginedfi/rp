@@ -60,6 +60,7 @@ import ProgressBar from "../ui/ProgressBar";
 import WithdrawModal from "./modals/withdrawModal";
 import { DepositButton } from "./modals/DepositButton";
 import Charts from "../Charts";
+import ChartAccordian from "../ChartAccordian";
 
 type VaultProps = {
   currentAum: string;
@@ -152,23 +153,13 @@ const VaultComp = ({
                   mt="1rem"
                   mb="2rem"
                   gap={6}
-                  templateColumns={{
-                    base: "repeat(1, 1fr)",
-                    md: "repeat(2, 1fr)",
-                  }}
+                  templateColumns={"repeat(2, 1fr)"}
                   fontFamily={"Inter"}
                   w="full"
                   px="1rem"
                 >
-                  <GridItem>
                   <VaultHeroLeft />
-
-                  </GridItem>
-                  <GridItem textAlign="center">
-                    <Box w="full" h="full">
-                      <Charts />
-                    </Box>
-                  </GridItem>
+                  <GridItem textAlign="center"></GridItem>
 
                   <GridItem alignItems="center">
                     <DepositButton
@@ -261,6 +252,29 @@ const VaultComp = ({
                     </Text>
                   </Tooltip>
                 </Flex>
+                <Accordion
+                  borderRadius="1rem"
+                  pt="1rem"
+                  allowToggle
+                  border="none"
+                >
+                  <AccordionItem border="none">
+                    <AccordionButton
+                      borderRadius="1rem"
+                      justifyItems="space-between"
+                      justifyContent="space-between"
+                    >
+                      <Heading variant="medium">Charts</Heading>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel
+                      borderRadius="1rem"
+                      bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
+                    >
+                      <ChartAccordian />
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
 
                 <UserStatsAccordion />
                 <Accordion
