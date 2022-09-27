@@ -11,7 +11,7 @@ import {
 } from "recharts";
 import supabaseClient from "../../utils/supabaseClient";
 
-const Charts = ({data, wholeData = false}: {data: any, wholeData?: boolean}) => {
+export const Charts = ({data, wholeData = false, forHero = false, epoch3 = false}: {data: any, wholeData?: boolean, forHero?: boolean, epoch3?: boolean}) => {
 
   const CustomToolTip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -28,13 +28,28 @@ const Charts = ({data, wholeData = false}: {data: any, wholeData?: boolean}) => 
             <chakra.span fontWeight="semibold" color="red">
               Date:
             </chakra.span>{" "}
-            {new Date(data[label].Date).toISOString().split("T")[0]}
+            {moment(
+              new Date(data[label].Date).toISOString().substring(0, 10)
+            ).format("ll")}
           </Text>
           <Text>
             <chakra.span fontWeight="semibold" color="red">
               Change:
             </chakra.span>{" "}
+
             {data[label].Change} %
+          </Text>
+          <Text>
+            <chakra.span fontWeight="semibold" color="red">
+              Gain:
+            </chakra.span>{" "}
+            {data[label].amount_change} USDC
+          </Text>
+          <Text>
+            <chakra.span fontWeight="semibold" color="red">
+              AUM:
+            </chakra.span>{" "}
+            {data[label].Amount}
           </Text>
         </Box>
       );
@@ -42,19 +57,17 @@ const Charts = ({data, wholeData = false}: {data: any, wholeData?: boolean}) => 
     return null;
   };
 
-  
-
   return (
-    <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%">
       <AreaChart
         width={500}
         height={400}
         data={data}
         margin={{
           top: 10,
-          right: wholeData ? 170: 10,
+          right: 10,
           left: 0,
-          bottom: 25,
+          bottom: epoch3 ? 75 : wholeData ? 50 : 25,
         }}
       >
         <defs>
@@ -65,7 +78,6 @@ const Charts = ({data, wholeData = false}: {data: any, wholeData?: boolean}) => 
         </defs>
         <Tooltip content={<CustomToolTip />} />
         <Area
-          type="monotone"
           dataKey="Change"
           stroke="#82ca9d"
           fillOpacity={1}
@@ -74,7 +86,5 @@ const Charts = ({data, wholeData = false}: {data: any, wholeData?: boolean}) => 
         {/* <Tooltip /> */}
       </AreaChart>
     </ResponsiveContainer>
-  );
+ );
 };
-
-export default Charts;

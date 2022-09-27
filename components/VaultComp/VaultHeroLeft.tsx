@@ -182,7 +182,7 @@ export const VaultHeroLeft = () => {
       <Stat mt={"0.5rem"}>
         <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
           <StatNumber>
-            {factor >= 1 ? "+" : ""}
+                    {factor >= 1 ? "+" : ""}
             {((factor - 1) * 100).toFixed(2)}%
           </StatNumber>
         </Skeleton>

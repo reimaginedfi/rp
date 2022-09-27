@@ -59,8 +59,8 @@ import ProgressBar from "../ui/ProgressBar";
 //Modals
 import WithdrawModal from "./modals/withdrawModal";
 import { DepositButton } from "./modals/DepositButton";
-import Charts from "../Charts";
-import ChartAccordian from "../ChartAccordian";
+import {Charts} from "../Charts";
+import ChartsModal from "./modals/vaultPerformanceModal";
 
 type VaultProps = {
   currentAum: string;
@@ -159,7 +159,10 @@ const VaultComp = ({
                   px="1rem"
                 >
                   <VaultHeroLeft />
-                  <GridItem textAlign="center"></GridItem>
+                  <GridItem textAlign="center">
+                  <ChartsModal />
+
+                  </GridItem>
 
                   <GridItem alignItems="center">
                     <DepositButton
@@ -252,7 +255,7 @@ const VaultComp = ({
                     </Text>
                   </Tooltip>
                 </Flex>
-                <Accordion
+                {/* <Accordion
                   borderRadius="1rem"
                   defaultChecked={true}
                   pt="1rem"
@@ -272,10 +275,9 @@ const VaultComp = ({
                       borderRadius="1rem"
                       bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
                     >
-                      <ChartAccordian />
                     </AccordionPanel>
                   </AccordionItem>
-                </Accordion>
+                </Accordion> */}
 
                 <UserStatsAccordion />
                 <Accordion
