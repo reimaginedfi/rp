@@ -58,7 +58,10 @@ export const VaultHeroLeft = () => {
   useEffect(() => {
     const storeData = async () => {
       // console.log("getData executing");
-      const { data, error } = await supabaseClient.from("rp_data").select("*");
+      const { data, error } = await supabaseClient
+        .from("rp_data")
+        .select("*")
+        .order("created_at", { ascending: true });
 
       if (data && !error) {
         // console.log("supabaseData: ", data);
@@ -84,13 +87,14 @@ export const VaultHeroLeft = () => {
             "days"
           );
 
+          console.log("days: ", days);
+
           if (days >= 1) {
             // console.log("inserting data");
             const { data, error } = await supabaseClient
               .from("rp_data")
               .insert([
                 {
-                  created_at: formatDate(),
                   epoch_number: epochData,
                   percentage_change: percentageChange,
                   amount_change: amountChange,
@@ -178,7 +182,7 @@ export const VaultHeroLeft = () => {
       <Stat mt={"0.5rem"}>
         <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
           <StatNumber>
-            {factor >= 1 ? "+" : ""}
+                    {factor >= 1 ? "+" : ""}
             {((factor - 1) * 100).toFixed(2)}%
           </StatNumber>
         </Skeleton>
