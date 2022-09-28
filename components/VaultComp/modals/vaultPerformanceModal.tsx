@@ -17,13 +17,15 @@ import {
   useColorMode,
   useDisclosure,
   Tooltip,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import supabaseClient from "../../../utils/supabaseClient";
 import { Charts } from "../../Charts";
 
-import { InfoOutlineIcon } from "@chakra-ui/icons";
+import { InfoOutlineIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+
+import { truncate } from "../../utils/stringsAndNumbers";
 
 const ChartsModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -31,6 +33,9 @@ const ChartsModal = () => {
   const [pastEpochData, setPastEpochData] = useState<any[]>([]);
   const [epoch2Data, setepoch2Data] = useState<any[]>([]);
   const [epoch3Data, setepoch3Data] = useState<any[]>([]);
+  const [fullPerformance, setFullPerformance] = useState<number>(0);
+  const [epoch2Performance, setEpoch2Performance] = useState<number>(0);
+  const [epoch3Performance, setEpoch3Performance] = useState<number>(0);
 
   useEffect(() => {
     const getData = async () => {
@@ -44,12 +49,18 @@ const ChartsModal = () => {
         return;
       }
       const renamedData = data.map(
-        ({ percentage_change, created_at, amount_after, epoch_number, ...rest }) => ({
+        ({
+          percentage_change,
+          created_at,
+          amount_after,
+          epoch_number,
+          ...rest
+        }) => ({
           ...rest,
           Change: percentage_change,
           Date: created_at,
           Amount: amount_after,
-          Epoch: epoch_number
+          Epoch: epoch_number,
         })
       );
       setPastEpochData(renamedData);
@@ -60,14 +71,31 @@ const ChartsModal = () => {
   }, []);
 
   useEffect(() => {
+    if (fullPerformance === 0 && pastEpochData.length) {
+      let changeArray = pastEpochData.map((item) => +item.Change);
 
-    {pastEpochData.forEach((item) => {
-        console.log(item.Change);
-    })
-        
-        // .reduce((a, b) => a + b, 0) / arr.length}
+      setFullPerformance(
+        changeArray.reduce((a, b) => a + b, 0) / changeArray.length
+      );
+    }
 
-  }}, [pastEpochData, epoch2Data, epoch3Data])
+    if (epoch2Performance === 0 && epoch2Data.length) {
+      let changeArray = epoch2Data.map((item) => +item.Change);
+
+      setEpoch2Performance(
+        changeArray.reduce((a, b) => a + b, 0) / changeArray.length
+      );
+    }
+
+    if (epoch3Performance === 0 && epoch3Data.length) {
+      let changeArray = epoch3Data.map((item) => +item.Change);
+
+      setEpoch3Performance(
+        changeArray.reduce((a, b) => a + b, 0) / changeArray.length
+      );
+    }
+    
+  }, [pastEpochData, epoch2Data, epoch3Data]);
 
   return (
     <>
@@ -91,7 +119,14 @@ const ChartsModal = () => {
             <InfoOutlineIcon w={3.5} h={3.5} />
           </Tooltip>
         </Flex>
-        <Charts forHero wholeData data={pastEpochData} />
+        <Charts forHero epoch={0} data={pastEpochData} />
+        <Text
+          fontSize="0.75rem"
+          _hover={{ cursor: "pointer" }}
+          onClick={onOpen}
+        >
+          View More <ExternalLinkIcon w={2.5} h={2.5} />
+        </Text>
       </Flex>
 
       <Modal
@@ -105,32 +140,56 @@ const ChartsModal = () => {
         <ModalContent>
           <ModalHeader>
             <Heading variant="large" textAlign="center">
-              Performance Charts
+              Performance
             </Heading>
           </ModalHeader>
           <ModalCloseButton _focus={{ boxShadow: "none" }} />
           <ModalBody
             px="0.25rem"
-            borderTop="solid 1px"
-            borderColor={colorMode === "dark" ? "#232323" : "#F3F3F3"}
           >
             <Box>
-              <Tabs variant="enclosed">
+              <Tabs colorScheme="red" variant="enclosed">
                 <TabList>
                   <Tab>All Epochs</Tab>
                   <Tab>Epoch 2</Tab>
                   <Tab>Epoch 3</Tab>
                 </TabList>
                 <TabPanels>
-                  <TabPanel maxW={"100%"} w="37rem" h="150px">
-                    <Text>Total Performance: </Text>
-                    <Charts wholeData data={pastEpochData} />
+                  <TabPanel maxW={"100%"} w="37rem" h="150px" overflow="hidden">
+                    <Flex my={3} direction="row">
+                      <Text>Total Gain:</Text>
+                      <Text
+                        ml="0.5rem"
+                        color={fullPerformance > 0 ? "green.500" : "red.500"}
+                      >
+                        {truncate(fullPerformance.toString(), 2)}%
+                      </Text>
+                    </Flex>
+                    <Charts epoch={0} data={pastEpochData} />
                   </TabPanel>
-                  <TabPanel maxW={"100%"} w="37rem" h="150px">
-                    <Charts data={epoch2Data} />
+                  <TabPanel maxW={"100%"} w="37rem" h="200px" overflow="hidden">
+                  <Flex my={2} direction="row">
+                      <Text>Epoch 2 Gain:</Text>
+                      <Text
+                        ml="0.5rem"
+                        color={epoch2Performance > 0 ? "green.500" : "red.500"}
+                      >
+                        {truncate(epoch2Performance.toString(), 2)}%
+                      </Text>
+                    </Flex>
+                    <Charts epoch={2} data={epoch2Data} />
                   </TabPanel>
-                  <TabPanel maxW={"100%"} w="37rem" h="150px">
-                    <Charts epoch3 data={epoch3Data} />
+                  <TabPanel maxW={"100%"} w="37rem" h="200px" overflow="hidden">
+                    <Flex my={2} direction="row">
+                    <Text>Epoch 3 Gain:</Text>
+                      <Text
+                        ml="0.5rem"
+                        color={epoch3Performance > 0 ? "green.500" : "red.500"}
+                      >
+                        {truncate(epoch3Performance.toString(), 2)}%
+                      </Text>
+                    </Flex>
+                    <Charts epoch={3} data={epoch3Data} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>

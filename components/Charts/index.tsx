@@ -11,20 +11,20 @@ import {
 } from "recharts";
 import supabaseClient from "../../utils/supabaseClient";
 
-export const Charts = ({data, wholeData = false, forHero = false, epoch3 = false}: {data: any, wholeData?: boolean, forHero?: boolean, epoch3?: boolean}) => {
+export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?: boolean, epoch?: number}) => {
 
   const CustomToolTip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <Box
           boxShadow="dark-lg"
-          p={3}
+          p={forHero ? 1 : 3}
           rounded="md"
           bg="#FFE5E5"
           color="black"
           className="custom-tooltip"
         >
-          <Text>
+          <Text fontSize={forHero ? "0.75rem" : "0.85rem"}>
             <chakra.span fontWeight="semibold" color="red">
               Date:
             </chakra.span>{" "}
@@ -32,20 +32,20 @@ export const Charts = ({data, wholeData = false, forHero = false, epoch3 = false
               new Date(data[label].Date).toISOString().substring(0, 10)
             ).format("ll")}
           </Text>
-          <Text>
+          <Text fontSize={forHero ? "0.75rem" : "0.85rem"}>
             <chakra.span fontWeight="semibold" color="red">
               Change:
             </chakra.span>{" "}
 
             {data[label].Change} %
           </Text>
-          <Text>
+          <Text fontSize={forHero ? "0.75rem" : "0.85rem"}>
             <chakra.span fontWeight="semibold" color="red">
               Gain:
             </chakra.span>{" "}
             {data[label].amount_change} USDC
           </Text>
-          <Text>
+          <Text fontSize={forHero ? "0.75rem" : "0.85rem"}>
             <chakra.span fontWeight="semibold" color="red">
               AUM:
             </chakra.span>{" "}
@@ -67,7 +67,7 @@ export const Charts = ({data, wholeData = false, forHero = false, epoch3 = false
           top: 10,
           right: 10,
           left: 0,
-          bottom: epoch3 ? 75 : wholeData ? 50 : 25,
+          bottom: epoch === 3 ? 125 : (epoch === 0 && !forHero) ? 60 : (forHero && epoch !== 2) ? 50 : 35,
         }}
       >
         <defs>
