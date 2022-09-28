@@ -75,7 +75,7 @@ const ChartsModal = () => {
       let changeArray = pastEpochData.map((item) => +item.Change);
 
       setFullPerformance(
-        changeArray.reduce((a, b) => a + b, 0) / changeArray.length
+        changeArray.reduce((a, b) => a + b)
       );
     }
 
@@ -155,14 +155,23 @@ const ChartsModal = () => {
                   <Tab>Epoch 3</Tab>
                 </TabList>
                 <TabPanels>
-                  <TabPanel maxW={"100%"} w="37rem" h="150px" overflow="hidden">
-                    <Flex my={3} direction="row">
+                  <TabPanel maxW={"100%"} w="37rem" h="200px" overflow="hidden">
+                    {/* <Flex my={3} direction="row">
                       <Text>Total Gain:</Text>
                       <Text
                         ml="0.5rem"
                         color={fullPerformance > 0 ? "green.500" : "red.500"}
                       >
-                        {truncate(fullPerformance.toString(), 2)}%
+                        {fullPerformance > 0 && "+"}{truncate(fullPerformance.toString(), 2)}%
+                      </Text>
+                    </Flex> */}
+                    <Flex my={3} direction="row">
+                      <Text>Annualized Gain:</Text>
+                      <Text
+                        ml="0.5rem"
+                        color={fullPerformance > 0 ? "green.500" : "red.500"}
+                      >
+                        {fullPerformance > 0 && "+"}{truncate((fullPerformance * 12).toString(), 2)}%
                       </Text>
                     </Flex>
                     <Charts epoch={0} data={pastEpochData} />
@@ -174,7 +183,7 @@ const ChartsModal = () => {
                         ml="0.5rem"
                         color={epoch2Performance > 0 ? "green.500" : "red.500"}
                       >
-                        {truncate(epoch2Performance.toString(), 2)}%
+                        {epoch2Performance > 0 && "+"}{truncate(epoch2Performance.toString(), 2)}%
                       </Text>
                     </Flex>
                     <Charts epoch={2} data={epoch2Data} />
@@ -186,7 +195,7 @@ const ChartsModal = () => {
                         ml="0.5rem"
                         color={epoch3Performance > 0 ? "green.500" : "red.500"}
                       >
-                        {truncate(epoch3Performance.toString(), 2)}%
+                        {epoch3Performance > 0 && "+"} {truncate(epoch3Performance.toString(), 2)}%
                       </Text>
                     </Flex>
                     <Charts epoch={3} data={epoch3Data} />
