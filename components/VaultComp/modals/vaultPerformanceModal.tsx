@@ -210,7 +210,7 @@ const ChartsModal = () => {
                   <TabPanel maxW={"100%"} w="37rem" h="200px" overflow="hidden">
                     <Flex my={2} direction="row" justify="center">
                     <InfoData
-                        heading={"Average Gain"}
+                        heading={"Total Gain"}
                         tooltipText={
                           `Averaged from total daily gains of epoch 2 (${epoch2Data.length} days)`
                         }
@@ -223,7 +223,7 @@ const ChartsModal = () => {
                   <TabPanel maxW={"100%"} w="37rem" h="200px" overflow="hidden">
                     <Flex my={2} direction="row" justify="center">
                     <InfoData
-                        heading={"Average Gain"}
+                        heading={"Total Gain"}
                         tooltipText={
                           `Averaged from total daily gains of epoch 3 (${epoch3Data.length} days)`
                         }
