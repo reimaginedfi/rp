@@ -196,7 +196,7 @@ const ChartsModal = () => {
                       <InfoData
                         heading={"Annualized Gain"}
                         tooltipText={
-                          "Probable gains over a year from performance of all epochs (current and past) averaged and extended over a 12-month period                    "
+                          "Probable gains from performance of all epochs (current and past) averaged and extended over a 12-month period                    "
                         }
                         performance={fullPerformance}
                         value={`${fullPerformance > 0 && "+"}${truncate(
