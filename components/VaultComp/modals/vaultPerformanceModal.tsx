@@ -75,7 +75,7 @@ const ChartsModal = () => {
       let changeArray = pastEpochData.map((item) => +item.Change);
 
       setFullPerformance(
-        changeArray.reduce((a, b) => a + b)
+        changeArray.reduce((a, b) => a + b) / changeArray.length
       );
     }
 
@@ -94,8 +94,40 @@ const ChartsModal = () => {
         changeArray.reduce((a, b) => a + b, 0) / changeArray.length
       );
     }
-    
   }, [pastEpochData, epoch2Data, epoch3Data]);
+
+  const InfoData = ({ heading, tooltipText, performance, value }: any) => {
+    return (
+      <Flex p="4px" direction="column" alignItems="center" gap="12px">
+        <Flex direction="row" align="center">
+          <Text
+            fontSize={{ base: "12px", md: "0.875rem" }}
+            lineHeight="1rem"
+            color={colorMode === "dark" ? "#A0A0A0" : "#6F6F6F"}
+            mr="0.25rem"
+          >
+            {heading}
+          </Text>
+          <Tooltip
+            label={tooltipText}
+            aria-label="A tooltip"
+            bg={colorMode === "dark" ? "white" : "black"}
+            mt="0.1rem"
+          >
+            <InfoOutlineIcon w={3.5} h={3.5} />
+          </Tooltip>
+        </Flex>
+        <Text
+          fontStyle="medium"
+          fontWeight="600"
+          fontSize={{ base: "14px", md: "16px" }}
+          color={performance > 0 ? "green.500" : "red.500"}
+        >
+          {value}
+        </Text>
+      </Flex>
+    );
+  };
 
   return (
     <>
@@ -144,9 +176,7 @@ const ChartsModal = () => {
             </Heading>
           </ModalHeader>
           <ModalCloseButton _focus={{ boxShadow: "none" }} />
-          <ModalBody
-            px="0.25rem"
-          >
+          <ModalBody px="0.25rem">
             <Box>
               <Tabs colorScheme="red" variant="enclosed">
                 <TabList>
@@ -155,48 +185,51 @@ const ChartsModal = () => {
                   <Tab>Epoch 3</Tab>
                 </TabList>
                 <TabPanels>
-                  <TabPanel maxW={"100%"} w="37rem" h="200px" overflow="hidden">
-                    {/* <Flex my={3} direction="row">
-                      <Text>Total Gain:</Text>
-                      <Text
-                        ml="0.5rem"
-                        color={fullPerformance > 0 ? "green.500" : "red.500"}
-                      >
-                        {fullPerformance > 0 && "+"}{truncate(fullPerformance.toString(), 2)}%
-                      </Text>
-                    </Flex> */}
-                    <Flex my={3} direction="row">
-                      <Text>Annualized Gain:</Text>
-                      <Text
-                        ml="0.5rem"
-                        color={fullPerformance > 0 ? "green.500" : "red.500"}
-                      >
-                        {fullPerformance > 0 && "+"}{truncate((fullPerformance * 12).toString(), 2)}%
-                      </Text>
+                  <TabPanel maxW={"100%"} w="37rem" h="250px" overflow="hidden">
+                    <Flex my={3} direction="row" justify="space-around">
+                    <InfoData 
+                      heading={"Total Average Gain"}
+                      tooltipText={"How much the vault has grown since inception (averaged from all epochs)"}
+                      performance={fullPerformance}
+                      value={`${fullPerformance > 0 && "+"}${truncate(fullPerformance.toString(), 2)}%`}
+                    />
+                      <InfoData
+                        heading={"Annualized Gain"}
+                        tooltipText={
+                          "Probable gains over a year from performance of all epochs (current and past) averaged and extended over a 12-month period                    "
+                        }
+                        performance={fullPerformance}
+                        value={`${fullPerformance > 0 && "+"}${truncate(
+                          (fullPerformance * 12).toString(),
+                          2
+                        )}%`}
+                      />
                     </Flex>
                     <Charts epoch={0} data={pastEpochData} />
                   </TabPanel>
                   <TabPanel maxW={"100%"} w="37rem" h="200px" overflow="hidden">
-                  <Flex my={2} direction="row">
-                      <Text>Epoch 2 Gain:</Text>
-                      <Text
-                        ml="0.5rem"
-                        color={epoch2Performance > 0 ? "green.500" : "red.500"}
-                      >
-                        {epoch2Performance > 0 && "+"}{truncate(epoch2Performance.toString(), 2)}%
-                      </Text>
-                    </Flex>
+                    <Flex my={2} direction="row" justify="center">
+                    <InfoData
+                        heading={"Average Gain"}
+                        tooltipText={
+                          `Averaged from total daily gains of epoch 2 (${epoch2Data.length} days)`
+                        }
+                        performance={epoch2Performance}
+                        value={`${epoch2Performance > 0 ? "+" : ""}${truncate(epoch2Performance.toString(), 2)}%`}
+                      />
+                                        </Flex>
                     <Charts epoch={2} data={epoch2Data} />
                   </TabPanel>
                   <TabPanel maxW={"100%"} w="37rem" h="200px" overflow="hidden">
-                    <Flex my={2} direction="row">
-                    <Text>Epoch 3 Gain:</Text>
-                      <Text
-                        ml="0.5rem"
-                        color={epoch3Performance > 0 ? "green.500" : "red.500"}
-                      >
-                        {epoch3Performance > 0 && "+"} {truncate(epoch3Performance.toString(), 2)}%
-                      </Text>
+                    <Flex my={2} direction="row" justify="center">
+                    <InfoData
+                        heading={"Average Gain"}
+                        tooltipText={
+                          `Averaged from total daily gains of epoch 3 (${epoch3Data.length} days)`
+                        }
+                        performance={epoch3Performance}
+                        value={`${epoch3Performance > 0 ? "+" : ""}${truncate(epoch3Performance.toString(), 2)}%`}
+                      />
                     </Flex>
                     <Charts epoch={3} data={epoch3Data} />
                   </TabPanel>
