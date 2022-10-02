@@ -154,9 +154,7 @@ export default function VaultPerformanceAccordion() {
                             : "increase"
                         }
                       />
-                      {data.amount_change.includes("-")
-                        ? data.amount_change.replace("-", "")
-                        : data.amount_change.includes(",")
+                      {data.amount_change.includes(",")
                         ? data.amount_change
                         : commify(data.amount_change)}
                     </Text>
