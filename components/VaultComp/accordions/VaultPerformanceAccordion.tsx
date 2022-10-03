@@ -47,6 +47,7 @@ export default function VaultPerformanceAccordion() {
     getData();
   }, []);
 
+
   return (
     <Accordion borderRadius="1rem" pt="1rem" allowToggle border="none">
       <AccordionItem border="none">
@@ -154,7 +155,7 @@ export default function VaultPerformanceAccordion() {
                             : "increase"
                         }
                       />
-                      {data.amount_change.includes(",")
+                      {data.amount_change.includes(",") || data.amount_change.length <= 7 
                         ? data.amount_change
                         : commify(data.amount_change)}
                     </Text>
