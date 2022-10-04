@@ -38,6 +38,8 @@ import { noSpecialCharacters, truncate } from "../../utils/stringsAndNumbers";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { TokenInput } from "../../TokenInput";
 
+import { formatUnits } from "ethers/lib/utils";
+
 interface DepositButtonProps {
   depositSuccess: string;
   setDepositSuccess: React.Dispatch<React.SetStateAction<string>>;
@@ -252,7 +254,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
     ...vaultConfig,
     functionName: "minimumStoredValueBeforeFees",
   });
-  const meetsMinimum = +amount >= 25000;
+  const meetsMinimum = +amount >= 25000 || depositAllowed;
 
   // const depositedBefore = totalDeposited >= +formatUnits(minimumDeposit?.data?._hex!, 6)
 
@@ -375,7 +377,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                 isDisabled={
                   amount === "" ||
                   !meetsMinimum ||
-                  // !depositedBefore ||
+                  !depositAllowed ||
                   isApproving ||
                   canDeposit.isLoading ||
                   exceedsBalance
