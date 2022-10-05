@@ -323,7 +323,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                           truncate(
                             (
                               (+noSpecialCharacters(amount) / 100) *
-                              1
+                              2
                             ).toString(),
                             2
                           )
@@ -332,7 +332,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                       </Text>
                       <Tooltip
                         hasArrow
-                        label="REFI takes 1% of the amount you deposit to the vault as management fees."
+                        label="REFI takes 2% of the amount you deposit to the vault as management fees."
                         bg={colorMode === "dark" ? "white" : "black"}
                       >
                         <InfoOutlineIcon w={3.5} h={3.5} />
@@ -351,7 +351,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                           truncate(
                             (
                               (+noSpecialCharacters(amount) / 100) *
-                              99
+                              98
                             ).toString(),
                             2
                           )
@@ -360,7 +360,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                       </Text>
                       <Tooltip
                         hasArrow
-                        label="Amount that goes into the vault (what you deposit minus the 1% fees)."
+                        label="Amount that goes into the vault (what you deposit minus the 2% fees)."
                         bg={colorMode === "dark" ? "white" : "black"}
                       >
                         <InfoOutlineIcon w={3.5} h={3.5} />
