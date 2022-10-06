@@ -32,17 +32,18 @@ import {
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 
 //Tools
-import { useAccount, useContractRead } from "wagmi";
+import { useAccount, useContractRead, useBlockNumber } from "wagmi";
 import dynamic from "next/dynamic";
 import { ContractConfig } from "../../contracts";
 import { commify } from "ethers/lib/utils";
+import {BigNumber} from 'ethers';
 import { truncate } from "../utils/stringsAndNumbers";
 import { Number } from "../Number";
 import useWindowSize from "react-use/lib/useWindowSize";
 
 //Fetching stuff
 import millify from "millify";
-import { useVaultMeta } from "../hooks/useVault";
+import { useVaultMeta, useVaultState } from "../hooks/useVault";
 
 //Components
 import VaultActivityAccordion from "./accordions/VaultActivityAccordion";
@@ -124,6 +125,18 @@ const VaultComp = ({
   //   totalDeposited,
   // } = useVaultUser(contractConfig, address ?? "");
 
+  const vaultState = useVaultState(BigNumber.from(epoch ?? 0).toNumber());
+
+    // MANAGEMENT BLOCK -
+    const lastManagementBlock = BigNumber.from(
+      vaultState.data?.lastManagementBlock ?? 0
+    ).toNumber();
+  
+    // CURRENT CHAIN BLOCK - to calculate against management block
+    const blockNumber = useBlockNumber({
+      watch: true,
+    });
+
   return (
     <>
       <Accordion
@@ -164,19 +177,25 @@ const VaultComp = ({
 
                   </GridItem>
 
-                  <GridItem alignItems="center">
-                    <DepositButton
-                      depositSuccess={depositSuccess}
-                      setDepositSuccess={setDepositSuccess}
-                      approvalSuccess={approvalSuccess}
-                      setApprovalSuccess={setApprovalSuccess}
-                    />
-                  </GridItem>
-                  <GridItem>
-                    <Button w="full" variant="ghost" onClick={onOpenWithdraw}>
-                      Withdraw
-                    </Button>
-                  </GridItem>
+                  {lastManagementBlock > (blockNumber.data ?? 0) ? (
+                    <></>
+                  ) : (
+                    <>
+                    <GridItem alignItems="center">
+                     <DepositButton
+                       depositSuccess={depositSuccess}
+                       setDepositSuccess={setDepositSuccess}
+                       approvalSuccess={approvalSuccess}
+                       setApprovalSuccess={setApprovalSuccess}
+                     />
+                   </GridItem>
+                   <GridItem>
+                     <Button w="full" variant="ghost" onClick={onOpenWithdraw}>
+                       Withdraw
+                     </Button>
+                   </GridItem>
+                    </>
+                  )}
                 </Grid>
                 {+pendingDeposit + +currentAum > 0 &&
                   (+pendingDeposit + +currentAum) / +aumCap > 0.95 &&
