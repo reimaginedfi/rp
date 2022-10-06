@@ -407,7 +407,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     <Text>Withdraw Fee</Text>
                     <Flex alignItems="center" gap={2}>
                       <Text>
-                        {withdrawalAmount && parseInt(formatUnits(withdrawalAmount?.data!, 6))}{" "}
+                        {withdrawalAmount.data ? parseInt(formatUnits(withdrawalAmount?.data!, 6)) : 0}{" "}
                         USDC
                       </Text>
                       <Tooltip
