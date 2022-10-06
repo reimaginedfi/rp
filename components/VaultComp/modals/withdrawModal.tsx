@@ -397,7 +397,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                               (
                                 (parseInt(formatUnits(withdrawable![0], 6)) /
                                   100) *
-                                1
+                                0
                               ).toString(),
                               2
                             )
@@ -406,7 +406,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                       </Text>
                       <Tooltip
                         hasArrow
-                        label="REFI currently takes 1% management fee on all withdrawals."
+                        label="REFI currently takes 0% management fee on all withdrawals."
                         bg={colorMode === "dark" ? "white" : "black"}
                       >
                         <InfoOutlineIcon w={3.5} h={3.5} />
@@ -424,7 +424,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                               (
                                 (parseInt(formatUnits(withdrawable![0], 6)) /
                                   100) *
-                                99
+                                100
                               ).toString(),
                               2
                             )
@@ -433,7 +433,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                       </Text>
                       <Tooltip
                         hasArrow
-                        label="Amount that goes into your wallet (what you withdraw minus the 1% fees)."
+                        label="Amount that goes into your wallet (what you withdraw minus the 0% fees)."
                         bg={colorMode === "dark" ? "white" : "black"}
                       >
                         <InfoOutlineIcon w={3.5} h={3.5} />
