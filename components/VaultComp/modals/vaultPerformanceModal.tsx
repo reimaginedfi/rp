@@ -59,7 +59,7 @@ const ChartsModal = () => {
           ...rest,
           Change: percentage_change,
           Date: created_at,
-          Amount: amount_after,
+          Amount: amount_after.replaceAll(',', ''),
           Epoch: epoch_number,
         })
       );

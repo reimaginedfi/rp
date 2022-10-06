@@ -78,7 +78,7 @@ export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?:
         </defs>
         <Tooltip content={<CustomToolTip />} />
         <Area
-          dataKey="Change"
+          dataKey="Amount"
           stroke="#82ca9d"
           fillOpacity={1}
           fill="url(#colorPrice)"
