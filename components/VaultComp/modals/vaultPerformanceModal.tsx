@@ -206,7 +206,7 @@ const ChartsModal = () => {
                     </Flex>
                     <Charts epoch={0} data={pastEpochData} />
                   </TabPanel>
-                  <TabPanel maxW={"100%"} w="37rem" h="200px" overflow="hidden">
+                  <TabPanel maxW={"100%"} w="37rem" h="200px">
                     <Flex my={2} direction="row" justify="center">
                     <InfoData
                         heading={"Total Gain"}
@@ -219,7 +219,7 @@ const ChartsModal = () => {
                                         </Flex>
                     <Charts epoch={2} data={epoch2Data} />
                   </TabPanel>
-                  <TabPanel maxW={"100%"} w="37rem" h="200px" overflow="hidden">
+                  <TabPanel maxW={"100%"} w="37rem" h="200px">
                     <Flex my={2} direction="row" justify="center">
                     <InfoData
                         heading={"Total Gain"}

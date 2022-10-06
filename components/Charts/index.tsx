@@ -69,7 +69,7 @@ export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?:
           top: (epoch === 0 && !forHero) ? 75 : forHero ? 55 : 10,
           right: 10,
           left: 0,
-          bottom: forHero ? 10 : (epoch === 0 && !forHero) ? 60 : 35,
+          bottom: forHero ? 10 : epoch !== 0 ? 53 : 60,
         }}
       >
         <defs>
