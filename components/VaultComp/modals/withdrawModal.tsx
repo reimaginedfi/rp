@@ -62,7 +62,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     claimData,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
 
-  const withdrawalAmount = useContractRead({
+  const withdrawalFeeAmount = useContractRead({
     ...contractConfig,
     functionName: "getWithdrawalFee",
     watch: true,
@@ -394,7 +394,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                       Withdrawable Amount
                     </Heading>
                     <Text fontSize={"lg"} fontWeight="bold" alignSelf="center">
-                      {commify(parseInt(formatUnits(withdrawable![0], 6)))}{" "}
+                      {commify(truncate(formatUnits(withdrawable![0], 6), 2))}{" "}
                       USDC
                     </Text>
                   </Flex>
@@ -407,7 +407,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     <Text>Withdraw Fee</Text>
                     <Flex alignItems="center" gap={2}>
                       <Text>
-                        {withdrawalAmount.data ? parseInt(formatUnits(withdrawalAmount?.data!, 6)) : 0}{" "}
+                        {withdrawalFeeAmount.data ? +formatUnits(withdrawalFeeAmount?.data!, 6) : 0}{" "}
                         USDC
                       </Text>
                       <Tooltip
@@ -427,7 +427,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         {withdrawable &&
                           commify(
                             truncate(
-                                (parseInt(formatUnits(withdrawable![0], 6)) - (withdrawalAmount.data ? parseInt(formatUnits(withdrawalAmount?.data!, 6)) : 0)).toString(),
+                                (+formatUnits(withdrawable![0], 6) - (withdrawalFeeAmount.data ? +formatUnits(withdrawalFeeAmount?.data!, 6) : 0)).toString(),
                               2)
                           )}{" "}
                         USDC
@@ -451,7 +451,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     Withdraw{" "}
                     {withdrawable &&
                       commify(
-                        truncate(formatUnits(withdrawable![0]._hex, 6), 2)
+                        truncate(formatUnits(withdrawable![0], 6), 2)
                       )}{" "}
                     USDC
                   </Button>
