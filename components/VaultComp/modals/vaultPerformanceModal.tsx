@@ -163,13 +163,12 @@ const ChartsModal = () => {
 
       <Modal
         isCentered
-        scrollBehavior="inside"
         size="md"
         onClose={onClose!}
         isOpen={isOpen!}
       >
         <ModalOverlay onClick={onClose} />
-        <ModalContent>
+        <ModalContent overflow="visible">
           <ModalHeader>
             <Heading variant="large" textAlign="center">
               Performance
@@ -185,7 +184,7 @@ const ChartsModal = () => {
                   <Tab>Epoch 3</Tab>
                 </TabList>
                 <TabPanels>
-                  <TabPanel maxW={"100%"} w="37rem" h="250px" overflow="hidden">
+                  <TabPanel maxW={"100%"} w="37rem" h="250px">
                     <Flex my={3} direction="row" justify="space-around">
                     <InfoData 
                       heading={"Total Average Gain"}

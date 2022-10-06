@@ -11,6 +11,8 @@ import {
 } from "recharts";
 import supabaseClient from "../../utils/supabaseClient";
 
+import {commify} from "ethers/lib/utils"
+
 export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?: boolean, epoch?: number}) => {
 
   const CustomToolTip = ({ active, payload, label }: any) => {
@@ -49,7 +51,7 @@ export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?:
             <chakra.span fontWeight="semibold" color="red">
               AUM:
             </chakra.span>{" "}
-            {data[label].Amount}
+            {commify(data[label].Amount)}
           </Text>
         </Box>
       );
@@ -64,10 +66,10 @@ export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?:
         height={400}
         data={data}
         margin={{
-          top: 10,
+          top: (epoch === 0 && !forHero) ? 75 : forHero ? 55 : 10,
           right: 10,
           left: 0,
-          bottom: epoch === 3 ? 130 : (epoch === 0 && !forHero) ? 125 : forHero ? 50 : epoch === 2 ? 85 : 35,
+          bottom: forHero ? 10 : (epoch === 0 && !forHero) ? 60 : 35,
         }}
       >
         <defs>
