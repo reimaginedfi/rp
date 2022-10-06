@@ -27,7 +27,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { commify, formatUnits } from "ethers/lib/utils";
-import { useNetwork, useWaitForTransaction } from "wagmi";
+import { useNetwork, useWaitForTransaction, useContractRead, useAccount } from "wagmi";
 import { vaults } from "../../../contracts";
 import { useVaultMeta, useVaultWithdraw } from "../../hooks/useVault";
 import { DangerToast, SuccessToast } from "../../Toasts";
@@ -45,6 +45,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   const [withdrawActive, setWithdrawActive] = useState<boolean>(false);
   const { chain } = useNetwork();
   const [contractConfig, setContractConfig] = useState<any>();
+  const { address } = useAccount();
 
   const {
     hasPendingWithdrawal,
@@ -60,6 +61,19 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     unlockData,
     claimData,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
+
+  const withdrawalAmount = useContractRead({
+    ...contractConfig,
+    functionName: "getWithdrawalFee",
+    watch: true,
+    args: [withdrawable && withdrawable[0], address],
+  });
+
+  const withdrawalFee = useContractRead({
+    ...contractConfig,
+    functionName: "exitFeeBps",
+    watch: true
+  });
 
   const [claimDataSuccess, setClaimDataSuccess] = useState<string>("");
   const [unlockDataSuccess, setUnlockDataSuccess] = useState<string>("");
@@ -195,6 +209,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     user?.data && +amount > +formatUnits(user.data?.vaultShares, 6);
 
   // console.log(formatUnits(user?.data?.assetsDeposited, 6))
+
+
 
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
@@ -391,22 +407,12 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     <Text>Withdraw Fee</Text>
                     <Flex alignItems="center" gap={2}>
                       <Text>
-                        {withdrawable &&
-                          commify(
-                            truncate(
-                              (
-                                (parseInt(formatUnits(withdrawable![0], 6)) /
-                                  100) *
-                                0
-                              ).toString(),
-                              2
-                            )
-                          )}{" "}
+                        {parseInt(withdrawalAmount!.data!._hex, 6)}{" "}
                         USDC
                       </Text>
                       <Tooltip
                         hasArrow
-                        label="REFI currently takes 0% management fee on all withdrawals."
+                        label={`REFI currently takes ${parseInt(withdrawalFee!.data!._hex, 0)}% management fee on all withdrawals.`}
                         bg={colorMode === "dark" ? "white" : "black"}
                       >
                         <InfoOutlineIcon w={3.5} h={3.5} />
@@ -421,19 +427,14 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         {withdrawable &&
                           commify(
                             truncate(
-                              (
-                                (parseInt(formatUnits(withdrawable![0], 6)) /
-                                  100) *
-                                100
-                              ).toString(),
-                              2
-                            )
+                                (parseInt(formatUnits(withdrawable![0], 6)) - parseInt(withdrawalAmount!.data!._hex, 6)).toString(),
+                              2)
                           )}{" "}
                         USDC
                       </Text>
                       <Tooltip
                         hasArrow
-                        label="Amount that goes into your wallet (what you withdraw minus the 0% fees)."
+                        label={`Amount that goes into your wallet (what you withdraw minus the ${parseInt(withdrawalFee!.data!._hex, 0)}% fees).`}
                         bg={colorMode === "dark" ? "white" : "black"}
                       >
                         <InfoOutlineIcon w={3.5} h={3.5} />
