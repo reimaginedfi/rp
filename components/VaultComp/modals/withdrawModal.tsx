@@ -427,7 +427,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         {withdrawable &&
                           commify(
                             truncate(
-                                (parseInt(formatUnits(withdrawable![0], 6)) - parseInt(formatUnits(withdrawalAmount?.data!, 6))).toString(),
+                                (parseInt(formatUnits(withdrawable![0], 6)) - (withdrawalAmount.data ? parseInt(formatUnits(withdrawalAmount?.data!, 6)) : 0)).toString(),
                               2)
                           )}{" "}
                         USDC
