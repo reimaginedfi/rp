@@ -39,19 +39,19 @@ export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?:
               Change:
             </chakra.span>{" "}
 
-            {data[label].Change} %
+            {data[label].Change.includes("-") || data[label].Change.includes("+") ? "" : "+"}{data[label].Change}%
           </Text>
           <Text fontSize={forHero ? "0.75rem" : "0.85rem"}>
             <chakra.span fontWeight="semibold" color="red">
               Gain:
             </chakra.span>{" "}
-            {data[label].amount_change} USDC
+            {data[label].amount_change.includes("-") || data[label].amount_change.includes("+") ? "" : "+"}{data[label].amount_change} USDC
           </Text>
           <Text fontSize={forHero ? "0.75rem" : "0.85rem"}>
             <chakra.span fontWeight="semibold" color="red">
               AUM:
             </chakra.span>{" "}
-            {commify(data[label].Amount)}
+            {commify(data[label].Amount)} USDC
           </Text>
         </Box>
       );
