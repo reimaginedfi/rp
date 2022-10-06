@@ -75,7 +75,7 @@ const ChartsModal = () => {
       let changeArray = pastEpochData.map((item) => +item.Change);
 
       setFullPerformance(
-        changeArray.reduce((a, b) => a + b) / changeArray.length
+        changeArray.reduce((a, b) => a + b, 0) / changeArray.length
       );
     }
 
