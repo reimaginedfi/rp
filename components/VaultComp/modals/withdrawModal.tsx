@@ -394,7 +394,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                       Withdrawable Amount
                     </Heading>
                     <Text fontSize={"lg"} fontWeight="bold" alignSelf="center">
-                      {commify(parseInt(formatUnits(withdrawable![0]._hex, 6)))}{" "}
+                      {commify(parseInt(formatUnits(withdrawable![0], 6)))}{" "}
                       USDC
                     </Text>
                   </Flex>
@@ -407,12 +407,12 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     <Text>Withdraw Fee</Text>
                     <Flex alignItems="center" gap={2}>
                       <Text>
-                        {parseInt(withdrawalAmount!.data!._hex, 6)}{" "}
+                        {withdrawalAmount && parseInt(formatUnits(withdrawalAmount?.data!, 6))}{" "}
                         USDC
                       </Text>
                       <Tooltip
                         hasArrow
-                        label={`REFI currently takes ${parseInt(withdrawalFee!.data!._hex, 0)}% management fee on all withdrawals.`}
+                        label={`REFI currently takes ${parseInt(formatUnits(withdrawalFee.data!, 6))}% management fee on all withdrawals.`}
                         bg={colorMode === "dark" ? "white" : "black"}
                       >
                         <InfoOutlineIcon w={3.5} h={3.5} />
@@ -427,14 +427,14 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         {withdrawable &&
                           commify(
                             truncate(
-                                (parseInt(formatUnits(withdrawable![0], 6)) - parseInt(withdrawalAmount!.data!._hex, 6)).toString(),
+                                (parseInt(formatUnits(withdrawable![0], 6)) - parseInt(formatUnits(withdrawalAmount?.data!, 6))).toString(),
                               2)
                           )}{" "}
                         USDC
                       </Text>
                       <Tooltip
                         hasArrow
-                        label={`Amount that goes into your wallet (what you withdraw minus the ${parseInt(withdrawalFee!.data!._hex, 0)}% fees).`}
+                        label={`Amount that goes into your wallet (what you withdraw minus the ${parseInt(formatUnits(withdrawalFee!.data!, 6))}% fees).`}
                         bg={colorMode === "dark" ? "white" : "black"}
                       >
                         <InfoOutlineIcon w={3.5} h={3.5} />
