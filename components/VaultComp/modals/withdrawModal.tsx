@@ -412,7 +412,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                       </Text>
                       <Tooltip
                         hasArrow
-                        label={`REFI currently takes ${parseInt(formatUnits(withdrawalFee.data!, 6))}% management fee on all withdrawals.`}
+                        label={`REFI currently takes ${withdrawalFeeAmount.data ? +formatUnits(withdrawalFee.data!, 6) : 0}% management fee on all withdrawals.`}
                         bg={colorMode === "dark" ? "white" : "black"}
                       >
                         <InfoOutlineIcon w={3.5} h={3.5} />
@@ -434,7 +434,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                       </Text>
                       <Tooltip
                         hasArrow
-                        label={`Amount that goes into your wallet (what you withdraw minus the ${parseInt(formatUnits(withdrawalFee!.data!, 6))}% fees).`}
+                        label={`Amount that goes into your wallet (what you withdraw minus the ${withdrawalFeeAmount.data ? +formatUnits(withdrawalFee.data!, 6) : 0}% fees).`}
                         bg={colorMode === "dark" ? "white" : "black"}
                       >
                         <InfoOutlineIcon w={3.5} h={3.5} />
