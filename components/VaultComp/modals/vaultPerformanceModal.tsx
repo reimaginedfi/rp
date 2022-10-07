@@ -33,9 +33,11 @@ const ChartsModal = () => {
   const [pastEpochData, setPastEpochData] = useState<any[]>([]);
   const [epoch2Data, setepoch2Data] = useState<any[]>([]);
   const [epoch3Data, setepoch3Data] = useState<any[]>([]);
+  const [epoch4Data, setepoch4Data] = useState<any[]>([]);
   const [fullPerformance, setFullPerformance] = useState<number>(0);
   const [epoch2Performance, setEpoch2Performance] = useState<number>(0);
   const [epoch3Performance, setEpoch3Performance] = useState<number>(0);
+  const [epoch4Performance, setEpoch4Performance] = useState<number>(0);
 
   useEffect(() => {
     const getData = async () => {
@@ -66,6 +68,7 @@ const ChartsModal = () => {
       setPastEpochData(renamedData);
       setepoch2Data(renamedData.filter((item) => item.Epoch === "2"));
       setepoch3Data(renamedData.filter((item) => item.Epoch === "3"));
+      setepoch4Data(renamedData.filter((item) => item.Epoch === "4"));
     };
     getData();
   }, []);
@@ -182,6 +185,7 @@ const ChartsModal = () => {
                   <Tab>All Epochs</Tab>
                   <Tab>Epoch 2</Tab>
                   <Tab>Epoch 3</Tab>
+                  <Tab>Epoch 4</Tab>
                 </TabList>
                 <TabPanels>
                   <TabPanel maxW={"100%"} w="37rem" h="250px">
@@ -231,6 +235,19 @@ const ChartsModal = () => {
                       />
                     </Flex>
                     <Charts epoch={3} data={epoch3Data} />
+                  </TabPanel>
+                  <TabPanel maxW={"100%"} w="37rem" h="200px">
+                    <Flex my={2} direction="row" justify="center">
+                    <InfoData
+                        heading={"Total Gain"}
+                        tooltipText={
+                          `Averaged from total daily gains of epoch 4 (${epoch4Data.length} days)`
+                        }
+                        performance={epoch3Performance}
+                        value={`${epoch4Performance > 0 ? "+" : ""}${truncate(epoch4Performance.toString(), 2)}%`}
+                      />
+                    </Flex>
+                    <Charts epoch={4} data={epoch4Data} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>
