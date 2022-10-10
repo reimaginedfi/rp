@@ -43,18 +43,18 @@ export const VaultHeroLeft = () => {
     watch: true,
   });
 
-  const formatDate = () => {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    let mm: number | string = today.getMonth() + 1; // Months start at 0!
-    let dd: number | string = today.getDate();
+  // const formatDate = () => {
+  //   const today = new Date();
+  //   const yyyy = today.getFullYear();
+  //   let mm: number | string = today.getMonth() + 1; // Months start at 0!
+  //   let dd: number | string = today.getDate();
 
-    if (dd < 10) dd = "0" + dd;
-    if (mm < 10) mm = "0" + mm;
+  //   if (dd < 10) dd = "0" + dd;
+  //   if (mm < 10) mm = "0" + mm;
 
-    const formattedToday = yyyy + "-" + mm + "-" + dd;
-    return formattedToday;
-  };
+  //   const formattedToday = yyyy + "-" + mm + "-" + dd;
+  //   return formattedToday;
+  // };
   useEffect(() => {
     const storeData = async () => {
       // console.log("getData executing");
@@ -82,14 +82,21 @@ export const VaultHeroLeft = () => {
             2
           );
 
-          const days = moment().diff(
+          // const days = moment().diff(
+          //   moment(data[data.length - 1].created_at),
+          //   "days"
+          // );
+
+          const hours = moment().diff(
             moment(data[data.length - 1].created_at),
-            "days"
+            "hours"
           );
 
-          console.log("days: ", days);
+          // console.log("days: ", days);
 
-          if (days >= 1) {
+          console.log("hours: ", hours);
+
+          if (hours >= 24) {
             // console.log("inserting data");
             const { data, error } = await supabaseClient
               .from("rp_data")
