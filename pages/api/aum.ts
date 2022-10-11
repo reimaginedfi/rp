@@ -8,7 +8,8 @@ const handler: NextApiHandler = async (req, res) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        AccessKey: "c13d8b424d6ad424066da28410f1752f7622dcb6",
+        // AccessKey: "c13d8b424d6ad424066da28410f1752f7622dcb6",
+        AccessKey: "afe2f8ec56c7354a5f99e87dea4a4e3f03abd661"
       },
     }
   );
@@ -19,8 +20,9 @@ const handler: NextApiHandler = async (req, res) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        AccessKey: "c13d8b424d6ad424066da28410f1752f7622dcb6",
-      },
+        // AccessKey: "c13d8b424d6ad424066da28410f1752f7622dcb6",
+        AccessKey: "afe2f8ec56c7354a5f99e87dea4a4e3f03abd661"
+        },
     }
   );
 
