@@ -89,7 +89,8 @@ export const VaultHeroLeft = () => {
 
           const hours = moment().diff(
             moment(data[data.length - 1].created_at),
-            "hours"
+            "hours",
+            true
           );
 
           // console.log("days: ", days);
