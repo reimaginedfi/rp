@@ -69,6 +69,7 @@ type VaultProps = {
   epoch: number | undefined;
   pendingDeposit: string;
   contractConfig: ContractConfig;
+  previewAum: string;
 };
 
 const FarmerSettingsAccordion = dynamic(
@@ -84,6 +85,7 @@ const VaultComp = ({
   epoch,
   pendingDeposit,
   contractConfig,
+  previewAum
 }: VaultProps) => {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
@@ -171,7 +173,7 @@ const VaultComp = ({
                   w="full"
                   px="1rem"
                 >
-                  <VaultHeroLeft />
+                  <VaultHeroLeft previewAum={previewAum} />
                   <GridItem textAlign="center">
                   <ChartsModal />
 
@@ -298,7 +300,7 @@ const VaultComp = ({
                   </AccordionItem>
                 </Accordion> */}
 
-                <UserStatsAccordion />
+                <UserStatsAccordion previewAum={previewAum} />
                 <Accordion
                   borderRadius="1rem"
                   pt="1rem"

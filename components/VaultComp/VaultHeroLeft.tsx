@@ -25,10 +25,10 @@ import ProgressBar from "../ui/ProgressBar";
 import { truncate } from "../utils/stringsAndNumbers";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 
-export const VaultHeroLeft = () => {
+export const VaultHeroLeft = ({previewAum}: { previewAum: any}) => {
   // VAULT META DATA - used to display vault info
-  const { epoch, aum, aumCap, previewAum, rawGains, factor, previewValue } =
-    useCompleteAum();
+  const { epoch, aum, aumCap, rawGains, factor, previewValue } =
+    useCompleteAum(previewAum);
 
   // VAULT CONTRACT - fetches current vault state
   const vaultState = useVaultState(BigNumber.from(epoch.data ?? 0).toNumber());
