@@ -88,7 +88,7 @@ export const getStaticProps = async () => {
   };
   return {
     props: {
-      previewAum: JSON.stringify(data),
+      previewAum: JSON.stringify({ data  }),
     },
   };
 };
