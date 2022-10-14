@@ -11,10 +11,9 @@ import VaultComp from "../VaultComp";
 import { Contract } from "./ContractContext";
 
 export const Vault = ({
-  contractConfig, previewAum
+  contractConfig
 }: {
   contractConfig: ContractConfig;
-  previewAum: any
 }) => {
 
   //VAULT META DATA - used to display vault info
@@ -56,7 +55,7 @@ export const Vault = ({
   return (
     // <PortalContext.Provider value={portalRef}>
     <Contract.Provider value={contractConfig}>
-      <VaultComp previewAum={previewAum}
+      <VaultComp
         currentAum={formatUnits(aum.data ?? 0, assetToken.data?.decimals ?? 0)}
         aumCap={formatUnits(aumCap.data ?? 0, assetToken.data?.decimals ?? 0)}
         epoch={BigNumber.from(epoch.data ?? 0).toNumber() ?? 0}

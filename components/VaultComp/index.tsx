@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
@@ -62,6 +62,7 @@ import WithdrawModal from "./modals/withdrawModal";
 import { DepositButton } from "./modals/DepositButton";
 import {Charts} from "../Charts";
 import ChartsModal from "./modals/vaultPerformanceModal";
+import { DebankData } from "../../pages";
 
 type VaultProps = {
   currentAum: string;
@@ -69,7 +70,6 @@ type VaultProps = {
   epoch: number | undefined;
   pendingDeposit: string;
   contractConfig: ContractConfig;
-  previewAum: string;
 };
 
 const FarmerSettingsAccordion = dynamic(
@@ -85,12 +85,12 @@ const VaultComp = ({
   epoch,
   pendingDeposit,
   contractConfig,
-  previewAum
 }: VaultProps) => {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
   const [depositSuccess, setDepositSuccess] = useState<string>("");
   const [approvalSuccess, setApprovalSuccess] = useState<string>("");
+  const previewAum = useContext(DebankData);
 
   //MODAL OPEN/CLOSE STATES
   const {
@@ -173,7 +173,7 @@ const VaultComp = ({
                   w="full"
                   px="1rem"
                 >
-                  <VaultHeroLeft previewAum={previewAum} />
+                  <VaultHeroLeft />
                   <GridItem textAlign="center">
                   <ChartsModal />
 

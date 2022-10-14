@@ -5,7 +5,7 @@ import { useNetwork, useSwitchNetwork } from "wagmi";
 import { vaults } from "../contracts";
 import { Vault } from "./Vault";
 
-export const PageContent = ({previewAum}: {previewAum: any}) => {
+export const PageContent = () => {
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
 
@@ -28,7 +28,7 @@ export const PageContent = ({previewAum}: {previewAum: any}) => {
                 key={contractConfig.addressOrName}
                 m={{ base: "5%", md: "2.5%" }}
               >
-                <Vault previewAum={previewAum} contractConfig={contractConfig} />
+                <Vault contractConfig={contractConfig} />
               </GridItem>
             ))}
           </Grid>

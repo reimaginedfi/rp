@@ -2,11 +2,13 @@ import { NextSeo } from "next-seo";
 import dynamic from "next/dynamic";
 import axios from "axios";
 import { BigNumber } from "ethers";
+import { createContext, useContext } from "react";
 
 const PageContent = dynamic(() => import("../components/PageContent"), {
   ssr: false,
 });
 
+export const DebankData = createContext(null);
 const Page = ({ previewAum }: { previewAum: any }) => {
   const title = "REFI Pro";
   const description = "$REFI is DeFi, reimagined.";
@@ -35,8 +37,9 @@ const Page = ({ previewAum }: { previewAum: any }) => {
           ],
         }}
       />
-
-      <PageContent previewAum={previewAum} />
+      <DebankData.Provider value={previewAum}>
+        <PageContent />
+      </DebankData.Provider>
     </>
   );
 };
@@ -88,7 +91,7 @@ export const getStaticProps = async () => {
   };
   return {
     props: {
-      previewAum: JSON.stringify({ data  }),
+      previewAum: JSON.stringify({ data }),
     },
   };
 };
