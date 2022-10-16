@@ -26,7 +26,7 @@ import { useVaultAssetToken } from "../../Vault/hooks/useVaultAsset";
 import {truncate} from "../../utils/stringsAndNumbers"
 import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
 
-export default function UserStatsAccordion() {
+export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
   const contractConfig = useContractConfig();
@@ -73,7 +73,7 @@ export default function UserStatsAccordion() {
         .add(userResult.data?.[0] ?? 0)
     : BigNumber.from(0);
 
-  const { factor, isAumLoading } = useCompleteAum();
+  const { factor, isAumLoading } = useCompleteAum(previewAum);
 
   const unrealizedBN = isAumLoading
     ? totalValue.toNumber()
@@ -87,7 +87,7 @@ export default function UserStatsAccordion() {
 
   const pnlVT = totalValueVT - value.toNumber() / 1000000;
 
-  // console.log(hasPendingDeposit.data);
+  console.log(unrealized, unrealizedBN, value, totalValueVT, pnlVT);
 
   return (
     <Accordion borderRadius="1rem" mt="1rem" allowToggle border="none">

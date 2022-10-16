@@ -97,7 +97,15 @@ const ChartsModal = () => {
         changeArray.reduce((a, b) => a + b, 0) / changeArray.length
       );
     }
-  }, [pastEpochData, epoch2Data, epoch3Data]);
+
+    if (epoch4Performance === 0 && epoch4Data.length) {
+      let changeArray = epoch4Data.map((item) => +item.Change);
+
+      setEpoch4Performance(
+        changeArray.reduce((a, b) => a + b, 0) / changeArray.length
+      );
+    }
+  }, [pastEpochData, epoch2Data, epoch3Data, epoch4Data]);
 
   const InfoData = ({ heading, tooltipText, performance, value }: any) => {
     return (

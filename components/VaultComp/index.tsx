@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
@@ -62,6 +62,7 @@ import WithdrawModal from "./modals/withdrawModal";
 import { DepositButton } from "./modals/DepositButton";
 import {Charts} from "../Charts";
 import ChartsModal from "./modals/vaultPerformanceModal";
+import { DebankData } from "../../pages";
 
 type VaultProps = {
   currentAum: string;
@@ -89,6 +90,7 @@ const VaultComp = ({
   const { address } = useAccount();
   const [depositSuccess, setDepositSuccess] = useState<string>("");
   const [approvalSuccess, setApprovalSuccess] = useState<string>("");
+  const previewAum = useContext(DebankData);
 
   //MODAL OPEN/CLOSE STATES
   const {
@@ -298,7 +300,7 @@ const VaultComp = ({
                   </AccordionItem>
                 </Accordion> */}
 
-                <UserStatsAccordion />
+                <UserStatsAccordion previewAum={previewAum} />
                 <Accordion
                   borderRadius="1rem"
                   pt="1rem"

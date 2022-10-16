@@ -11,7 +11,7 @@ import VaultComp from "../VaultComp";
 import { Contract } from "./ContractContext";
 
 export const Vault = ({
-  contractConfig,
+  contractConfig
 }: {
   contractConfig: ContractConfig;
 }) => {

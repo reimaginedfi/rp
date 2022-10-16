@@ -17,8 +17,9 @@ import {
 import { BigNumber } from "ethers";
 import { commify, formatUnits } from "ethers/lib/utils";
 import moment from "moment";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useBlockNumber } from "wagmi";
+import { DebankData } from "../../pages";
 import supabaseClient from "../../utils/supabaseClient";
 import { useVaultState } from "../hooks/useVault";
 import ProgressBar from "../ui/ProgressBar";
@@ -26,9 +27,12 @@ import { truncate } from "../utils/stringsAndNumbers";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 
 export const VaultHeroLeft = () => {
+
+  const previewAum = useContext(DebankData);
+
   // VAULT META DATA - used to display vault info
-  const { epoch, aum, aumCap, previewAum, rawGains, factor, previewValue } =
-    useCompleteAum();
+  const { epoch, aum, aumCap, rawGains, factor, previewValue } =
+    useCompleteAum(previewAum);
 
   // VAULT CONTRACT - fetches current vault state
   const vaultState = useVaultState(BigNumber.from(epoch.data ?? 0).toNumber());
@@ -97,7 +101,7 @@ export const VaultHeroLeft = () => {
 
           console.log("hours: ", hours);
 
-          if (hours >= 24) {
+          if (hours >= 23) {
             // console.log("inserting data");
             const { data, error } = await supabaseClient
               .from("rp_data")
@@ -188,13 +192,15 @@ export const VaultHeroLeft = () => {
         Running
       </Badge>
       <Stat mt={"0.5rem"}>
-        <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
+        {/* @ts-expect-error */}
+        <Skeleton isLoaded={!previewAum?.isValidating && !aum.isLoading}>
           <StatNumber>
                     {factor >= 1 ? "+" : ""}
             {((factor - 1) * 100).toFixed(2)}%
           </StatNumber>
         </Skeleton>
-        <Skeleton isLoaded={!previewAum.isValidating && !aum.isLoading}>
+        {/* @ts-expect-error */}
+        <Skeleton isLoaded={!previewAum?.isValidating && !aum.isLoading}>
           <Tooltip
             label={`Projected AUM: ${commify(
               formatUnits(previewValue, 6)

@@ -12,10 +12,11 @@ export const usePreviewAum = () => {
   return swr;
 };
 
-export const useCompleteAum = () => {
+export const useCompleteAum = (_previewAum: any) => {
+
+  const previewAum = JSON.parse(_previewAum);
   const contractConfig = useContractConfig();
   const { aum, epoch, aumCap } = useVaultMeta(contractConfig);
-  const previewAum = usePreviewAum();
   const previewValue = BigNumber.from(previewAum.data?.total_usdc_value ?? 0);
   const aumValue = BigNumber.from(aum.data ?? 0);
 
