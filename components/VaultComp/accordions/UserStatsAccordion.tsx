@@ -87,7 +87,7 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
 
   const pnlVT = totalValueVT - value.toNumber() / 1000000;
 
-  console.log(unrealized, unrealizedBN, value, totalValueVT, pnlVT);
+  // console.log(unrealized, unrealizedBN, value, totalValueVT, pnlVT);
 
   return (
     <Accordion borderRadius="1rem" mt="1rem" allowToggle border="none">
