@@ -18,7 +18,7 @@ import { BigNumber } from "ethers";
 import { commify, formatUnits } from "ethers/lib/utils";
 import moment from "moment";
 import { useContext, useEffect } from "react";
-import { useBlockNumber } from "wagmi";
+import { useBlockNumber, useProvider } from "wagmi";
 import { DebankData } from "../../pages";
 import supabaseClient from "../../utils/supabaseClient";
 import { useVaultState } from "../hooks/useVault";
@@ -47,10 +47,6 @@ export const VaultHeroLeft = () => {
   //   watch: true,
   // });
 
-  const { data: blockNumber, isError, isLoading } = useBlockNumber()
-
-  console.log(lastManagementBlock)
-
   // const formatDate = () => {
   //   const today = new Date();
   //   const yyyy = today.getFullYear();
@@ -74,8 +70,6 @@ export const VaultHeroLeft = () => {
         .from("rp_data")
         .select("*")
         .order("created_at", { ascending: true });
-
-        console.log(data, error)
 
       if (data && !error) {
         // console.log("supabaseData: ", data);
@@ -146,7 +140,7 @@ export const VaultHeroLeft = () => {
 
   if (
     vaultState.isLoading ||
-    isLoading ||
+    // isLoading ||
     epoch.isLoading ||
     aumCap.isLoading
   ) {
