@@ -43,9 +43,13 @@ export const VaultHeroLeft = () => {
   ).toNumber();
 
   // CURRENT CHAIN BLOCK - to calculate against management block
-  const blockNumber = useBlockNumber({
-    watch: true,
-  });
+  // const blockNumber = useBlockNumber({
+  //   watch: true,
+  // });
+
+  const { data: blockNumber, isError, isLoading } = useBlockNumber()
+
+  console.log(lastManagementBlock)
 
   // const formatDate = () => {
   //   const today = new Date();
@@ -58,7 +62,11 @@ export const VaultHeroLeft = () => {
 
   //   const formattedToday = yyyy + "-" + mm + "-" + dd;
   //   return formattedToday;
-  // };
+  // };`
+
+  // console.log(epoch, aum, rawGains, factor, previewValue);
+
+
   useEffect(() => {
     const storeData = async () => {
       // console.log("getData executing");
@@ -66,6 +74,8 @@ export const VaultHeroLeft = () => {
         .from("rp_data")
         .select("*")
         .order("created_at", { ascending: true });
+
+        console.log(data, error)
 
       if (data && !error) {
         // console.log("supabaseData: ", data);
@@ -127,7 +137,7 @@ export const VaultHeroLeft = () => {
       factor &&
       rawGains &&
       epoch &&
-      !(lastManagementBlock > (blockNumber.data ?? 0)) &&
+      // !(lastManagementBlock > (blockNumber ?? 0)) &&
       !(aumCap.data?.toString() === "0.0")
     ) {
       storeData();
@@ -136,7 +146,7 @@ export const VaultHeroLeft = () => {
 
   if (
     vaultState.isLoading ||
-    blockNumber.isLoading ||
+    isLoading ||
     epoch.isLoading ||
     aumCap.isLoading
   ) {
@@ -165,26 +175,26 @@ export const VaultHeroLeft = () => {
     );
   }
 
-  if (lastManagementBlock > (blockNumber.data ?? 0)) {
-    return (
-      <GridItem justifyContent={"center"}>
-        <Badge colorScheme="orange" variant={"outline"}>
-          Validating
-        </Badge>
-        <Text mt={4}>Vault will reopen at block {lastManagementBlock}</Text>
-        <Stack pt={4}>
-          <ProgressBar
-            // color="orange"
-            partial={(blockNumber.data ?? 0) - lastManagementBlock + 6000}
-            total={6000}
-          />
-          <Text>
-            {lastManagementBlock - blockNumber.data!} blocks remaining
-          </Text>
-        </Stack>
-      </GridItem>
-    );
-  }
+  // if (lastManagementBlock > (blockNumber ?? 0)) {
+  //   return (
+  //     <GridItem justifyContent={"center"}>
+  //       <Badge colorScheme="orange" variant={"outline"}>
+  //         Validating
+  //       </Badge>
+  //       <Text mt={4}>Vault will reopen at block {lastManagementBlock}</Text>
+  //       <Stack pt={4}>
+  //         <ProgressBar
+  //           // color="orange"
+  //           partial={(blockNumber ?? 0) - lastManagementBlock + 6000}
+  //           total={6000}
+  //         />
+  //         <Text>
+  //           {lastManagementBlock - blockNumber} blocks remaining
+  //         </Text>
+  //       </Stack>
+  //     </GridItem>
+  //   );
+  // }
 
   return (
     <GridItem justifySelf="center" textAlign="center">
