@@ -135,11 +135,9 @@ const VaultComp = ({
     ).toNumber();
   
     // CURRENT CHAIN BLOCK - to calculate against management block
-    // const blockNumber = useBlockNumber({
-    //   watch: true,
-    // });
-
-    // console.log(blockNumber)
+    const blockNumber = useBlockNumber({
+      watch: true,
+    });
 
   return (
     <>
@@ -181,9 +179,9 @@ const VaultComp = ({
 
                   </GridItem>
 
-                  {/* {lastManagementBlock > (blockNumber.data ?? 0) ? ( */}
-                    {/* <></>
-                  ) : ( */}
+                  {lastManagementBlock > (blockNumber.data ?? 0) ? (
+                     <></>
+                  ) : ( 
                     <>
                     <GridItem alignItems="center">
                      <DepositButton
@@ -199,7 +197,7 @@ const VaultComp = ({
                      </Button>
                    </GridItem>
                     </>
-                  {/* )} */}
+                  )}
                 </Grid>
                 {+pendingDeposit + +currentAum > 0 &&
                   (+pendingDeposit + +currentAum) / +aumCap > 0.95 &&
