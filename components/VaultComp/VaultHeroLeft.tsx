@@ -44,8 +44,10 @@ export const VaultHeroLeft = () => {
 
   // CURRENT CHAIN BLOCK - to calculate against management block
   // const blockNumber = useBlockNumber({
-  //   watch: true,
+  //   chainId: 1
   // });
+
+  // console.log(blockNumber)
 
   // const formatDate = () => {
   //   const today = new Date();
