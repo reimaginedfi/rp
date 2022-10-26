@@ -140,7 +140,7 @@ export const VaultHeroLeft = () => {
 
   if (
     vaultState.isLoading ||
-    // isLoading ||
+    blockNumber.isLoading ||
     epoch.isLoading ||
     aumCap.isLoading
   ) {
