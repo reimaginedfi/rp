@@ -11,7 +11,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
   useColorMode,
@@ -251,7 +250,7 @@ const ChartsModal = () => {
                         tooltipText={
                           `Averaged from total daily gains of epoch 4 (${epoch4Data.length} days)`
                         }
-                        performance={epoch3Performance}
+                        performance={epoch4Performance}
                         value={`${epoch4Performance > 0 ? "+" : ""}${truncate(epoch4Performance.toString(), 2)}%`}
                       />
                     </Flex>

@@ -43,11 +43,9 @@ export const VaultHeroLeft = () => {
   ).toNumber();
 
   // CURRENT CHAIN BLOCK - to calculate against management block
-  // const blockNumber = useBlockNumber({
-  //   chainId: 1
-  // });
-
-  // console.log(blockNumber)
+  const blockNumber = useBlockNumber({
+    watch: true,
+  });
 
   // const formatDate = () => {
   //   const today = new Date();
@@ -142,7 +140,7 @@ export const VaultHeroLeft = () => {
 
   if (
     vaultState.isLoading ||
-    // isLoading ||
+    blockNumber.isLoading ||
     epoch.isLoading ||
     aumCap.isLoading
   ) {
