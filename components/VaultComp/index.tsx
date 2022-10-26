@@ -138,8 +138,11 @@ const VaultComp = ({
     const blockNumber = useBlockNumber({
       watch: true,
     });
+<<<<<<< HEAD
 
     // console.log(blockNumber)
+=======
+>>>>>>> fd31771 (fixed blocknumber)
 
   return (
     <>
@@ -199,7 +202,7 @@ const VaultComp = ({
                      </Button>
                    </GridItem>
                     </>
-                   )} 
+                  )}
                 </Grid>
                 {+pendingDeposit + +currentAum > 0 &&
                   (+pendingDeposit + +currentAum) / +aumCap > 0.95 &&
