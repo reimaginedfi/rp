@@ -93,7 +93,11 @@ export const getStaticProps = async () => {
     props: {
       previewAum: JSON.stringify({ data }),
     },
+<<<<<<< HEAD
     revalidate: cacheInSeconds,
+=======
+    revalidate: cacheInSeconds
+>>>>>>> 47adcdd (asd)
   };
 };
 export default Page;
