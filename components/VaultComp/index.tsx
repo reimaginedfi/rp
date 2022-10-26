@@ -138,11 +138,6 @@ const VaultComp = ({
     const blockNumber = useBlockNumber({
       watch: true,
     });
-<<<<<<< HEAD
-
-    // console.log(blockNumber)
-=======
->>>>>>> fd31771 (fixed blocknumber)
 
   return (
     <>
