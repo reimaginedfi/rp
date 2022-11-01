@@ -1,5 +1,5 @@
 import "@rainbow-me/rainbowkit/styles.css";
-
+import '../styles/globals.css'
 import { ChakraProvider } from "@chakra-ui/react";
 import { Global } from "@emotion/react";
 import "@fontsource/inter";

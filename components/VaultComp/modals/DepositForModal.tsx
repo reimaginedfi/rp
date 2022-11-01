@@ -142,7 +142,7 @@ export default function DepositForModal({
   }, [approveError, approveStatus, toast]);
 
   useEffect(() => {
-    vaults[chain!.id].map((contract) => {
+    vaults.map((contract) => {
       setContractConfig(contract);
       console.log("contract", contract);
     });
