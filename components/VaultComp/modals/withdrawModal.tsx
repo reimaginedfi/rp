@@ -224,11 +224,27 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
           Withdraw from Vault <ModalCloseButton />
         </ModalHeader>
         {!address ? (
-          <Stack h="full" p="1rem" alignItems="center">
+          <Stack
+            className={`ConnectButton${
+              colorMode === "light" ? "-light" : "-dark"
+            }`}
+            h="full"
+            p="1rem"
+            alignItems="center"
+          >
             <Text mb="1rem" textAlign="center">
               Connect your wallet to withdraw
             </Text>
             <ConnectButton
+              chainStatus={"none"}
+              showBalance={{
+                smallScreen: false,
+                largeScreen: true,
+              }}
+              accountStatus={{
+                smallScreen: "avatar",
+                largeScreen: "full",
+              }}
             />
           </Stack>
         ) : (

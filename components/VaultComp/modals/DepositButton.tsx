@@ -75,6 +75,8 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
     approveData,
   } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
 
+  const { colorMode } = useColorMode();
+
   // CHECKS DEPOSIT TXN UNTIL IT SUCCEEDS
   const { isLoading } = useWaitForTransaction({
     hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
@@ -107,8 +109,6 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
       }
     },
   });
-
-  const { colorMode } = useColorMode();
 
   const { address } = useAccount();
 
@@ -288,7 +288,14 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
             Deposit to Vault <ModalCloseButton />
           </ModalHeader>
           {!address ? (
-            <Stack h="full" p="1rem" alignItems="center">
+            <Stack
+              className={`ConnectButton${
+                colorMode === "light" ? "-light" : "-dark"
+              }`}
+              h="full"
+              p="1rem"
+              alignItems="center"
+            >
               <Text mb="1rem" textAlign="center">
                 Connect your wallet to deposit
               </Text>
