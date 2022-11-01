@@ -36,7 +36,7 @@ import { useAccount, useContractRead, useBlockNumber } from "wagmi";
 import dynamic from "next/dynamic";
 import { ContractConfig } from "../../contracts";
 import { commify } from "ethers/lib/utils";
-import {BigNumber} from 'ethers';
+import { BigNumber } from "ethers";
 import { truncate } from "../utils/stringsAndNumbers";
 import { Number } from "../Number";
 import useWindowSize from "react-use/lib/useWindowSize";
@@ -60,7 +60,7 @@ import ProgressBar from "../ui/ProgressBar";
 //Modals
 import WithdrawModal from "./modals/withdrawModal";
 import { DepositButton } from "./modals/DepositButton";
-import {Charts} from "../Charts";
+import { Charts } from "../Charts";
 import ChartsModal from "./modals/vaultPerformanceModal";
 import { DebankData } from "../../pages";
 
@@ -129,15 +129,15 @@ const VaultComp = ({
 
   const vaultState = useVaultState(BigNumber.from(epoch ?? 0).toNumber());
 
-    // MANAGEMENT BLOCK -
-    const lastManagementBlock = BigNumber.from(
-      vaultState.data?.lastManagementBlock ?? 0
-    ).toNumber();
-  
-    // CURRENT CHAIN BLOCK - to calculate against management block
-    const blockNumber = useBlockNumber({
-      watch: true,
-    });
+  // MANAGEMENT BLOCK -
+  const lastManagementBlock = BigNumber.from(
+    vaultState.data?.lastManagementBlock ?? 0
+  ).toNumber();
+
+  // CURRENT CHAIN BLOCK - to calculate against management block
+  const blockNumber = useBlockNumber({
+    watch: true,
+  });
 
   return (
     <>
@@ -175,27 +175,30 @@ const VaultComp = ({
                 >
                   <VaultHeroLeft />
                   <GridItem textAlign="center">
-                  <ChartsModal />
-
+                    <ChartsModal />
                   </GridItem>
 
                   {lastManagementBlock > (blockNumber.data ?? 0) ? (
-                     <></>
-                  ) : ( 
+                    <></>
+                  ) : (
                     <>
-                    <GridItem alignItems="center">
-                     <DepositButton
-                       depositSuccess={depositSuccess}
-                       setDepositSuccess={setDepositSuccess}
-                       approvalSuccess={approvalSuccess}
-                       setApprovalSuccess={setApprovalSuccess}
-                     />
-                   </GridItem>
-                   <GridItem>
-                     <Button w="full" variant="ghost" onClick={onOpenWithdraw}>
-                       Withdraw
-                     </Button>
-                   </GridItem>
+                      <GridItem alignItems="center">
+                        <DepositButton
+                          depositSuccess={depositSuccess}
+                          setDepositSuccess={setDepositSuccess}
+                          approvalSuccess={approvalSuccess}
+                          setApprovalSuccess={setApprovalSuccess}
+                        />
+                      </GridItem>
+                      <GridItem>
+                        <Button
+                          w="full"
+                          variant="ghost"
+                          onClick={onOpenWithdraw}
+                        >
+                          Withdraw
+                        </Button>
+                      </GridItem>
                     </>
                   )}
                 </Grid>

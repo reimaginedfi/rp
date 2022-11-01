@@ -37,8 +37,7 @@ import { noSpecialCharacters, truncate } from "../../utils/stringsAndNumbers";
 
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { TokenInput } from "../../TokenInput";
-
-import { formatUnits } from "ethers/lib/utils";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 interface DepositButtonProps {
   depositSuccess: string;
@@ -288,111 +287,135 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
           <ModalHeader>
             Deposit to Vault <ModalCloseButton />
           </ModalHeader>
-          <ModalBody
-            borderTop="solid 1px"
-            borderColor={colorMode === "dark" ? "#232323" : "#F3F3F3"}
-          >
-            <Stack spacing={3}>
-              <TokenInput
-                amount={amount}
-                setAmount={setAmount}
-                balanceDisplay={balanceDisplay}
-                errorMessage={tokenInputErrorMessage}
-                tokenAddress={asset.data?.toString() ?? ""}
+          {!address ? (
+            <Stack h="full" p="1rem" alignItems="center">
+              <Text mb="1rem" textAlign="center">
+                Connect your wallet to deposit
+              </Text>
+              <ConnectButton
+                chainStatus={"none"}
+                showBalance={{
+                  smallScreen: false,
+                  largeScreen: true,
+                }}
+                accountStatus={{
+                  smallScreen: "avatar",
+                  largeScreen: "full",
+                }}
               />
-              <Grid templateColumns="repeat(1, 1fr)" gap="0.5rem">
-                <GridItem>
-                  <Flex alignItems="center" justify="space-between">
-                    <Text fontSize={"lg"} fontWeight="bold">
-                      Total
-                    </Text>
-
-                    <Text fontSize={"lg"} fontWeight="bold" alignSelf="center">
-                      {commify(truncate(noSpecialCharacters(amount), 2))} USDC
-                    </Text>
-                  </Flex>
-                </GridItem>
-                <GridItem>
-                  <Flex alignItems="center" justify="space-between">
-                    <Text fontSize="lg" alignSelf="center">
-                      Fees
-                    </Text>
-                    <Flex alignItems="center" gap={2}>
-                      <Text>
-                        {commify(
-                          truncate(
-                            (
-                              (+noSpecialCharacters(amount) / 100) *
-                              2
-                            ).toString(),
-                            2
-                          )
-                        )}{" "}
-                        USDC
-                      </Text>
-                      <Tooltip
-                        hasArrow
-                        label="REFI takes 2% of the amount you deposit to the vault as management fees."
-                        bg={colorMode === "dark" ? "white" : "black"}
-                      >
-                        <InfoOutlineIcon w={3.5} h={3.5} />
-                      </Tooltip>
-                    </Flex>
-                  </Flex>
-                </GridItem>
-                <GridItem>
-                  <Flex alignItems="center" justify="space-between">
-                    <Text fontSize="lg" alignSelf="center">
-                      To deposit
-                    </Text>
-                    <Flex alignItems="center" gap={2}>
-                      <Text>
-                        {commify(
-                          truncate(
-                            (
-                              (+noSpecialCharacters(amount) / 100) *
-                              98
-                            ).toString(),
-                            2
-                          )
-                        )}{" "}
-                        USDC
-                      </Text>
-                      <Tooltip
-                        hasArrow
-                        label="Amount that goes into the vault (what you deposit minus the 2% fees)."
-                        bg={colorMode === "dark" ? "white" : "black"}
-                      >
-                        <InfoOutlineIcon w={3.5} h={3.5} />
-                      </Tooltip>
-                    </Flex>
-                  </Flex>
-                </GridItem>
-              </Grid>
             </Stack>
-          </ModalBody>
-          <ModalFooter>
-            <Stack w="full" textAlign={"left"}>
-              <Button
-                isDisabled={
-                  amount === "" ||
-                  !meetsMinimum ||
-                  !depositAllowed ||
-                  isApproving ||
-                  canDeposit.isLoading ||
-                  exceedsBalance
-                }
-                isLoading={
-                  isApproving || isLoading || isLoadingApprove || isStoring
-                }
-                onClick={!isApproved ? handleApprove : handleDeposit}
-                w={"full"}
-                variant={isApproved ? "primary" : "secondary"}
+          ) : (
+            <>
+              <ModalBody
+                borderTop="solid 1px"
+                borderColor={colorMode === "dark" ? "#232323" : "#F3F3F3"}
               >
-                {isApproved ? "Deposit" : "Approve"}
-              </Button>
-              {/* )} */}
-              {/* {amount === "" ||
+                <Stack spacing={3}>
+                  <TokenInput
+                    amount={amount}
+                    setAmount={setAmount}
+                    balanceDisplay={balanceDisplay}
+                    errorMessage={tokenInputErrorMessage}
+                    tokenAddress={asset.data?.toString() ?? ""}
+                  />
+                  <Grid templateColumns="repeat(1, 1fr)" gap="0.5rem">
+                    <GridItem>
+                      <Flex alignItems="center" justify="space-between">
+                        <Text fontSize={"lg"} fontWeight="bold">
+                          Total
+                        </Text>
+
+                        <Text
+                          fontSize={"lg"}
+                          fontWeight="bold"
+                          alignSelf="center"
+                        >
+                          {commify(truncate(noSpecialCharacters(amount), 2))}{" "}
+                          USDC
+                        </Text>
+                      </Flex>
+                    </GridItem>
+                    <GridItem>
+                      <Flex alignItems="center" justify="space-between">
+                        <Text fontSize="lg" alignSelf="center">
+                          Fees
+                        </Text>
+                        <Flex alignItems="center" gap={2}>
+                          <Text>
+                            {commify(
+                              truncate(
+                                (
+                                  (+noSpecialCharacters(amount) / 100) *
+                                  2
+                                ).toString(),
+                                2
+                              )
+                            )}{" "}
+                            USDC
+                          </Text>
+                          <Tooltip
+                            hasArrow
+                            label="REFI takes 2% of the amount you deposit to the vault as management fees."
+                            bg={colorMode === "dark" ? "white" : "black"}
+                          >
+                            <InfoOutlineIcon w={3.5} h={3.5} />
+                          </Tooltip>
+                        </Flex>
+                      </Flex>
+                    </GridItem>
+                    <GridItem>
+                      <Flex alignItems="center" justify="space-between">
+                        <Text fontSize="lg" alignSelf="center">
+                          To deposit
+                        </Text>
+                        <Flex alignItems="center" gap={2}>
+                          <Text>
+                            {commify(
+                              truncate(
+                                (
+                                  (+noSpecialCharacters(amount) / 100) *
+                                  98
+                                ).toString(),
+                                2
+                              )
+                            )}{" "}
+                            USDC
+                          </Text>
+                          <Tooltip
+                            hasArrow
+                            label="Amount that goes into the vault (what you deposit minus the 2% fees)."
+                            bg={colorMode === "dark" ? "white" : "black"}
+                          >
+                            <InfoOutlineIcon w={3.5} h={3.5} />
+                          </Tooltip>
+                        </Flex>
+                      </Flex>
+                    </GridItem>
+                  </Grid>
+                </Stack>
+              </ModalBody>
+              <ModalFooter>
+                <Stack w="full" textAlign={"left"}>
+                  <Button
+                    isDisabled={
+                      amount === "" ||
+                      !meetsMinimum ||
+                      !depositAllowed ||
+                      isApproving ||
+                      canDeposit.isLoading ||
+                      exceedsBalance
+                    }
+                    isLoading={
+                      isApproving || isLoading || isLoadingApprove || isStoring
+                    }
+                    onClick={!isApproved ? handleApprove : handleDeposit}
+                    w={"full"}
+                    variant={isApproved ? "primary" : "secondary"}
+                  >
+                    {isApproved ? "Deposit" : "Approve"}
+                  </Button>
+                  {/* )} */}
+                  {/* {amount === "" ||
               isApproving ||
               !isAllowed ||
               !depositAllowed ? null : (
@@ -414,11 +437,13 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
                   </Text>
                 </Button>
               )} */}
-              <Button variant={"ghost"} w={"full"} onClick={onClose}>
-                Cancel
-              </Button>
-            </Stack>
-          </ModalFooter>
+                  <Button variant={"ghost"} w={"full"} onClick={onClose}>
+                    Cancel
+                  </Button>
+                </Stack>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Modal>
     </>

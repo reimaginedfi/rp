@@ -23,8 +23,8 @@ import { useVaultUser } from "../../hooks/useVault";
 import { useContractConfig, useWatchVault } from "../../Vault/ContractContext";
 import { useCompleteAum } from "../../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../../Vault/hooks/useVaultAsset";
-import {truncate} from "../../utils/stringsAndNumbers"
 import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
   const { colorMode } = useColorMode();
@@ -112,8 +112,7 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
         borderRadius="1rem"
         bg={accordionBg}
       >
-
-        
+    {address ? (
     <Stack p={{ base: 1, md: 3 }}>
       <Stack
         w="100%"
@@ -285,7 +284,22 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
         </AlertDescription>
       </Alert>)}
       </Box>
-    </Stack>
+    </Stack>) : <Stack
+    alignItems="center"
+    >
+    <Text mb="1rem" textAlign="center">Connect your wallet to view your stats</Text>
+    <ConnectButton
+              chainStatus={"none"}
+              showBalance={{
+                smallScreen: false,
+                largeScreen: true,
+              }}
+              accountStatus={{
+                smallScreen: "avatar",
+                largeScreen: "full",
+              }}
+            />
+      </Stack>}
       </AccordionPanel>
     </AccordionItem>
   </Accordion>
