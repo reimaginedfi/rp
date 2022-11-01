@@ -115,7 +115,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
 
   // GETS CONTRACT CONFIG FROM VAULTS
   useEffect(() => {
-    vaults[chain!.id].map((contract) => {
+    vaults.map((contract) => {
       setContractConfig(contract);
     });
   }, [chain, vaults]);
@@ -236,7 +236,7 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
   }, [isLoading, depositSuccess]);
 
   //VAULT CONTRAG CONFIG
-  const vaultConfig = vaultConfigs[chain!.id][0];
+  const vaultConfig = vaultConfigs[0];
 
   //CAN DEPOSIT / DEPOSIT ALLOWED - checks whether user meets the criteria (has enough REFI tokens, has deposited 25K before)
   const canDeposit = useContractRead({
