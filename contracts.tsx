@@ -44,6 +44,7 @@ export const vaults: ContractsMap[] = [
       contractInterface: vaultContractInterface.abi,
     },
     // {
+    //   id: 2,
     //   name: "Mock USDC RP Vault",
     //   addressOrName: "0x63bBB71B68c76B78243d0a4AA463D34536788A15",
     //   contractInterface: vaultContractInterface.abi,

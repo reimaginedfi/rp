@@ -108,6 +108,13 @@ export const useVaultUser = (
     watch: true,
   });
 
+  const updatePendingDeposit = useContractWrite({
+    ...contractConfig,
+    functionName: "updatePendingDepositState",
+    args: [vaultUserAddress],
+    mode: "recklesslyUnprepared",
+  });
+
   const totalDeposited =
     user.data && BigNumber.isBigNumber(user.data.assetsDeposited)
       ? BigNumber.from(user.data.assetsDeposited).toNumber()
@@ -122,6 +129,7 @@ export const useVaultUser = (
       (BigNumber.isBigNumber(user.data?.[1]) &&
         BigNumber.from(user.data?.[1]).gt(0)),
     totalDeposited,
+    updatePendingDeposit
   };
 };
 

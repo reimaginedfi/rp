@@ -34,7 +34,7 @@ import {
   useAccount,
 } from "wagmi";
 import { vaults } from "../../../contracts";
-import { useVaultMeta, useVaultWithdraw } from "../../hooks/useVault";
+import { useVaultMeta, useVaultWithdraw, useVaultUser } from "../../hooks/useVault";
 import { DangerToast, SuccessToast } from "../../Toasts";
 import getErrorMessage from "../../utils/errors";
 import { truncate } from "../../utils/stringsAndNumbers";
@@ -67,6 +67,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     unlockData,
     claimData,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
+
+  const {hasPendingDeposit, updatePendingDeposit} = useVaultUser(contractConfig, address!);
 
   const withdrawalFeeAmount = useContractRead({
     ...contractConfig,
@@ -214,8 +216,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   const exceedsHoldings =
     user?.data && +amount > +formatUnits(user.data?.vaultShares, 6);
 
-  // console.log(formatUnits(user?.data?.assetsDeposited, 6))
-
+  const needToClaim = formatUnits(user.data?.vaultShares ?? 0, 6) === "0.0" && hasPendingDeposit.data
+  
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
       <ModalOverlay />
@@ -246,6 +248,20 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                 largeScreen: "full",
               }}
             />
+          </Stack>
+        ) : needToClaim ? (
+          <Stack alignContent="center">
+            <Text mb="1rem" textAlign="center"> You have a pending deposit with unclaimed Vault Tokens. You need to claim before unlocking and withdrawing.</Text>
+            <Button
+            size={"sm"}
+            colorScheme="orange"
+            isLoading={updatePendingDeposit.isLoading}
+            onClick={() => {
+              updatePendingDeposit.write();
+            }}
+          >
+            Claim Pending
+          </Button>
           </Stack>
         ) : (
           <>
