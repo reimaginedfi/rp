@@ -34,9 +34,6 @@ const ChartsModal = () => {
   const [epoch3Data, setepoch3Data] = useState<any[]>([]);
   const [epoch4Data, setepoch4Data] = useState<any[]>([]);
   const [fullPerformance, setFullPerformance] = useState<number>(0);
-  const [epoch2Performance, setEpoch2Performance] = useState<number>(0);
-  const [epoch3Performance, setEpoch3Performance] = useState<number>(0);
-  const [epoch4Performance, setEpoch4Performance] = useState<number>(0);
 
   useEffect(() => {
     const getData = async () => {
@@ -200,8 +197,8 @@ const ChartsModal = () => {
                         tooltipText={
                           `Final performance of epoch 2 (${epoch2Data.length} days)`
                         }
-                        performance={epoch2Data[epoch2Data.length - 1].Change}
-                        value={`${epoch2Data[epoch2Data.length - 1].Change > 0 ? "+" : ""}${truncate(epoch2Data[epoch2Data.length - 1].Change, 2)}%`}
+                        performance={epoch2Data.length !== 0 && epoch2Data[epoch2Data.length - 1].Change}
+                        value={`${epoch2Data.length !== 0 && epoch2Data[epoch2Data.length - 1].Change > 0 ? "+" : ""}${epoch2Data.length !== 0 && truncate(epoch2Data[epoch2Data.length - 1].Change, 2)}%`}
                       />
                                         </Flex>
                     <Charts epoch={2} data={epoch2Data} />
@@ -211,10 +208,10 @@ const ChartsModal = () => {
                     <InfoData
                         heading={"Total Gain"}
                         tooltipText={
-                          `Averaged from total daily gains of epoch 3 (${epoch3Data.length} days)`
+                          `Final performance of epoch 3 (${epoch3Data!.length} days)`
                         }
-                        performance={epoch3Data[epoch3Data.length - 1].Change}
-                        value={`${truncate(epoch3Data[epoch3Data.length - 1].Change, 2)}%`}
+                        performance={epoch3Data.length !== 0 && epoch3Data![epoch3Data.length - 1].Change}
+                        value={`${epoch3Data.length !== 0 && truncate(epoch3Data![epoch3Data.length - 1].Change, 2)}%`}
                       />
                     </Flex>
                     <Charts epoch={3} data={epoch3Data} />
@@ -224,10 +221,10 @@ const ChartsModal = () => {
                     <InfoData
                         heading={"Total Gain"}
                         tooltipText={
-                          `Averaged from total daily gains of epoch 4 (${epoch4Data.length} days)`
+                          `Final performance of epoch 4 (${epoch4Data.length} days)`
                         }
-                        performance={epoch4Data[epoch4Data.length - 1].Change}
-                        value={`${truncate(epoch4Data[epoch4Data.length - 1].Change, 2)}%`}
+                        performance={epoch4Data.length !== 0 && epoch4Data[epoch4Data!.length - 1].Change}
+                        value={`${epoch4Data.length !== 0 && truncate(epoch4Data[epoch4Data!.length - 1].Change, 2)}%`}
                       />
                     </Flex>
                     <Charts epoch={4} data={epoch4Data} />
