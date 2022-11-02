@@ -30,7 +30,7 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
   const contractConfig = useContractConfig();
-  const { user, sharesValue, hasPendingDeposit, totalDeposited } = useVaultUser(
+  const { user, sharesValue, hasPendingDeposit, updatePendingDeposit } = useVaultUser(
     contractConfig,
     address ?? ""
   );
@@ -43,13 +43,6 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
     const shouldShowNotification =
       userHasPendingDeposit.data &&
       userHasPendingDeposit.data.toString() === "true";
-
-  const updatePendingDeposit = useContractWrite({
-    ...contractConfig,
-    functionName: "updatePendingDepositState",
-    args: [address],
-    mode: "recklesslyUnprepared",
-  });
 
   const userResult = useWatchVault("vaultUsers", {
     args: [address],
