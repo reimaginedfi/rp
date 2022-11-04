@@ -68,8 +68,6 @@ export default function VaultActivityAccordion({ contractConfig }: any) {
     if (vaultActivity?.data) setVaultTxns(vaultActivity.data?.result);
   }, [vaultActivity]);
 
-  console.log(vaultTxns.filter((txn) => txn.functionName.includes("aum")));
-
   return (
     <Accordion borderRadius="1rem" pt="1rem" allowToggle border="none">
       <AccordionItem border="none">
