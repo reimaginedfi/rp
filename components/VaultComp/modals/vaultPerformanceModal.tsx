@@ -83,7 +83,7 @@ const ChartsModal = () => {
         epoch5Data.length !== 0 ? epoch5Data[epoch5Data.length - 1].Change : 0;
 
       setFullPerformance(
-        +epoch3 + +epoch4 + +epoch5 + +epoch2 / 4
+        (+epoch2 + +epoch3 + +epoch4 + +epoch5) / 4
       );
     }
   }, [pastEpochData]);
