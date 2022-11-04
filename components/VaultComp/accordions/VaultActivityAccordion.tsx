@@ -17,8 +17,9 @@ import {
 
 //Icons
 import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
-import { HiSave } from "react-icons/hi";
+import { HiSave, HiPlay, HiPlus } from "react-icons/hi";
 import { AiFillUnlock, AiFillFastForward } from "react-icons/ai";
+import {FaFileContract} from "react-icons/fa";
 
 //Fetching stuff
 import axios from "axios";
@@ -85,8 +86,7 @@ export default function VaultActivityAccordion({ contractConfig }: any) {
               variant="medium"
               color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
               textAlign={"left"}
-              ml={{base: "0", md: "1.5rem"}}
-
+              ml={{ base: "0", md: "1.5rem" }}
             >
               Action
             </Text>
@@ -117,7 +117,11 @@ export default function VaultActivityAccordion({ contractConfig }: any) {
             vaultTxns.map((txn: any) => {
               if (
                 txn.functionName.includes("setFees") ||
-                txn.functionName.includes("send") || txn.functionName.includes("aum") || txn.functionName.includes("vault")
+                txn.functionName.includes("send") ||
+                txn.functionName.includes("setAum") ||
+                txn.functionName.includes("VaultConfig") ||
+                txn.functionName.includes("IsFee") ||
+                txn.isError === "1"
               ) {
                 return;
               }
@@ -134,7 +138,7 @@ export default function VaultActivityAccordion({ contractConfig }: any) {
                     gap="0.25rem"
                     alignItems="center"
                     justifyContent="left"
-                    ml={{base: "0", md: "1rem"}}
+                    ml={{ base: "0", md: "1rem" }}
                   >
                     {txn.functionName.includes("deposit") ? (
                       <HiSave />
@@ -144,9 +148,13 @@ export default function VaultActivityAccordion({ contractConfig }: any) {
                       <GiReceiveMoney />
                     ) : txn.functionName.includes("unlock") ? (
                       <AiFillUnlock />
-                    ) : (
-                      txn.functionName.includes("update") && <GiPayMoney />
-                    )}
+                    ) : txn.functionName.includes("DepositState") ? (
+                      <GiPayMoney />
+                    ) :
+                    txn.functionName.includes("update") ? (<HiPlus/>) 
+                    : (
+                      txn.functionName.includes("start") ? <HiPlay />
+                     : <FaFileContract/>)}
                     <Heading
                       fontWeight="400"
                       variant="small"
@@ -155,12 +163,16 @@ export default function VaultActivityAccordion({ contractConfig }: any) {
                       {txn.functionName.includes("deposit")
                         ? "Deposit"
                         : txn.functionName.includes("unlock")
-                        ? "Unlock"
+                        ? "Unlock VT"
                         : txn.functionName.includes("progressEpoch")
                         ? "Next Epoch"
                         : txn.functionName.includes("withdraw")
                         ? "Withdraw"
-                        : txn.functionName.includes("update") && "Claim"}
+                        : txn.functionName.includes("DepositState")
+                        ? "Claim VT"
+                        : txn.functionName.includes("update") ? "Update AUM"
+                        : txn.functionName.includes("start") ? "Start Vault"
+                        : "Contract"}
                     </Heading>
                   </Flex>
                   <Flex
