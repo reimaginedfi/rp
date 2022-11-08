@@ -18,13 +18,22 @@ import {
   Tooltip,
   Text,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import supabaseClient from "../../../utils/supabaseClient";
 import { Charts } from "../../Charts";
+import { VaultData } from "../../../pages";
 
 import { InfoOutlineIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 
 import { truncate } from "../../utils/stringsAndNumbers";
+
+interface performanceDataProps {
+  percentage_change: string;
+  created_at: string;
+  amount_after: string;
+  amount_before: string;
+  epoch_number: string;
+}
 
 const ChartsModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -35,26 +44,18 @@ const ChartsModal = () => {
   const [epoch4Data, setepoch4Data] = useState<any[]>([]);
   const [epoch5Data, setepoch5Data] = useState<any[]>([]);
   const [fullPerformance, setFullPerformance] = useState<number>(0);
+  const value = useContext(VaultData);
+
 
   useEffect(() => {
-    const getData = async () => {
-      const { data, error } = await supabaseClient
-        .from("rp_data")
-        .select("*")
-        .order("created_at", { ascending: true });
-      if (!data && error) {
-        console.log("Error while fetching epoch data", error);
-        alert("Error while fetching epoch data");
-        return;
-      }
-      const renamedData = data.map(
+      const renamedData = value!.performanceData!.map(
         ({
           percentage_change,
           created_at,
           amount_after,
           epoch_number,
           ...rest
-        }) => ({
+        }: performanceDataProps) => ({
           ...rest,
           Change: percentage_change,
           Date: created_at,
@@ -63,13 +64,11 @@ const ChartsModal = () => {
         })
       );
       setPastEpochData(renamedData);
-      setepoch2Data(renamedData.filter((item) => item.Epoch === "2"));
-      setepoch3Data(renamedData.filter((item) => item.Epoch === "3"));
-      setepoch4Data(renamedData.filter((item) => item.Epoch === "4"));
-      setepoch5Data(renamedData.filter((item) => item.Epoch === "5" ?? null));
-    };
-    getData();
-  }, []);
+      setepoch2Data(renamedData.filter((item: any) => item.Epoch === "2"));
+      setepoch3Data(renamedData.filter((item: any) => item.Epoch === "3"));
+      setepoch4Data(renamedData.filter((item: any) => item.Epoch === "4"));
+      setepoch5Data(renamedData.filter((item: any) => item.Epoch === "5" ?? null));
+  }, [value]);
 
   useEffect(() => {
     if (fullPerformance === 0 && pastEpochData.length) {
@@ -130,18 +129,28 @@ const ChartsModal = () => {
         _hover={{ cursor: "pointer" }}
         direction="column"
       >
-        <Flex direction="row" align="center" justify="center">
-          <Heading mr="0.35rem" variant="medium" _hover={{ cursor: "pointer" }}>
-            Vault Performance
-          </Heading>
-          <Tooltip
-            label="Click chart to view more charts"
+        <Flex direction="column" align="center" justify="center">
+        <Heading variant="medium" _hover={{ cursor: "pointer" }} mb="0.3rem">
+            Annualized Gains{" "}
+            <Tooltip
+            label="Click chart for more info"
             aria-label="A tooltip"
             bg={colorMode === "dark" ? "white" : "black"}
-            mt="0.1rem"
           >
             <InfoOutlineIcon w={3.5} h={3.5} />
           </Tooltip>
+          </Heading>
+        <Text
+          fontStyle="medium"
+          fontWeight="600"
+          fontSize={{ base: "14px", md: "16px" }}
+          color={fullPerformance > 0 ? "green.500" : "red.500"}
+        >
+          {fullPerformance > 0 && "+"}{truncate(
+                          (fullPerformance * 12).toString(),
+                          2
+                        )}%
+        </Text>
         </Flex>
         <Charts forHero epoch={0} data={pastEpochData} />
         <Text
@@ -176,9 +185,9 @@ const ChartsModal = () => {
                   <TabPanel maxW={"100%"} w="37rem" h="250px">
                     <Flex my={3} direction="row" justify="space-around">
                       <InfoData
-                        heading={"Total Average Gain"}
+                        heading={"Average per Epoch"}
                         tooltipText={
-                          "How much the vault has grown since inception (averaged from all epochs)"
+                          "How much the vault has grown every epoch (averaged from all epochs)"
                         }
                         performance={fullPerformance}
                         value={`${fullPerformance > 0 && "+"}${truncate(
@@ -187,9 +196,9 @@ const ChartsModal = () => {
                         )}%`}
                       />
                       <InfoData
-                        heading={"Annualized Gain (APY)"}
+                        heading={"Annualized Gains"}
                         tooltipText={
-                          "Probable gains from performance of all epochs (current and past) averaged and extended over a 12-month period                    "
+                          "Probable gains from performance of all epochs (current and past) averaged and extended over a 12-month period."
                         }
                         performance={fullPerformance}
                         value={`${fullPerformance > 0 && "+"}${truncate(

@@ -62,7 +62,7 @@ import WithdrawModal from "./modals/withdrawModal";
 import { DepositButton } from "./modals/DepositButton";
 import { Charts } from "../Charts";
 import ChartsModal from "./modals/vaultPerformanceModal";
-import { DebankData } from "../../pages";
+import { VaultData } from "../../pages";
 
 type VaultProps = {
   currentAum: string;
@@ -90,14 +90,7 @@ const VaultComp = ({
   const { address } = useAccount();
   const [depositSuccess, setDepositSuccess] = useState<string>("");
   const [approvalSuccess, setApprovalSuccess] = useState<string>("");
-  const previewAum = useContext(DebankData);
-
-  //MODAL OPEN/CLOSE STATES
-  const {
-    isOpen: depositIsOpen,
-    onOpen: onOpenDeposit,
-    onClose: onCloseDeposit,
-  } = useDisclosure();
+  const value = useContext(VaultData);
 
   const {
     isOpen: withdrawIsOpen,
@@ -303,7 +296,7 @@ const VaultComp = ({
                   </AccordionItem>
                 </Accordion> */}
 
-                <UserStatsAccordion previewAum={previewAum} />
+                <UserStatsAccordion previewAum={(value as any).previewAum} />
                 <Accordion
                   borderRadius="1rem"
                   pt="1rem"

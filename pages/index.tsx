@@ -3,15 +3,28 @@ import dynamic from "next/dynamic";
 import axios from "axios";
 import { BigNumber } from "ethers";
 import { createContext, useContext } from "react";
+import supabaseClient from "../utils/supabaseClient";
+
 
 const PageContent = dynamic(() => import("../components/PageContent"), {
   ssr: false,
 });
 
-export const DebankData = createContext(null);
-const Page = ({ previewAum }: { previewAum: any }) => {
+interface defaultValues {
+  previewAum: string,
+  performanceData: any
+}
+
+export const VaultData = createContext<defaultValues | undefined>(undefined);
+
+const Page = ({ previewAum, performanceData }: defaultValues ) => {
   const title = "REFI Pro";
   const description = "$REFI is DeFi, reimagined.";
+
+  const value: any = {
+    previewAum,
+    performanceData
+  };
 
   return (
     <>
@@ -37,14 +50,19 @@ const Page = ({ previewAum }: { previewAum: any }) => {
           ],
         }}
       />
-      <DebankData.Provider value={previewAum}>
+      <VaultData.Provider value={value}>
         <PageContent />
-      </DebankData.Provider>
+      </VaultData.Provider>
     </>
   );
 };
 
 export const getStaticProps = async () => {
+  const { data: performanceData } = await supabaseClient
+  .from("rp_data")
+  .select("*")
+  .order("created_at", { ascending: true });
+
   const totalBalance = await fetch(
     "https://pro-openapi.debank.com/v1/user/total_balance?id=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
     {
@@ -92,6 +110,7 @@ export const getStaticProps = async () => {
   return {
     props: {
       previewAum: JSON.stringify({ data }),
+      performanceData: performanceData
     },
     revalidate: cacheInSeconds
   };

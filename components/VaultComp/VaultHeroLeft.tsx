@@ -19,7 +19,7 @@ import { commify, formatUnits } from "ethers/lib/utils";
 import moment from "moment";
 import { useContext, useEffect } from "react";
 import { useBlockNumber, useProvider } from "wagmi";
-import { DebankData } from "../../pages";
+import { VaultData } from "../../pages";
 import supabaseClient from "../../utils/supabaseClient";
 import { useVaultState } from "../hooks/useVault";
 import ProgressBar from "../ui/ProgressBar";
@@ -28,11 +28,11 @@ import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 
 export const VaultHeroLeft = () => {
 
-  const previewAum = useContext(DebankData);
+  const value = useContext(VaultData);
 
   // VAULT META DATA - used to display vault info
   const { epoch, aum, aumCap, rawGains, factor, previewValue } =
-    useCompleteAum(previewAum);
+    useCompleteAum((value as any).previewAum);
 
   // VAULT CONTRACT - fetches current vault state
   const vaultState = useVaultState(BigNumber.from(epoch.data ?? 0).toNumber());
@@ -197,14 +197,14 @@ export const VaultHeroLeft = () => {
       </Badge>
       <Stat mt={"0.5rem"}>
         {/* @ts-expect-error */}
-        <Skeleton isLoaded={!previewAum?.isValidating && !aum.isLoading}>
+        <Skeleton isLoaded={!value.previewAum?.isValidating && !aum.isLoading}>
           <StatNumber>
                     {factor >= 1 ? "+" : ""}
             {((factor - 1) * 100).toFixed(2)}%
           </StatNumber>
         </Skeleton>
         {/* @ts-expect-error */}
-        <Skeleton isLoaded={!previewAum?.isValidating && !aum.isLoading}>
+        <Skeleton isLoaded={!value.previewAum?.isValidating && !aum.isLoading}>
           <Tooltip
             label={`Projected AUM: ${commify(
               formatUnits(previewValue, 6)
