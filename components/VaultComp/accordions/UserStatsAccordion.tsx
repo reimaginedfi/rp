@@ -18,12 +18,12 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
-import { useAccount, useContractWrite } from "wagmi";
+import { useAccount } from "wagmi";
 import { useVaultUser } from "../../hooks/useVault";
 import { useContractConfig, useWatchVault } from "../../Vault/ContractContext";
 import { useCompleteAum } from "../../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../../Vault/hooks/useVaultAsset";
-import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
+import { commify, formatUnits } from "ethers/lib/utils";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function UserStatsAccordion({previewAum}: { previewAum: any}) {

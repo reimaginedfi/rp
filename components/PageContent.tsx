@@ -1,5 +1,4 @@
 import { Button, Grid, GridItem, Heading, Stack } from "@chakra-ui/react";
-import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 
 import { vaults } from "../contracts";
@@ -8,8 +7,6 @@ import { Vault } from "./Vault";
 export const PageContent = () => {
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
-
-  console.log(chain)
 
   return (
     <>
