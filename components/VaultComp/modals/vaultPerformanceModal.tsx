@@ -130,7 +130,7 @@ const ChartsModal = () => {
         direction="column"
       >
         <Flex direction="column" align="center" justify="center">
-        <Heading variant="medium" _hover={{ cursor: "pointer" }} mb="0.1rem">
+        <Heading variant="medium" _hover={{ cursor: "pointer" }} mb="0.5rem">
             Annualized Gains{" "}
             <Tooltip
             label="Click chart for more info"
