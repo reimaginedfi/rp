@@ -12,27 +12,25 @@ import {
   StatHelpText,
   StatNumber,
   Text,
-  Tooltip,
+  Tooltip
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
 import { commify, formatUnits } from "ethers/lib/utils";
-import moment from "moment";
 import { useContext, useEffect } from "react";
-import { useBlockNumber, useProvider } from "wagmi";
+import { useBlockNumber } from "wagmi";
 import { VaultData } from "../../pages";
-import supabaseClient from "../../utils/supabaseClient";
 import { useVaultState } from "../hooks/useVault";
 import ProgressBar from "../ui/ProgressBar";
 import { truncate } from "../utils/stringsAndNumbers";
 import { useCompleteAum } from "../Vault/hooks/usePreviewAum";
 
 export const VaultHeroLeft = () => {
-
   const value = useContext(VaultData);
 
   // VAULT META DATA - used to display vault info
-  const { epoch, aum, aumCap, rawGains, factor, previewValue } =
-    useCompleteAum((value as any).previewAum);
+  const { epoch, aum, aumCap, rawGains, factor, previewValue } = useCompleteAum(
+    (value as any).previewAum
+  );
 
   // VAULT CONTRACT - fetches current vault state
   const vaultState = useVaultState(BigNumber.from(epoch.data ?? 0).toNumber());
@@ -44,97 +42,36 @@ export const VaultHeroLeft = () => {
 
   // CURRENT CHAIN BLOCK - to calculate against management block
   const blockNumber = useBlockNumber({
-    chainId: 1
+    chainId: 1,
   });
 
-  // const formatDate = () => {
-  //   const today = new Date();
-  //   const yyyy = today.getFullYear();
-  //   let mm: number | string = today.getMonth() + 1; // Months start at 0!
-  //   let dd: number | string = today.getDate();
-
-  //   if (dd < 10) dd = "0" + dd;
-  //   if (mm < 10) mm = "0" + mm;
-
-  //   const formattedToday = yyyy + "-" + mm + "-" + dd;
-  //   return formattedToday;
-  // };`
-
-  // console.log(epoch, aum, rawGains, factor, previewValue);
-
-
   useEffect(() => {
-    const storeData = async () => {
-      // console.log("getData executing");
-      const { data, error } = await supabaseClient
-        .from("rp_data")
-        .select("*")
-        .order("created_at", { ascending: true });
-
-      if (data && !error) {
-        // console.log("supabaseData: ", data);
-        if (factor && rawGains && epoch.data && previewValue && aum.data) {
-          const epochData = epoch.data?.toString();
-          const percentageChange =
-            (factor >= 1 ? "+" : "") + ((factor - 1) * 100).toFixed(2);
-          const amountChange =
-            (factor >= 1 ? "+" : "-") +
-            truncate(commify(formatUnits(rawGains.abs().toString(), 6)), 2);
-
-          const amountBefore = truncate(
-            commify(formatUnits(aum?.data?._hex, 6)),
-            2
-          );
-          const amountAfter = truncate(
-            commify(formatUnits(previewValue, 6)),
-            2
-          );
-
-          const days = moment().diff(
-            moment(data[data.length - 1].created_at),
-            "days"
-          );
-
-          // const hours = moment().diff(
-          //   moment(data[data.length - 1].created_at),
-          //   "hours",
-          //   true
-          // );
-
-          // console.log("days: ", days);
-
-          console.log("hours: ", days);
-
-          if (days >= 1) {
-            // console.log("inserting data");
-            const { data, error } = await supabaseClient
-              .from("rp_data")
-              .insert([
-                {
-                  epoch_number: epochData,
-                  percentage_change: percentageChange,
-                  amount_change: amountChange,
-                  amount_before: amountBefore,
-                  amount_after: amountAfter,
-                },
-              ]);
-            // console.log("supabaseData after inserting: ", data);
-            // console.log("supabaseError after inserting: ", error);
-          }
-        }
-      }
-      if (error) {
-        console.log("supabaseError: ", error);
-      }
-    };
     if (
       factor &&
       rawGains &&
-      epoch &&
+      epoch?.data &&
+      previewValue &&
+      aum.data &&
       !(lastManagementBlock > (blockNumber.data ?? 0)) &&
       !(aumCap.data?.toString() === "0.0")
     ) {
-      storeData();
+      (async () => {
+        const res = await fetch("/api/epochData", {
+          method: "POST",
+          body: JSON.stringify({
+            amountChange:
+              (factor >= 1 ? "+" : "-") +
+              truncate(commify(formatUnits(rawGains, 6)), 2),
+            percentageChange:
+              (factor >= 1 ? "+" : "") + ((factor - 1) * 100).toFixed(2),
+            amountBefore: truncate(commify(formatUnits(aum?.data?._hex, 6)), 2),
+            amountAfter: truncate(commify(formatUnits(previewValue, 6)), 2),
+            epochData: epoch.data?.toString(),
+          }),
+        });
+
+        console.log("res: ", res);
+      })();
     }
   }, [factor]);
 
@@ -199,7 +136,7 @@ export const VaultHeroLeft = () => {
         {/* @ts-expect-error */}
         <Skeleton isLoaded={!value.previewAum?.isValidating && !aum.isLoading}>
           <StatNumber>
-                    {factor >= 1 ? "+" : ""}
+            {factor >= 1 ? "+" : ""}
             {((factor - 1) * 100).toFixed(2)}%
           </StatNumber>
         </Skeleton>
