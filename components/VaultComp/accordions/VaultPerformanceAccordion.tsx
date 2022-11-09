@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 import {
   Accordion,
@@ -17,36 +17,21 @@ import {
   StatArrow,
 } from "@chakra-ui/react";
 
+import { VaultData } from "../../../pages";
+
 import supabaseClient from "../../../utils/supabaseClient";
 import { commify } from "ethers/lib/utils";
 import moment from "moment";
 export default function VaultPerformanceAccordion() {
   const { colorMode } = useColorMode();
+  const value = useContext(VaultData);
+  
+  // const [pastEpochData, setPastEpochData] = useState<any[]>([]);
 
-  const [pastEpochData, setPastEpochData] = useState<any[]>([]);
-  useEffect(() => {
-    const getData = async () => {
-      const { data, error } = await supabaseClient
-        .from("rp_data")
-        .select("*")
-        .order("id", { ascending: false });
-      if (!data && error) {
-        console.log("Error while fetching epoch data", error);
-        alert("Error while fetching epoch data");
-        return;
-      }
-      setPastEpochData(
-        data
-        // .sort((a, b) =>
-        //   moment(b.created_at, "DD-MM-YYYY").diff(
-        //     moment(a.created_at, "DD-MM-YYYY")
-        //   )
-        // )
-      );
-    };
-    getData();
-  }, []);
 
+  // useEffect(() => {
+  //   setPastEpochData(value!.performanceData.reverse())
+  // }, [value]);
 
   return (
     <Accordion borderRadius="1rem" pt="1rem" allowToggle border="none">
@@ -91,8 +76,8 @@ export default function VaultPerformanceAccordion() {
             </Text>
           </Grid>
 
-          {pastEpochData.length > 1 ? (
-            pastEpochData.map((data: any) => {
+          {value!.performanceData.length > 1 ? (
+            value!.performanceData.reverse().map((data: any) => {
               return (
                 <Grid
                   key={data.id}
@@ -157,6 +142,7 @@ export default function VaultPerformanceAccordion() {
                       />
                       {data.amount_change.includes(",") || data.amount_change.length <= 7 
                         ? data.amount_change
+                        : data.amount_change.length > 8 ? commify(data.amount_change).substring(1)
                         : commify(data.amount_change)}
                     </Text>
                   </Stat>

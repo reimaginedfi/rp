@@ -19,7 +19,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useState, useContext } from "react";
-import supabaseClient from "../../../utils/supabaseClient";
 import { Charts } from "../../Charts";
 import { VaultData } from "../../../pages";
 
@@ -45,7 +44,6 @@ const ChartsModal = () => {
   const [epoch5Data, setepoch5Data] = useState<any[]>([]);
   const [fullPerformance, setFullPerformance] = useState<number>(0);
   const value = useContext(VaultData);
-
 
   useEffect(() => {
       const renamedData = value!.performanceData!.map(
@@ -80,7 +78,6 @@ const ChartsModal = () => {
         epoch4Data.length !== 0 && epoch4Data[epoch4Data.length - 1].Change;
       let epoch5 = 
         epoch5Data.length !== 0 ? epoch5Data[epoch5Data.length - 1].Change : 0;
-
       setFullPerformance(
         (+epoch2 + +epoch3 + +epoch4 + +epoch5) / 4
       );
