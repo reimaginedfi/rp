@@ -142,7 +142,6 @@ export default function VaultPerformanceAccordion() {
                       />
                       {data.amount_change.includes(",") || data.amount_change.length <= 7 
                         ? data.amount_change
-                        : data.amount_change.length > 8 ? commify(data.amount_change).substring(1)
                         : commify(data.amount_change)}
                     </Text>
                   </Stat>
