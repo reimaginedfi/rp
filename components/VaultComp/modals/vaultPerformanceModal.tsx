@@ -67,7 +67,7 @@ const ChartsModal = () => {
       setepoch2Data(renamedData.filter((item: any) => item.Epoch === "2"));
       setepoch3Data(renamedData.filter((item: any) => item.Epoch === "3"));
       setepoch4Data(renamedData.filter((item: any) => item.Epoch === "4"));
-      setepoch5Data(renamedData.filter((item: any) => item.Epoch === "5" ?? null));
+      setepoch5Data(renamedData.filter((item: any) => item.Epoch === "5"));
   }, [value]);
 
   useEffect(() => {
@@ -79,7 +79,7 @@ const ChartsModal = () => {
       let epoch4 =
         epoch4Data.length !== 0 && epoch4Data[epoch4Data.length - 1].Change;
       let epoch5 = 
-        epoch5Data.length !== 0 ? epoch5Data[epoch5Data.length - 1].Change : 0;
+        epoch5Data.length !== 0 && epoch5Data[epoch5Data.length - 1].Change;
 
       setFullPerformance(
         (+epoch2 + +epoch3 + +epoch4 + +epoch5) / 4
