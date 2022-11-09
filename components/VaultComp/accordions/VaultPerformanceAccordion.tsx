@@ -142,7 +142,7 @@ export default function VaultPerformanceAccordion() {
                   </Stat>
                 </Grid>
               );
-            })
+            }).reverse()
           ) : (
             <SkeletonText />
           )}
