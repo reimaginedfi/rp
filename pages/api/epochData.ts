@@ -9,7 +9,6 @@ const handler: NextApiHandler = async (req, res) => {
     amountChange,
     amountBefore,
     amountAfter,
-
   } = JSON.parse(req.body);
 
   (async () => {
@@ -25,7 +24,7 @@ const handler: NextApiHandler = async (req, res) => {
           "days"
         );
 
-        console.log("hours: ", days);
+        // console.log("hours: ", days);
 
         if (days >= 1) {
           console.log("inserting data");
@@ -38,12 +37,12 @@ const handler: NextApiHandler = async (req, res) => {
               amount_after: amountAfter,
             },
           ]);
-          console.log("supabaseData after inserting: ", data);
-          console.log("supabaseError after inserting: ", error);
+          // console.log("supabaseData after inserting: ", data);
+          // console.log("supabaseError after inserting: ", error);
         }
     }
     if (error) {
-      console.log("supabaseError: ", error);
+      // console.log("supabaseError: ", error);
     }
   })();
 
