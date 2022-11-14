@@ -106,7 +106,7 @@ export const VaultHeroLeft = () => {
           console.log("hours: ", days);
 
           if (days >= 1) {
-            // console.log("inserting data");
+            console.log("inserting data");
             const { data, error } = await supabaseClient
               .from("rp_data")
               .insert([

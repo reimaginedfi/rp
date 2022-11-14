@@ -96,9 +96,6 @@ export const getStaticProps = async () => {
   const adjustments = BigNumber.from(0);
   const adjustmentsNotes = "MLP Position";
 
-  // cache server-side every 4 hours
-  const cacheInSeconds = 4 * 60 * 60; // 4 hours
-
   const data = {
     total_usd_value,
     usdPerUsdc: price,
@@ -112,7 +109,7 @@ export const getStaticProps = async () => {
       previewAum: JSON.stringify({ data }),
       performanceData: performanceData
     },
-    revalidate: cacheInSeconds
+    revalidate: 14400
   };
 };
 export default Page;
