@@ -70,7 +70,7 @@ export const getStaticProps = async () => {
       headers: {
         "Content-Type": "application/json",
         // AccessKey: "c13d8b424d6ad424066da28410f1752f7622dcb6",
-        AccessKey: "afe2f8ec56c7354a5f99e87dea4a4e3f03abd661",
+        AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
       },
     }
   );
@@ -82,7 +82,7 @@ export const getStaticProps = async () => {
       headers: {
         "Content-Type": "application/json",
         // AccessKey: "c13d8b424d6ad424066da28410f1752f7622dcb6",
-        AccessKey: "afe2f8ec56c7354a5f99e87dea4a4e3f03abd661",
+        AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
       },
     }
   );
