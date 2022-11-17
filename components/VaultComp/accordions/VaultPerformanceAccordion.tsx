@@ -9,7 +9,6 @@ import {
   Flex,
   Grid,
   Heading,
-  Link,
   SkeletonText,
   Text,
   useColorMode,
