@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
@@ -32,17 +32,18 @@ import {
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 
 //Tools
-import { useAccount, useContractRead } from "wagmi";
+import { useAccount, useContractRead, useBlockNumber } from "wagmi";
 import dynamic from "next/dynamic";
 import { ContractConfig } from "../../contracts";
 import { commify } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
 import { truncate } from "../utils/stringsAndNumbers";
 import { Number } from "../Number";
 import useWindowSize from "react-use/lib/useWindowSize";
 
 //Fetching stuff
 import millify from "millify";
-import { useVaultMeta } from "../hooks/useVault";
+import { useVaultMeta, useVaultState } from "../hooks/useVault";
 
 //Components
 import VaultActivityAccordion from "./accordions/VaultActivityAccordion";
@@ -59,8 +60,9 @@ import ProgressBar from "../ui/ProgressBar";
 //Modals
 import WithdrawModal from "./modals/withdrawModal";
 import { DepositButton } from "./modals/DepositButton";
-import {Charts} from "../Charts";
+import { Charts } from "../Charts";
 import ChartsModal from "./modals/vaultPerformanceModal";
+import { VaultData } from "../../pages";
 
 type VaultProps = {
   currentAum: string;
@@ -88,13 +90,7 @@ const VaultComp = ({
   const { address } = useAccount();
   const [depositSuccess, setDepositSuccess] = useState<string>("");
   const [approvalSuccess, setApprovalSuccess] = useState<string>("");
-
-  //MODAL OPEN/CLOSE STATES
-  const {
-    isOpen: depositIsOpen,
-    onOpen: onOpenDeposit,
-    onClose: onCloseDeposit,
-  } = useDisclosure();
+  const value = useContext(VaultData);
 
   const {
     isOpen: withdrawIsOpen,
@@ -123,6 +119,18 @@ const VaultComp = ({
   //   hasPendingDepositValue,
   //   totalDeposited,
   // } = useVaultUser(contractConfig, address ?? "");
+
+  const vaultState = useVaultState(BigNumber.from(epoch ?? 0).toNumber());
+
+  // MANAGEMENT BLOCK -
+  const lastManagementBlock = BigNumber.from(
+    vaultState.data?.lastManagementBlock ?? 0
+  ).toNumber();
+
+  // CURRENT CHAIN BLOCK - to calculate against management block
+  const blockNumber = useBlockNumber({
+    watch: true,
+  });
 
   return (
     <>
@@ -160,23 +168,32 @@ const VaultComp = ({
                 >
                   <VaultHeroLeft />
                   <GridItem textAlign="center">
-                  <ChartsModal />
-
+                    <ChartsModal />
                   </GridItem>
 
-                  <GridItem alignItems="center">
-                    <DepositButton
-                      depositSuccess={depositSuccess}
-                      setDepositSuccess={setDepositSuccess}
-                      approvalSuccess={approvalSuccess}
-                      setApprovalSuccess={setApprovalSuccess}
-                    />
-                  </GridItem>
-                  <GridItem>
-                    <Button w="full" variant="ghost" onClick={onOpenWithdraw}>
-                      Withdraw
-                    </Button>
-                  </GridItem>
+                  {lastManagementBlock > (blockNumber.data ?? 0) ? (
+                    <></>
+                  ) : (
+                    <>
+                      <GridItem alignItems="center">
+                        <DepositButton
+                          depositSuccess={depositSuccess}
+                          setDepositSuccess={setDepositSuccess}
+                          approvalSuccess={approvalSuccess}
+                          setApprovalSuccess={setApprovalSuccess}
+                        />
+                      </GridItem>
+                      <GridItem>
+                        <Button
+                          w="full"
+                          variant="ghost"
+                          onClick={onOpenWithdraw}
+                        >
+                          Withdraw
+                        </Button>
+                      </GridItem>
+                    </>
+                  )}
                 </Grid>
                 {+pendingDeposit + +currentAum > 0 &&
                   (+pendingDeposit + +currentAum) / +aumCap > 0.95 &&
@@ -279,7 +296,7 @@ const VaultComp = ({
                   </AccordionItem>
                 </Accordion> */}
 
-                <UserStatsAccordion />
+                <UserStatsAccordion previewAum={(value as any).previewAum} />
                 <Accordion
                   borderRadius="1rem"
                   pt="1rem"

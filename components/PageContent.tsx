@@ -1,5 +1,4 @@
 import { Button, Grid, GridItem, Heading, Stack } from "@chakra-ui/react";
-import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 
 import { vaults } from "../contracts";
@@ -11,7 +10,7 @@ export const PageContent = () => {
 
   return (
     <>
-      {chain && chain?.id in vaults ? (
+      {vaults ? (
         <>
           <Grid
             templateColumns={{
@@ -23,7 +22,7 @@ export const PageContent = () => {
             placeContent={"center"}
             py={16}
           >
-            {vaults[chain.id].map((contractConfig) => (
+            {vaults.map((contractConfig) => (
               <GridItem
                 key={contractConfig.addressOrName}
                 m={{ base: "5%", md: "2.5%" }}
@@ -33,23 +32,25 @@ export const PageContent = () => {
             ))}
           </Grid>
         </>
-      ) : chain && chain.id !== 1 ? (
+      ) : chain && chain?.id !== 1 && (
         <Stack textAlign='center' m="auto" mt="20%" w="full" align="center" gap="0.5rem">
           <Heading>{chain.name} is not a supported chain.</Heading>
           <Button variant="primary" onClick={() => switchNetwork?.(1)}>
             Switch chains
           </Button>
         </Stack>
-      ) : (
-        <Grid minH={"100vh"} placeContent="center">
-          <Stack m="auto" mt="20%" w="full" align="center" gap="0.5rem">
-            <Heading variant="big" textAlign="center">
-              Connect your wallet to see your vaults.
-            </Heading>
-            <RainbowConnectButton chainStatus={"none"} showBalance={false} />{" "}
-          </Stack>
-        </Grid>
-      )}
+      )
+      // ) : (
+      //   <Grid minH={"100vh"} placeContent="center">
+      //     <Stack m="auto" mt="20%" w="full" align="center" gap="0.5rem">
+      //       <Heading variant="big" textAlign="center">
+      //         Connect your wallet to see your vaults.
+      //       </Heading>
+      //       <RainbowConnectButton chainStatus={"none"} showBalance={false} />{" "}
+      //     </Stack>
+      //   </Grid>
+      // )
+      }
     </>
   );
 };

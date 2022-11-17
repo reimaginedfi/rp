@@ -18,3 +18,30 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.ConnectButton-dark button {
+  background-image: linear-gradient(180deg, #F3484F 0%, #C51E25 100%) !important;
+  padding: 14px;
+  padding-top: 8px;
+  height: 40px;
+  font-weight: 700;
+  transition: all 0.125 ease-in-out;
+  border-radius: 12px;
+} 
+.ConnectButton-dark button:hover {
+  transform: scale(1.05);
+}
+
+.ConnectButton-light button {
+  background-image: linear-gradient(180deg, #F3484F 0%, #C51E25 100%) !important;
+  padding: 14px;
+  padding-top: 8px;
+  height: 40px;
+  color: aliceblue;
+  font-weight: 700;
+  transition: all 0.125 ease-in-out;
+  border-radius: 12px;
+} 
+.ConnectButton-light button:hover {
+  transform: scale(1.05);
+}

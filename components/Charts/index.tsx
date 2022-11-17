@@ -7,6 +7,8 @@ import {
   Tooltip,
 } from "recharts";
 
+import {commify} from "ethers/lib/utils"
+
 export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?: boolean, epoch?: number}) => {
 
   const CustomToolTip = ({ active, payload, label }: any) => {
@@ -33,19 +35,19 @@ export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?:
               Change:
             </chakra.span>{" "}
 
-            {data[label].Change} %
+            {data[label].Change.includes("-") || data[label].Change.includes("+") ? "" : "+"}{data[label].Change}%
           </Text>
           <Text fontSize={forHero ? "0.75rem" : "0.85rem"}>
             <chakra.span fontWeight="semibold" color="red">
               Gain:
             </chakra.span>{" "}
-            {data[label].amount_change} USDC
+            {data[label].amount_change.includes("-") || data[label].amount_change.includes("+") ? "" : "+"}{data[label].amount_change} USDC
           </Text>
           <Text fontSize={forHero ? "0.75rem" : "0.85rem"}>
             <chakra.span fontWeight="semibold" color="red">
               AUM:
             </chakra.span>{" "}
-            {data[label].Amount}
+            {commify(data[label].Amount)} USDC
           </Text>
         </Box>
       );
@@ -60,10 +62,10 @@ export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?:
         height={400}
         data={data}
         margin={{
-          top: 10,
+          top: (epoch === 0 && !forHero) ? 75 : forHero ? 30 : 10,
           right: 10,
           left: 0,
-          bottom: epoch === 3 ? 130 : (epoch === 0 && !forHero) ? 125 : forHero ? 50 : epoch === 2 ? 85 : 35,
+          bottom: forHero ? 10 : epoch !== 0 ? 53 : 60,
         }}
       >
         <defs>
@@ -74,7 +76,7 @@ export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?:
         </defs>
         <Tooltip content={<CustomToolTip />} />
         <Area
-          dataKey="Change"
+          dataKey="Amount"
           stroke="#82ca9d"
           fillOpacity={1}
           fill="url(#colorPrice)"

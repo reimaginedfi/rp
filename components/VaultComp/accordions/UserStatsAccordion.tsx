@@ -18,19 +18,19 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
-import { useAccount, useContractWrite } from "wagmi";
+import { useAccount } from "wagmi";
 import { useVaultUser } from "../../hooks/useVault";
 import { useContractConfig, useWatchVault } from "../../Vault/ContractContext";
 import { useCompleteAum } from "../../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../../Vault/hooks/useVaultAsset";
-import {truncate} from "../../utils/stringsAndNumbers"
-import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
+import { commify, formatUnits } from "ethers/lib/utils";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-export default function UserStatsAccordion() {
+export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
   const contractConfig = useContractConfig();
-  const { user, sharesValue, hasPendingDeposit, totalDeposited } = useVaultUser(
+  const { user, sharesValue, hasPendingDeposit, updatePendingDeposit } = useVaultUser(
     contractConfig,
     address ?? ""
   );
@@ -43,13 +43,6 @@ export default function UserStatsAccordion() {
     const shouldShowNotification =
       userHasPendingDeposit.data &&
       userHasPendingDeposit.data.toString() === "true";
-
-  const updatePendingDeposit = useContractWrite({
-    ...contractConfig,
-    functionName: "updatePendingDepositState",
-    args: [address],
-    mode: "recklesslyUnprepared",
-  });
 
   const userResult = useWatchVault("vaultUsers", {
     args: [address],
@@ -73,7 +66,7 @@ export default function UserStatsAccordion() {
         .add(userResult.data?.[0] ?? 0)
     : BigNumber.from(0);
 
-  const { factor, isAumLoading } = useCompleteAum();
+  const { factor, isAumLoading } = useCompleteAum(previewAum);
 
   const unrealizedBN = isAumLoading
     ? totalValue.toNumber()
@@ -87,7 +80,7 @@ export default function UserStatsAccordion() {
 
   const pnlVT = totalValueVT - value.toNumber() / 1000000;
 
-  // console.log(hasPendingDeposit.data);
+  // console.log(unrealized, unrealizedBN, value, totalValueVT, pnlVT);
 
   return (
     <Accordion borderRadius="1rem" mt="1rem" allowToggle border="none">
@@ -112,8 +105,7 @@ export default function UserStatsAccordion() {
         borderRadius="1rem"
         bg={accordionBg}
       >
-
-        
+    {address ? (
     <Stack p={{ base: 1, md: 3 }}>
       <Stack
         w="100%"
@@ -285,7 +277,22 @@ export default function UserStatsAccordion() {
         </AlertDescription>
       </Alert>)}
       </Box>
-    </Stack>
+    </Stack>) : <Stack
+    alignItems="center"
+    >
+    <Text mb="1rem" textAlign="center">Connect your wallet to view your stats</Text>
+    <ConnectButton
+              chainStatus={"none"}
+              showBalance={{
+                smallScreen: false,
+                largeScreen: true,
+              }}
+              accountStatus={{
+                smallScreen: "avatar",
+                largeScreen: "full",
+              }}
+            />
+      </Stack>}
       </AccordionPanel>
     </AccordionItem>
   </Accordion>
