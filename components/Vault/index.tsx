@@ -1,7 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { BigNumber } from "ethers";
 import { commify, formatUnits } from "ethers/lib/utils";
-import { createContext, useContext } from "react";
 import { useContractEvent, useContractRead } from "wagmi";
 
 import { ContractConfig } from "../../contracts";

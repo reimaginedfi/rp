@@ -28,7 +28,6 @@ import {
   RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
 import NextLink from "next/link";
-import NextImage from "next/image";
 
 import { HiMenu, HiSun, HiMoon, HiChevronDown } from "react-icons/hi";
 import { RiArrowRightUpLine } from "react-icons/ri";

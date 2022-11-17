@@ -1,15 +1,11 @@
 import { Box, Text, chakra } from "@chakra-ui/react";
 import moment from "moment";
-import { useEffect, useState } from "react";
 import {
   Area,
   AreaChart,
   ResponsiveContainer,
-  XAxis,
-  YAxis,
   Tooltip,
 } from "recharts";
-import supabaseClient from "../../utils/supabaseClient";
 
 import {commify} from "ethers/lib/utils"
 

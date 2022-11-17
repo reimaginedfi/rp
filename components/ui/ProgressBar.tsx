@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 import { Box, Skeleton, useColorMode } from "@chakra-ui/react";
 
 type ProgressBarProps = {
@@ -20,14 +18,6 @@ export default function ProgressBar({
   size
 }: ProgressBarProps) {
   const { colorMode } = useColorMode();
-
-  // const [totalPercentage, setTotalPercentage] = useState<number>();
-  // const [remainingPercentage, setRemainingPercentage] = useState<number>();
-
-  // useEffect(() => {
-  //   setTotalPercentage((100 * partial) / total);
-  //   if (remaining) setRemainingPercentage(();
-  // }, [total, partial]);
 
   const progressValues = [
     {
