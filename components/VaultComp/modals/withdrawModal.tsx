@@ -251,7 +251,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
           </Stack>
         ) : needToClaim ? (
           <Stack alignContent="center">
-            <Text mb="1rem" textAlign="center"> You have unclaimed vault tokens (VT). You need to claim these VT tokens first. Then you can unlock and eventually withdraw them (they convert into USDC).</Text>
+            <Text mb="1rem" textAlign="center"> You have unclaimed vault tokens (VT) from your last deposit. You need to claim these VT tokens first. Then you can unlock (out of the vault AUM) and eventually withdraw (transfer the value in USDC to your wallet).</Text>
             <Button
             size={"sm"}
             colorScheme="orange"
