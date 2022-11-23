@@ -251,7 +251,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
           </Stack>
         ) : needToClaim ? (
           <Stack alignContent="center">
-            <Text mb="1rem" textAlign="center"> You have a pending deposit with unclaimed Vault Tokens. You need to claim before unlocking and withdrawing.</Text>
+            <Text mb="1rem" textAlign="center"> You have unclaimed vault tokens (VT). You need to claim these VT tokens first. Then you can unlock and eventually withdraw them.</Text>
             <Button
             size={"sm"}
             colorScheme="orange"
