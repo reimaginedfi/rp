@@ -5,11 +5,6 @@ import { BigNumber } from "ethers";
 import { createContext, useContext } from "react";
 import supabaseClient from "../utils/supabaseClient";
 
-
-const PageContent = dynamic(() => import("../components/PageContent"), {
-  ssr: false,
-});
-
 interface defaultValues {
   previewAum: string,
   performanceData: any
@@ -51,7 +46,7 @@ const Page = ({ previewAum, performanceData }: defaultValues ) => {
         }}
       />
       <VaultData.Provider value={value}>
-        <PageContent />
+
       </VaultData.Provider>
     </>
   );

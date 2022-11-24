@@ -33,109 +33,91 @@ export const customTheme = {
     },
   },
   fonts: {
-    heading: "Clash Display, Clash Display Variable",
-    body: "InterVariable",
+    heading: "PT Mono",
+    body: "PT Mono",
   },
   colors: {
     transparent: "transparent",
-    black: "#161616",
-    white: "#FCFCFC",
-    brand: "#FF3636",
-    secondary: "#9935ff",
-    tertiary: "#3639ff",
-    pink: "#F9589C",
-    blew: "#58c6f9",
-    gray: {
-      100: "#d9d5d0",
-      200: "#D7E0DD",
-    },
+    black: "#272727",
+    black2: "#0A0607",
+    white: "#FEFEFE",
+    gray: "#B6B6B6"
   },
   components: {
     Heading: {
       variants: {
         giant: {
-          fontFamily: "Clash Display",
-          fontWeight: "700",
-          fontStyle: "normal",
-          fontSize: "3.5rem",
-          lineHeight: "3rem",
-        },
-        big: {
-          fontFamily: "Clash Display",
+          fontFamily: "PT Mono",
           fontWeight: "700",
           fontStyle: "normal",
           fontSize: "2.5rem",
-          lineHeight: "2.5rem",
+          lineHeight: "2.25rem",
         },
-        extralarge: {
-          fontFamily: "Clash Display",
+        big: {
+          fontFamily: "PT Mono",
           fontWeight: "700",
           fontStyle: "normal",
-          fontSize: ["2rem", "3rem", "3.5rem"],
-          lineHeight: ["2rem", "3rem", "3.5rem"],
-        },
-        normal: {
-          fontFamily: "Clash Display",
-          fontWeight: "700",
-          fontStyle: "normal",
-          fontSize: "1rem",
-          lineHeight: "1rem",
+          fontSize: "2rem",
+          lineHeight: "2rem",
         },
         large: {
           fontFamily: "Inter",
           fontWeight: "700",
           fontStyle: "normal",
           fontSize: "1.5rem",
-          lineHeight: "1.5re",
+          lineHeight: "1.75rem",
         },
-        medium: {
-          fontFamily: "Inter",
+        normal: {
+          fontFamily: "PT Mono",
+          fontWeight: "700",
+          fontStyle: "normal",
+          fontSize: "1.325rem",
+          lineHeight: "1.5rem",
+        },
+        small: {
+          fontFamily: "PT Mono",
           fontWeight: "700",
           fontStyle: "normal",
           fontSize: "1rem",
-          lineHeight: "1rem",
-        },
-        small: {
-          fontFamily: "Inter",
-          fontWeight: "700",
-          fontStyle: "normal",
-          fontSize: "0.875rem",
-          lineHeight: "0.875rem",
+          lineHeight: "1.25rem",
         },
         micro: {
-          fontFamily: "Inter",
+          fontFamily: "PT Mono",
           fontWeight: "700",
           fontStyle: "normal",
           fontSize: "0.75rem",
-          lineHeight: "0.75rem",
+          lineHeight: "1rem",
         },
       },
     },
     Text: {
       variants: {
-        large: {
-          fontFamily: "Inter",
+        large: (props: any) => ({
+          fontFamily: "PT Mono",
+          fontWeight: "400",
+          fontStyle: "normal",
+          fontSize: "1.5rem",
+          lineHeight: "1.5rem",
+          color: mode("black", "white")(props),
+        }),
+        normal: (props: any) => ({
+          fontFamily: "PT Mono",
+          fontWeight: "400",
+          fontStyle: "normal",
+          fontSize: "1.25rem",
+          lineHeight: "1.375rem",
+          color: mode("black", "white")(props),
+        }),
+        small: (props: any) => ({
+          fontFamily: "PT Mono",
           fontWeight: "400",
           fontStyle: "normal",
           fontSize: "1rem",
-          lineHeight: "1.5rem",
-        },
-        medium: {
-          fontFamily: "Inter",
-          fontWeight: "400",
-          fontStyle: "normal",
-          fontSize: "0.875rem",
-          lineHeight: "1.5rem",
-        },
-        small: {
-          fontFamily: "Inter",
-          fontWeight: "400",
-          fontStyle: "normal",
-          fontSize: "0.75rem",
           lineHeight: "1.25rem",
-        },
+          color: mode("black", "white")(props),
+        }),
         label: (props: any) => ({
-          fontFamily: "Inter",
+          fontFamily: "PT Mono",
           fontWeight: "400",
           fontStyle: "normal",
           color: mode("#858585", "#7E7E7E")(props),
@@ -147,70 +129,18 @@ export const customTheme = {
     Button: {
       variants: {
         primary: {
-          bg: "linear-gradient(180deg, #F3484F 0%, #C51E25 100%)",
-          borderRadius: "8px",
+          bg: "none",
+          borderRadius: "0px",
           p: "16px",
           color: "white",
-          fontFamily: "Inter",
+          fontFamily: "PT Mono",
           _hover: {
-            bg: "linear-gradient(180deg, #F04A50 0%, #9F151B 100%)",
             textDecoration: "none !important",
           },
           _focus: {
             boxShadow: "none",
-            bg: "linear-gradient(180deg, #D7484D 0%, #980E13 100%)",
           },
         },
-        secondary: (props: any) => ({
-          bg: mode(
-            "linear-gradient(180deg, #F8F8F8 0%, #E8E8E8 100%)",
-            "linear-gradient(180deg, #2C2C2C 0%, #1C1C1C 100%)"
-          )(props),
-          borderRadius: "8px",
-          p: "16px",
-          color: mode("black", "white")(props),
-          fontFamily: "Inter",
-          _hover: {
-            bg: mode(
-              "linear-gradient(180deg, #EDEDED 0%, #D6D6D6 100%)",
-              "linear-gradient(180deg, #3B3B3B 0%, #1F1F1F 100%)"
-            )(props),
-            textDecoration: "none !important",
-          },
-          _focus: {
-            boxShadow: "none",
-            bg: mode(
-              "linear-gradient(180deg, #EAEAEA 0%, #C8C8C8 100%)",
-              "linear-gradient(180deg, #474747 0%, #242424 100%)"
-            )(props),
-          },
-        }),
-        tertiary: (props: any) => ({
-          bg: mode("#FFEFEF", "#3C181A")(props),
-          borderRadius: "8px",
-          border: "1px solid",
-          borderColor: mode("#FDD8D8", "#541B1F")(props),
-          p: "16px",
-          color: mode("black", "white")(props),
-          fontFamily: "Inter",
-          _hover: {
-            bg: mode("#FFE5E5", "#481A1D")(props),
-            textDecoration: "none",
-          },
-          _focus: { boxShadow: "none", bg: mode("#FDD8D8", "#541B1F")(props) },
-        }),
-        ghost: (props: any) => ({
-          bg: mode("#F3F3F3", "#232323")(props),
-          borderRadius: "8px",
-          p: "16px",
-          color: mode("black", "white")(props),
-          fontFamily: "Inter",
-          _hover: {
-            bg: mode("#EDEDED", "#282828")(props),
-            textDecoration: "none !important",
-          },
-          _focus: { boxShadow: "none", bg: mode("#E8E8E8", "#2E2E2E")(props) },
-        }),
       },
     },
     Modal: {
@@ -224,152 +154,7 @@ export const customTheme = {
         },
       }),
     },
-    Alert: {
-      variants: {
-        primaryBrown: {
-          title: {
-            color: "#EDEDED",
-          },
-          description: {
-            color: "#EDEDED",
-          },
-          status: {},
-          container: {
-            bg: "#391A03",
-            borderRadius: "8px",
-            width: "343px",
-            height: "48px",
-            p: "16px",
-            fontSize: "14px",
-            lineHeight: "16px",
-            fontFamily: "Inter",
-          },
-        },
-        primaryGray: {
-          title: {
-            color: "#EDEDED",
-          },
-          description: {
-            color: "#EDEDED",
-          },
-          container: {
-            bg: "#232323",
-            width: "21.375 rem",
-            borderRadius: "8px",
-            p: "16px",
-            fontSize: "0.875rem",
-            lineHeight: "1rem",
-            fontFamily: "Inter",
-          },
-        },
-        primaryGreen: {
-          title: {
-            color: "#3CB179",
-          },
-          description: {
-            color: "#3CB179",
-          },
-          container: {
-            bg: "#0F291E",
-            width: "21.375 rem",
-            borderRadius: "8px",
-            p: "16px",
-            fontSize: "0.875rem",
-            lineHeight: "1rem",
-            fontFamily: "Inter",
-          },
-        },
-        primaryRed: {
-          title: {
-            color: "#F2555A",
-          },
-          description: {
-            color: "#F2555A",
-          },
-          container: {
-            bg: "#3C181A",
-            width: "21.375 rem",
-            borderRadius: "8px",
-            p: "16px",
-            fontSize: "0.875rem",
-            lineHeight: "1rem",
-            fontFamily: "Inter",
-          },
-        },
-        orange: {
-          title: {
-            color: "#FEFCFB",
-          },
-          description: {
-            color: "#FEFCFB",
-          },
-          container: {
-            bg: "#F76808",
-            width: "21.375 rem",
-            borderRadius: "8px",
-            p: "16px",
-            fontSize: "0.875rem",
-            lineHeight: "1rem",
-            fontFamily: "Inter",
-          },
-        },
-        secondaryGray: {
-          title: {
-            color: "#171717",
-          },
-          description: {
-            color: "#171717",
-          },
-          container: {
-            bg: "#E8E8E8",
-            width: "21.375 rem",
-            borderRadius: "8px",
-            p: "16px",
-            fontSize: "0.875rem",
-            lineHeight: "1rem",
-            fontFamily: "Inter",
-          },
-          icon: {
-            color: "#171717",
-          },
-        },
-        secondaryGreen: {
-          title: {
-            color: "#FBFEFC",
-          },
-          description: {
-            color: "#FBFEFC",
-          },
-          container: {
-            bg: "#30A46C",
-            borderRadius: "8px",
-            width: "21.375 rem",
-            p: "16px",
-            fontSize: "0.875rem",
-            lineHeight: "1rem",
-            fontFamily: "Inter",
-          },
-        },
-        secondaryRed: {
-          title: {
-            color: "#FFFCFC",
-          },
-          description: {
-            color: "#FFFCFC",
-          },
-          container: {
-            bg: "#E5484D",
-            borderRadius: "8px",
-            width: "21.375 rem",
-            p: "16px",
-            fontSize: "0.875rem",
-            lineHeight: "1rem",
-            fontFamily: "Inter",
-          },
-        },
-      },
-    },
-  },
+   },
 };
 
 const theme = extendTheme(customTheme);

@@ -2,9 +2,9 @@ import { Button, Grid, GridItem, Heading, Stack } from "@chakra-ui/react";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 
 import { vaults } from "../contracts";
-import { Vault } from "./Vault";
+import { Vault } from "../components/Vault";
 
-export const PageContent = () => {
+export const App = () => {
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
 
@@ -55,4 +55,4 @@ export const PageContent = () => {
   );
 };
 
-export default PageContent;
+export default App;

@@ -1391,6 +1391,11 @@
   resolved "https://registry.yarnpkg.com/@fontsource/inter/-/inter-4.5.14.tgz#3944b809aa7bf27dacd20bdc04a49fb738959724"
   integrity sha512-JDC9AocdPLuGsASkvWw9hS5gtHE7K9dOwL98XLrk5yjYqxy4uVnScG58NUvFMJDVJRl/7c8Wnap6PEs+7Zvj1Q==
 
+"@fontsource/pt-mono@^4.5.11":
+  version "4.5.11"
+  resolved "https://registry.yarnpkg.com/@fontsource/pt-mono/-/pt-mono-4.5.11.tgz#5f2db9d4184571507b46499ce5a77bba68d5477e"
+  integrity sha512-WS5IuinkjjzMHSpevPdAle99NCVfodZsIzF1oX21zRaoWvqW0fsFzoKgJ0qpx9xXWHIOdkyJLn1xB7iCkCD7+Q==
+
 "@gvrs/chakra-capsize@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@gvrs/chakra-capsize/-/chakra-capsize-1.3.0.tgz#9a4834beb001b0861ff53228f11ee7077201a54f"
