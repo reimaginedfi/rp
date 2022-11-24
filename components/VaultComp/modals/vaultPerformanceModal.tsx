@@ -21,7 +21,7 @@ import {
 import { useEffect, useState, useContext } from "react";
 import supabaseClient from "../../../utils/supabaseClient";
 import { Charts } from "../../Charts";
-import { VaultData } from "../../../pages";
+import { VaultData } from "../../../pages/vaults";
 
 import { InfoOutlineIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 

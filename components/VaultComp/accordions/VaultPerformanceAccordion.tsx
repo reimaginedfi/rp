@@ -16,7 +16,7 @@ import {
   StatArrow,
 } from "@chakra-ui/react";
 
-import { VaultData } from "../../../pages";
+import { VaultData } from "../../../pages/vaults";
 
 import { commify } from "ethers/lib/utils";
 import moment from "moment";

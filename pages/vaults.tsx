@@ -1,7 +1,7 @@
 import { Button, Grid, GridItem, Heading, Stack } from "@chakra-ui/react";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 
-import { createContext, useContext } from "react";
+import { createContext } from "react";
 import { BigNumber } from "ethers";
 
 import { vaults } from "../contracts";
@@ -16,7 +16,7 @@ interface defaultValues {
   
 export const VaultData = createContext<defaultValues | undefined>(undefined);
 
-export const App = ({ previewAum, performanceData }: defaultValues ) => {
+export const Vaults = ({ previewAum, performanceData }: defaultValues ) => {
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
 
@@ -129,4 +129,4 @@ export const getStaticProps = async () => {
     };
   };
 
-  export default App;
+  export default Vaults;

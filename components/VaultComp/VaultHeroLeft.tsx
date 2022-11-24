@@ -19,7 +19,7 @@ import { commify, formatUnits } from "ethers/lib/utils";
 import moment from "moment";
 import { useContext, useEffect } from "react";
 import { useBlockNumber, useProvider } from "wagmi";
-import { VaultData } from "../../pages";
+import { VaultData } from "../../pages/vaults";
 import supabaseClient from "../../utils/supabaseClient";
 import { useVaultState } from "../hooks/useVault";
 import ProgressBar from "../ui/ProgressBar";

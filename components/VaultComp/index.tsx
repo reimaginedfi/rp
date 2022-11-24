@@ -62,7 +62,7 @@ import WithdrawModal from "./modals/withdrawModal";
 import { DepositButton } from "./modals/DepositButton";
 import { Charts } from "../Charts";
 import ChartsModal from "./modals/vaultPerformanceModal";
-import { VaultData } from "../../pages";
+import { VaultData } from "../../pages/vaults";
 
 type VaultProps = {
   currentAum: string;

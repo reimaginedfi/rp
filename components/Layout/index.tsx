@@ -129,7 +129,7 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
             justifySelf="center"
             gap="2rem"
           >
-          <NextLink href={router.pathname === "/about" ? "/" : "/about"}>
+          <NextLink href="/vaults">
             <Text
               p="8px"
               _hover={{
@@ -138,7 +138,19 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
                 textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
               }}
             >
-              {router.pathname === "/about" ? "Vaults" : "About"}
+              Vaults
+            </Text>
+          </NextLink>
+          <NextLink href="/about">
+            <Text
+              p="8px"
+              _hover={{
+                bg: "none",
+                cursor: "pointer",
+                textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
+              }}
+            >
+              About
             </Text>
           </NextLink>
             <Link href="https://refi.gitbook.io/refi-pro/"
