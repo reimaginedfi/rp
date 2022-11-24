@@ -37,18 +37,18 @@ interface ContractsMap {
 // };
 
 export const vaults: ContractsMap[] = [
-    // {
-    //   id: 1,
-    //   name: "USDC RP Vault",
-    //   addressOrName: "0x00000008786611c72a00909bd8d398b1be195be3",
-    //   contractInterface: vaultContractInterface.abi,
-    // },
     {
-      id: 2,
-      name: "Mock USDC RP Vault",
-      addressOrName: "0x63bBB71B68c76B78243d0a4AA463D34536788A15",
+      id: 1,
+      name: "USDC RP Vault",
+      addressOrName: "0x00000008786611c72a00909bd8d398b1be195be3",
       contractInterface: vaultContractInterface.abi,
-    }
+    },
+    // {
+    //   id: 2,
+    //   name: "Mock USDC RP Vault",
+    //   addressOrName: "0x63bBB71B68c76B78243d0a4AA463D34536788A15",
+    //   contractInterface: vaultContractInterface.abi,
+    // }
   ]
 
 export const vaultConfigs: ContractsMap[] = [
