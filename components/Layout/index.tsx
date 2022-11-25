@@ -82,14 +82,12 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
         <Flex
           position="absolute"
           top={0}
-          // zIndex="sticky"
           w="100%"
           justifyContent="space-between"
-          p="16px"
+          px="5rem"
+          py="3rem"
           h="56px"
           bg={{ base: colorMode === "dark" ? "#161616" : "#FCFCFC" }}
-          borderBottom="1px solid"
-          borderColor={colorMode === "dark" ? "#2E2E2E" : "#E8E8E8"}
           alignItems="center"
           pos="sticky"
           zIndex="popover"
@@ -105,62 +103,38 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
           </Button>
           <Flex
             display={{ base: "none", md: "flex" }}
+            justifySelf="start"
             direction="row"
+            alignItems="center"
             _hover={{ cursor: "pointer" }}
             onClick={() => router.push("/")}
           >
             <Image
               src={colorMode === "dark" ? "/logo/dark.svg" : "/logo/light.svg"}
-              alt="refi-pro-logo"
+              height="2.75rem"
             />
-            <Heading
-              variant="large"
-              fontWeight="light"
-              ml="0.5rem"
-              color="#BF9209"
-            >
-              PRO
+            <Heading variant="normal" fontWeight="400" ml="0.5rem">
+              Capital
             </Heading>
           </Flex>
           <Flex
             display={{ base: "none", md: "flex" }}
-            alignSelf={"center"}
             alignItems="center"
-            justifySelf="center"
             gap="2rem"
           >
-          <NextLink href="/vaults">
-            <Text
-              p="8px"
+            <NextLink href="/vaults">
+              <Text variant="link">Vaults</Text>
+            </NextLink>
+            <NextLink href="/about">
+              <Text variant="link">About</Text>
+            </NextLink>
+            <Link
+              href="https://refi.gitbook.io/refi-pro/"
               _hover={{
-                bg: "none",
-                cursor: "pointer",
-                textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
+                textDecoration: "none",
               }}
             >
-              Vaults
-            </Text>
-          </NextLink>
-          <NextLink href="/about">
-            <Text
-              p="8px"
-              _hover={{
-                bg: "none",
-                cursor: "pointer",
-                textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
-              }}
-            >
-              About
-            </Text>
-          </NextLink>
-            <Link href="https://refi.gitbook.io/refi-pro/"
-                            _hover={{
-                              bg: "none",
-                              cursor: "pointer",
-                              textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
-                            }}
-            >
-              Docs <RiArrowRightUpLine style={{ verticalAlign: "middle" }} />
+              <Text variant="link">Docs</Text>
             </Link>
 
             <Menu isOpen={isRefiLinks}>
@@ -169,21 +143,15 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
                 as={Button}
                 bg="none"
                 fontWeight="400"
-                _hover={{
+                textDecoration="underline"                _hover={{
                   bg: "none",
                   cursor: "pointer",
                   textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
-                }}
-                _active={{
-                  bg: "none",
-                  cursor: "pointer",
-                  textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
-                  boxShadow: "none",
+                  textDecoration:"none"  
                 }}
                 _focus={{
                   bg: "none",
                   cursor: "pointer",
-                  textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
                   boxShadow: "none",
                 }}
                 target="_blank"
@@ -228,11 +196,9 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
               </MenuList>
             </Menu>
           </Flex>
-          <Flex gap="1rem">
-            <Button
-              variant="ghost"
-              onClick={toggleColorMode}
-            >
+
+          <Flex gap="1rem" display={router.pathname === "/" ? "none" : "flex"}>
+            <Button variant="ghost" onClick={toggleColorMode}>
               {colorMode === "dark" ? <HiSun /> : <HiMoon />}
             </Button>{" "}
             <ConnectButton

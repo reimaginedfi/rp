@@ -61,7 +61,7 @@ export const customTheme = {
           lineHeight: "2rem",
         },
         large: {
-          fontFamily: "Inter",
+          fontFamily: "PT Mono",
           fontWeight: "700",
           fontStyle: "normal",
           fontSize: "1.5rem",
@@ -107,6 +107,17 @@ export const customTheme = {
           fontSize: "1.25rem",
           lineHeight: "1.375rem",
           color: mode("black", "white")(props),
+        }),
+        link: (props: any) => ({
+          fontFamily: "PT Mono",
+          p: "8px",
+          textDecoration: "underline",
+          _hover:{
+            bg: "none",
+            cursor: "pointer",
+            textColor: mode("#7E7E7E", "#858585")(props),
+            textDecoration: "none"
+          }
         }),
         small: (props: any) => ({
           fontFamily: "PT Mono",
