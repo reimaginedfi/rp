@@ -401,7 +401,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   <AlertDescription>
                     <Text fontSize={"xs"}>
                       You already have unlocked tokens but you need to wait for
-                      next epoch to withdraw.
+                      next epoch to withdraw or unlock more.
                     </Text>
                   </AlertDescription>
                 </Alert>
@@ -411,7 +411,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                 <Button
                   w="100%"
                   disabled={
-                    parseInt(user.data?.vaultShares) === 0 || exceedsHoldings
+                    parseInt(user.data?.vaultShares) === 0 || exceedsHoldings || hasUnlockedShares
                   }
                   isLoading={
                     unlockingShares ||
