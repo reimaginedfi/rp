@@ -6,8 +6,8 @@ const FAQ = dynamic(() => import("../components/about/faq"), {
   ssr: false,
 });
 
-const title = "REFI Pro About";
-const description = "$REFI is DeFi, reimagined.";
+const title = "155 Capital | About";
+const description = "On-chain asset management.";
 
 export default function About() {
   return (
@@ -23,13 +23,13 @@ export default function About() {
         openGraph={{
           title,
           description,
-          url: "https://pro.reimagined.fi/",
+          url: "https://155.capital/about",
           images: [
             {
-              url: "https://pro.reimagined.fi/og.png",
+              url: "https://155.capital/og.png",
               width: 1200,
               height: 628,
-              alt: "Refi",
+              alt: "155 Capital",
             },
           ],
         }}
@@ -42,79 +42,49 @@ export default function About() {
         justifyContent="center"
         pb="5rem"
         pt={{ base: "5rem", md: "1rem" }}
+        gap="1rem"
       >
-        <Heading
-          textAlign="center"
-          fontSize={{ xl: "40px", base: "32px" }}
-          lineHeight={{ xl: "40px", base: "32px" }}
-          fontWeight="600"
-          mt="5%"
-          mb="1.5%"
-        >
-          More About
-          <Text
-            display="inline"
-            bgGradient="radial-gradient(128.15% 697.56% at 9.91% 100%, #FF3F46 0%, #FF749E 57.68%, #FFE3AB 100%)"
-            bgClip="text"
-            ml={2}
-            overflowWrap="normal"
-            wordBreak="keep-all"
-          >
-            REFI Pro
-          </Text>
+        <Heading variant="normal" textAlign="center" fontWeight="400" mb="1rem">
+          More About <b>155 Capital Vaults</b>
         </Heading>
         <Text
-          mb="1%"
-          variant="large"
+          variant="normal"
           w={{ base: "90%", md: "70%" }}
           alignSelf="center"
           textAlign={"center"}
         >
-          ReFi Pro is the first crypto institutional on-chain asset management
-          service for large institutional and retail investors 
+          On-chain asset management service for large institutional and
+          high-net-wroth retail investors.
         </Text>
         <Text
-          mb="1%"
-          variant="large"
+          variant="normal"
           w={{ base: "90%", md: "70%" }}
           alignSelf="center"
           textAlign={"center"}
         >
-        Investors simply deposit capital into ReFi Pro vaults, which are built on the Ethereum
-          chain.
+          Investors simply deposit capital into 155 Capital vaults built on the
+          Ethereum chain. 155 Capital then uses the deposited capital to invest
+          in various chains and protocols to generate alpha / yield for
+          investors.
         </Text>
         <Text
-          mb="1%"
-          variant="large"
+          variant="normal"
           w={{ base: "90%", md: "70%" }}
           alignSelf="center"
           textAlign={"center"}
         >
-          {" "}
-          The ReFi investment team subsequently deploys investor capital from
-          these vaults onto various chains and protocols to generate alpha /
-          yield for investors. 
-        </Text>
-        <Text
-          mb="1%"
-          variant="large"
-          w={{ base: "90%", md: "70%" }}
-          alignSelf="center"
-          textAlign={"center"}
-        >
-        For more information about the main ReFi project,
-          $REFI token and team, kindly visit our{" "}
+          For more information about the main ReFi team, kindly visit our{" "}
           <Link
             color="brand"
             href="https://refi.gitbook.io/refi-pro/"
             isExternal
+            _hover={{ textDecoration: "none" }}
           >
-            ReFi GitBook Docs.
+            <Text variant="link"> GitBook Docs.</Text>
           </Link>
         </Text>
         <Text
-          mb="1%"
-          variant="large"
+          variant="normal"
           w={{ base: "90%", md: "70%" }}
           alignSelf="center"
           textAlign={"center"}

@@ -3,8 +3,8 @@ import { NextSeo } from "next-seo";
 import Landing from "../components/Landing";
 
 const Index = () => {
-  const title = "REFI Pro";
-  const description = "$REFI is DeFi, reimagined.";
+  const title = "155 Capital";
+  const description = "On-chain asset management.";
 
   return (
     <>
@@ -19,13 +19,13 @@ const Index = () => {
         openGraph={{
           title,
           description,
-          url: "https://pro.reimagined.fi/",
+          url: "https://155.capital",
           images: [
             {
-              url: "https://pro.reimagined.fi/og.png",
+              url: "https://155.capital/og.png",
               width: 1200,
               height: 628,
-              alt: "Refi",
+              alt: "155 Capital",
             },
           ],
         }}

@@ -105,7 +105,7 @@ export const customTheme = {
           fontWeight: "400",
           fontStyle: "normal",
           fontSize: "1.25rem",
-          lineHeight: "1.375rem",
+          lineHeight: "2rem",
           color: mode("black", "white")(props),
         }),
         link: (props: any) => ({

@@ -9,6 +9,11 @@ import { Vault } from "../components/Vault";
 
 import supabaseClient from "../utils/supabaseClient";
 
+import { NextSeo } from "next-seo";
+
+const title = "155 Capital | Vaults";
+const description = "On-chain asset management.";
+
 interface defaultValues {
     previewAum: string,
     performanceData: any
@@ -26,8 +31,31 @@ export const Vaults = ({ previewAum, performanceData }: defaultValues ) => {
   };
 
   return (
+    <>
+       <NextSeo
+        title={title}
+        description={description}
+        twitter={{
+          handle: "@reimaginedfi",
+          site: "@reimaginedfi",
+          cardType: "summary_large_image",
+        }}
+        openGraph={{
+          title,
+          description,
+          url: "https://155.capital/vaults",
+          images: [
+            {
+              url: "https://155.capital/og.png",
+              width: 1200,
+              height: 628,
+              alt: "155 Capital",
+            },
+          ],
+        }}
+      />
     <VaultData.Provider value={value}>
-
+    
    {vaults ? (
         <>
           <Grid
@@ -70,6 +98,7 @@ export const Vaults = ({ previewAum, performanceData }: defaultValues ) => {
       // )
       }
     </VaultData.Provider>   
+    </>
   );
 };
 

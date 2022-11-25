@@ -37,8 +37,8 @@ interface LayoutProps {
   chains: any;
 }
 
-const refiLinks = [
-  ["REFI Token", "https://reimagined.fi"],
+const links = [
+  ["REFI", "https://reimagined.fi"],
   ["Blog", "https://reimaginedfi.medium.com/"],
   [
     "Smart Contract",
@@ -122,8 +122,8 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
             alignItems="center"
             gap="2rem"
           >
-            <NextLink href="/vaults">
-              <Text variant="link">Vaults</Text>
+            <NextLink href={router.pathname === "/" ? "/vaults" : "/"}>
+              <Text variant="link">{router.pathname === "/" ? "Vaults" : "Home"}</Text>
             </NextLink>
             <NextLink href="/about">
               <Text variant="link">About</Text>
@@ -169,12 +169,12 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
                 borderColor={colorMode === "dark" ? "#232323" : "#F3F3F3"}
               >
                 {" "}
-                {refiLinks.map((refilink, index) => {
+                {links.map((link, index) => {
                   return (
                     <MenuItem
                       key={index}
                       as={Link}
-                      href={refilink[1]}
+                      href={link[1]}
                       isExternal
                       _hover={{
                         bg: "none",
@@ -188,7 +188,7 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
                         boxShadow: "none",
                       }}
                     >
-                      {refilink[0]}&nbsp;
+                      {link[0]}&nbsp;
                       <RiArrowRightUpLine vertical-align="-10%" />
                     </MenuItem>
                   );
@@ -314,8 +314,8 @@ export function LandingMenu({ menuToggle }: any) {
           >
             Docs <RiArrowRightUpLine style={{ verticalAlign: "middle" }} />
           </Link>
-          {refiLinks.map((refilink, index) => (
-            <Link key={index} href={refilink[1]} isExternal>
+          {links.map((link, index) => (
+            <Link key={index} href={link[1]} isExternal>
               <Text
                 p="8px"
                 fontWeight="400"
@@ -329,7 +329,7 @@ export function LandingMenu({ menuToggle }: any) {
                 fontSize="0.875rem"
                 lineHeight="1rem"
               >
-                {refilink[0]} <RiArrowRightUpLine vertical-align="-10%" />
+                {link[0]} <RiArrowRightUpLine vertical-align="-10%" />
               </Text>
             </Link>
           ))}
