@@ -74,10 +74,9 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
       }
     >
       <Box
-        bg={colorMode === "dark" ? "#161616" : "#FCFCFC"}
+        bg={colorMode === "dark" ? "darkbg" : "lightbg"}
         minH={"100vh"}
         h="full"
-        color={colorMode === "dark" ? "rgba(255, 255, 255, 0.92)" : "#1A202C"}
       >
         <Flex
           position="absolute"
@@ -87,7 +86,7 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
           px="5rem"
           py="3rem"
           h="56px"
-          bg={{ base: colorMode === "dark" ? "#161616" : "#FCFCFC" }}
+          bg={colorMode === "dark" ? "darkbg" : "lightbg"}
           alignItems="center"
           pos="sticky"
           zIndex="popover"
@@ -113,7 +112,12 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
               src={colorMode === "dark" ? "/logo/dark.svg" : "/logo/light.svg"}
               height="2.75rem"
             />
-            <Heading variant="normal" fontWeight="400" ml="0.5rem">
+            <Heading
+            variant="normal" 
+            fontWeight="400" 
+            ml="0.5rem"
+            color={colorMode === "dark" ? "darktext" : "lighttext"}
+            >
               Capital
             </Heading>
           </Flex>
@@ -134,7 +138,8 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
                 textDecoration: "none",
               }}
             >
-              <Text variant="link">Docs</Text>
+              <Text variant="link"               
+>Docs</Text>
             </Link>
 
             <Menu isOpen={isRefiLinks}>
@@ -143,10 +148,10 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
                 as={Button}
                 bg="none"
                 fontWeight="400"
+                color={colorMode === "dark" ? "darktext" : "lighttext"}
                 textDecoration="underline"                _hover={{
                   bg: "none",
                   cursor: "pointer",
-                  textColor: colorMode === "dark" ? "#7E7E7E" : "#858585",
                   textDecoration:"none"  
                 }}
                 _focus={{
@@ -197,21 +202,99 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
             </Menu>
           </Flex>
 
-          <Flex gap="1rem" display={router.pathname === "/" ? "none" : "flex"}>
+          <Flex gap="1rem" 
+          // display={router.pathname === "/" ? "none" : "flex"}
+          >
             <Button variant="ghost" onClick={toggleColorMode}>
               {colorMode === "dark" ? <HiSun /> : <HiMoon />}
             </Button>{" "}
-            <ConnectButton
-              chainStatus={"none"}
-              showBalance={{
-                smallScreen: false,
-                largeScreen: true,
-              }}
-              accountStatus={{
-                smallScreen: "avatar",
-                largeScreen: "full",
-              }}
-            />
+            <ConnectButton.Custom>
+      {({
+        account,
+        chain,
+        openAccountModal,
+        openChainModal,
+        openConnectModal,
+        mounted,
+      }) => {
+        const ready = mounted;
+        const connected =
+          ready &&
+          account &&
+          chain 
+
+        return (
+          <div
+            {...(!ready && {
+              'aria-hidden': true,
+              'style': {
+                opacity: 0,
+                pointerEvents: 'none',
+                userSelect: 'none',
+              },
+            })}
+          >
+            {(() => {
+              if (!connected) {
+                return (
+                  <Button 
+                  variant="connect"
+                  onClick={openConnectModal}>
+                    Connect Wallet
+                  </Button>
+                );
+              }
+
+              if (chain.unsupported) {
+                return (
+                  <Button onClick={openChainModal} type="button">
+                    Wrong network
+                  </Button>
+                );
+              }
+
+              return (
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <Button
+                    onClick={openChainModal}
+                    style={{ display: 'flex', alignItems: 'center' }}
+                  >
+                    {chain.hasIcon && (
+                      <div
+                        style={{
+                          background: chain.iconBackground,
+                          width: 12,
+                          height: 12,
+                          borderRadius: 999,
+                          overflow: 'hidden',
+                          marginRight: 4,
+                        }}
+                      >
+                        {chain.iconUrl && (
+                          <img
+                            alt={chain.name ?? 'Chain icon'}
+                            src={chain.iconUrl}
+                            style={{ width: 12, height: 12 }}
+                          />
+                        )}
+                      </div>
+                    )}
+                    {chain.name}
+                  </Button>
+
+                  <Button onClick={openAccountModal} type="button">
+                    {account.displayName}
+                    {account.displayBalance
+                      ? ` (${account.displayBalance})`
+                      : ''}
+                  </Button>
+                </div>
+              );
+            })()}
+          </div>
+        );
+      }}
+    </ConnectButton.Custom>
           </Flex>
         </Flex>
         <LandingMenu menuToggle={menuToggle} />

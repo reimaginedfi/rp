@@ -38,56 +38,62 @@ export const customTheme = {
   },
   colors: {
     transparent: "transparent",
-    black: "#272727",
-    black2: "#0A0607",
-    white: "#FEFEFE",
-    gray: "#B6B6B6"
+    lighttext: "#272727",
+    darkbg: "#0A0607",
+    darktext: "#B6B6B6",
+    lightbg: "#FEFEFE",
   },
   components: {
     Heading: {
       variants: {
-        giant: {
+        giant: (props: any) => ({
           fontFamily: "PT Mono",
           fontWeight: "700",
           fontStyle: "normal",
           fontSize: "2.5rem",
           lineHeight: "2.25rem",
-        },
-        big: {
+          color: mode("lighttext", "darktext")(props)
+        }),
+        big: (props: any) => ({
           fontFamily: "PT Mono",
           fontWeight: "700",
           fontStyle: "normal",
           fontSize: "2rem",
           lineHeight: "2rem",
-        },
-        large: {
+          color: mode("lighttext", "darktext")(props)
+        }),
+        large: (props: any) => ({
           fontFamily: "PT Mono",
           fontWeight: "700",
           fontStyle: "normal",
           fontSize: "1.5rem",
           lineHeight: "1.75rem",
-        },
-        normal: {
+          color: mode("lighttext", "darktext")(props)
+        }),
+        normal: (props: any) => ({
           fontFamily: "PT Mono",
           fontWeight: "700",
           fontStyle: "normal",
           fontSize: "1.325rem",
           lineHeight: "1.5rem",
-        },
-        small: {
+          color: mode("lighttext", "darktext")(props)
+        }),
+        small: (props: any) => ({
           fontFamily: "PT Mono",
           fontWeight: "700",
           fontStyle: "normal",
           fontSize: "1rem",
           lineHeight: "1.25rem",
-        },
-        micro: {
+          color: mode("lighttext", "darktext")(props)
+        }),
+        micro: (props: any) => ({
           fontFamily: "PT Mono",
           fontWeight: "700",
           fontStyle: "normal",
           fontSize: "0.75rem",
           lineHeight: "1rem",
-        },
+          color: mode("lighttext", "darktext")(props)
+        }),
       },
     },
     Text: {
@@ -98,7 +104,7 @@ export const customTheme = {
           fontStyle: "normal",
           fontSize: "1.5rem",
           lineHeight: "1.5rem",
-          color: mode("black", "white")(props),
+          color: mode("lighttext", "darktext")(props)
         }),
         normal: (props: any) => ({
           fontFamily: "PT Mono",
@@ -106,16 +112,16 @@ export const customTheme = {
           fontStyle: "normal",
           fontSize: "1.25rem",
           lineHeight: "2rem",
-          color: mode("black", "white")(props),
+          color: mode("lighttext", "darktext")(props)
         }),
         link: (props: any) => ({
           fontFamily: "PT Mono",
           p: "8px",
           textDecoration: "underline",
+          color: mode("lighttext", "darktext")(props),
           _hover:{
             bg: "none",
             cursor: "pointer",
-            textColor: mode("#7E7E7E", "#858585")(props),
             textDecoration: "none"
           }
         }),
@@ -125,13 +131,13 @@ export const customTheme = {
           fontStyle: "normal",
           fontSize: "1rem",
           lineHeight: "1.25rem",
-          color: mode("black", "white")(props),
+          color: mode("lighttext", "darktext")(props)
         }),
         label: (props: any) => ({
           fontFamily: "PT Mono",
           fontWeight: "400",
           fontStyle: "normal",
-          color: mode("#858585", "#7E7E7E")(props),
+          color: mode("lighttext", "darktext")(props),
           fontSize: "0.75rem",
           lineHeight: "1rem",
         }),
@@ -152,6 +158,13 @@ export const customTheme = {
             boxShadow: "none",
           },
         },
+        connect: (props: any) => ({
+          bg: "none",
+          borderRadius: "0px",
+          textDecoration:"underline",
+          _hover:  {textDecoration: "none"},
+          color: mode("lighttext", "darktext")(props),
+        })
       },
     },
     Modal: {
