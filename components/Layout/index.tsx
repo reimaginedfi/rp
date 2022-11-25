@@ -83,7 +83,7 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
           top={0}
           w="100%"
           justifyContent="space-between"
-          px="5rem"
+          px="4rem"
           py="3rem"
           h="56px"
           bg={colorMode === "dark" ? "darkbg" : "lightbg"}
@@ -203,7 +203,7 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
           </Flex>
 
           <Flex gap="1rem" 
-          // display={router.pathname === "/" ? "none" : "flex"}
+          display={router.pathname === "/" ? "none" : "flex"}
           >
             <Button variant="ghost" onClick={toggleColorMode}>
               {colorMode === "dark" ? <HiSun /> : <HiMoon />}

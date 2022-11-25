@@ -145,19 +145,20 @@ export const customTheme = {
     },
     Button: {
       variants: {
-        primary: {
+        primary: (props: any) => ({
           bg: "none",
           borderRadius: "0px",
-          p: "16px",
-          color: "white",
+          p: "0.75rem",
+          color: mode("lighttext", "darktext")(props),
           fontFamily: "PT Mono",
+          textDecoration: "underline",
           _hover: {
             textDecoration: "none !important",
           },
           _focus: {
             boxShadow: "none",
           },
-        },
+        }),
         connect: (props: any) => ({
           bg: "none",
           borderRadius: "0px",
