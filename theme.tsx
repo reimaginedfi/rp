@@ -52,7 +52,7 @@ export const customTheme = {
           fontStyle: "normal",
           fontSize: "2.5rem",
           lineHeight: "2.25rem",
-          color: mode("lighttext", "darktext")(props)
+          color: mode("lighttext", "darktext")(props),
         }),
         big: (props: any) => ({
           fontFamily: "PT Mono",
@@ -60,7 +60,7 @@ export const customTheme = {
           fontStyle: "normal",
           fontSize: "2rem",
           lineHeight: "2rem",
-          color: mode("lighttext", "darktext")(props)
+          color: mode("lighttext", "darktext")(props),
         }),
         large: (props: any) => ({
           fontFamily: "PT Mono",
@@ -68,7 +68,7 @@ export const customTheme = {
           fontStyle: "normal",
           fontSize: "1.5rem",
           lineHeight: "1.75rem",
-          color: mode("lighttext", "darktext")(props)
+          color: mode("lighttext", "darktext")(props),
         }),
         normal: (props: any) => ({
           fontFamily: "PT Mono",
@@ -76,7 +76,7 @@ export const customTheme = {
           fontStyle: "normal",
           fontSize: "1.325rem",
           lineHeight: "1.5rem",
-          color: mode("lighttext", "darktext")(props)
+          color: mode("lighttext", "darktext")(props),
         }),
         small: (props: any) => ({
           fontFamily: "PT Mono",
@@ -84,7 +84,7 @@ export const customTheme = {
           fontStyle: "normal",
           fontSize: "1rem",
           lineHeight: "1.25rem",
-          color: mode("lighttext", "darktext")(props)
+          color: mode("lighttext", "darktext")(props),
         }),
         micro: (props: any) => ({
           fontFamily: "PT Mono",
@@ -92,7 +92,7 @@ export const customTheme = {
           fontStyle: "normal",
           fontSize: "0.75rem",
           lineHeight: "1rem",
-          color: mode("lighttext", "darktext")(props)
+          color: mode("lighttext", "darktext")(props),
         }),
       },
     },
@@ -104,7 +104,7 @@ export const customTheme = {
           fontStyle: "normal",
           fontSize: "1.5rem",
           lineHeight: "1.5rem",
-          color: mode("lighttext", "darktext")(props)
+          color: mode("lighttext", "darktext")(props),
         }),
         normal: (props: any) => ({
           fontFamily: "PT Mono",
@@ -112,18 +112,18 @@ export const customTheme = {
           fontStyle: "normal",
           fontSize: "1.25rem",
           lineHeight: "2rem",
-          color: mode("lighttext", "darktext")(props)
+          color: mode("lighttext", "darktext")(props),
         }),
         link: (props: any) => ({
           fontFamily: "PT Mono",
           p: "8px",
           textDecoration: "underline",
           color: mode("lighttext", "darktext")(props),
-          _hover:{
+          _hover: {
             bg: "none",
             cursor: "pointer",
-            textDecoration: "none"
-          }
+            textDecoration: "none",
+          },
         }),
         small: (props: any) => ({
           fontFamily: "PT Mono",
@@ -131,7 +131,7 @@ export const customTheme = {
           fontStyle: "normal",
           fontSize: "1rem",
           lineHeight: "1.25rem",
-          color: mode("lighttext", "darktext")(props)
+          color: mode("lighttext", "darktext")(props),
         }),
         label: (props: any) => ({
           fontFamily: "PT Mono",
@@ -152,24 +152,44 @@ export const customTheme = {
           color: mode("lighttext", "darktext")(props),
           fontFamily: "PT Mono",
           textDecoration: "underline",
-          border:"1px solid",
+          border: "1px solid",
           borderColor: mode("lighttext", "darktext")(props),
           _hover: {
             textDecoration: "none !important",
+            _before: {display: "none"},
+            _after: {display: "none"},
           },
           _focus: {
             boxShadow: "none",
           },
-           _before: { position: "absolute", background: "inherit", content: '""', zIndex: "1", width: "80px", right: "calc(50% - 50px)", height: "calc(100% + 4px)", top: "10px" },
-           _after: { position: "absolute", background: "inherit", content: '""', zIndex: "1", height: "35px", left: "-50px", width: "calc(100% + 40px)", top: "calc(50% - 27px)"          },
+          _before: {
+            position: "absolute",
+            background: "inherit",
+            content: '""',
+            zIndex: "1",
+            width: "80px",
+            right: "calc(50% - 50px)",
+            height: "calc(100% + 4px)",
+            top: "10px",
+          },
+          _after: {
+            position: "absolute",
+            background: "inherit",
+            content: '""',
+            zIndex: "1",
+            height: "35px",
+            left: "-50px",
+            width: "calc(100% + 40px)",
+            top: "calc(50% - 27px)",
+          },
         }),
         connect: (props: any) => ({
           bg: "none",
           borderRadius: "0px",
-          textDecoration:"underline",
-          _hover:  {textDecoration: "none"},
+          textDecoration: "underline",
+          _hover: { textDecoration: "none" },
           color: mode("lighttext", "darktext")(props),
-        })
+        }),
       },
     },
     Modal: {
@@ -183,7 +203,7 @@ export const customTheme = {
         },
       }),
     },
-   },
+  },
 };
 
 const theme = extendTheme(customTheme);
