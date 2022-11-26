@@ -159,6 +159,11 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
                   cursor: "pointer",
                   boxShadow: "none",
                 }}
+                _active={{
+                  bg: "none",
+                  cursor: "pointer",
+                  boxShadow: "none",
+                }}
                 target="_blank"
                 rightIcon={<HiChevronDown />}
                 onMouseEnter={openRefiLinks}
@@ -200,14 +205,14 @@ const Layout: React.FC<LayoutProps> = ({ children, chains }) => {
                 })}
               </MenuList>
             </Menu>
+            <Button display={router.pathname === "/" ? "flex" : "none"} variant="ghost" onClick={toggleColorMode}>
+              {colorMode === "dark" ? <HiSun /> : <HiMoon />}
+            </Button>{" "}
           </Flex>
 
           <Flex gap="1rem" 
           display={router.pathname === "/" ? "none" : "flex"}
           >
-            <Button variant="ghost" onClick={toggleColorMode}>
-              {colorMode === "dark" ? <HiSun /> : <HiMoon />}
-            </Button>{" "}
             <ConnectButton.Custom>
       {({
         account,

@@ -146,18 +146,22 @@ export const customTheme = {
     Button: {
       variants: {
         primary: (props: any) => ({
-          bg: "none",
+          bg: mode("lightbg", "darkbg")(props),
           borderRadius: "0px",
           p: "0.75rem",
           color: mode("lighttext", "darktext")(props),
           fontFamily: "PT Mono",
           textDecoration: "underline",
+          border:"1px solid",
+          borderColor: mode("lighttext", "darktext")(props),
           _hover: {
             textDecoration: "none !important",
           },
           _focus: {
             boxShadow: "none",
           },
+           _before: { position: "absolute", background: "inherit", content: '""', zIndex: "1", width: "80px", right: "calc(50% - 50px)", height: "calc(100% + 4px)", top: "10px" },
+           _after: { position: "absolute", background: "inherit", content: '""', zIndex: "1", height: "35px", left: "-50px", width: "calc(100% + 40px)", top: "calc(50% - 27px)"          },
         }),
         connect: (props: any) => ({
           bg: "none",
