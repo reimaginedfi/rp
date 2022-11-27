@@ -2,6 +2,7 @@ import {
   Flex,
   Grid,
   Text,
+  Image,
   Accordion,
   AccordionButton,
   AccordionIcon,
@@ -17,14 +18,17 @@ export default function Values() {
     {
       title: "Transparency",
       text: "Don’t Trust, Verify. Unlike traditional funds, at 155 you know exactly where your capital is and how it’s being utilized. All of our investments are on-chain and visible 24/7/365.",
+      image: "/icons/transparency-light.svg",
     },
     {
       title: "Safe",
       text: "155 Capital is secured by Fireblocks, the #1 institutional digital asset custody solution. Their proprietary wallet technology and multi-party computation (MPC) provide multi-layered digital asset custody security.",
+        image: "/icons/safety-light.svg",
     },
     {
       title: "Profitable",
       text: "Maintaining profitability through the volatility of crypto markets is difficult. Allow our world-class team of DeFi-native investors to do it for you. We’re plugged into the latest protocols, narratives, and macro happenings; more importantly, we understand the strategies & timing to capitalize on these opportunities.",
+        image: "/icons/profitability-light.svg",
     },
   ];
 
@@ -49,12 +53,12 @@ export default function Values() {
         <AccordionPanel pb={4}>
             {values.map((value) => (
               <Grid
-            //   gridTemplateAreas='"title text text"'
               gridTemplateColumns="300px 2fr"
               py="2rem"
               >
+                <Flex direction="row" alignItems="center">
+                <Image src={value.image} h="1.5rem"/>
                 <Text
-                    // gridArea="title"
                   variant="normal"
                   ml="1rem"
                   color={colorMode === "dark" ? "darktext" : "lighttext"}
@@ -62,8 +66,8 @@ export default function Values() {
                 >
                   {value.title}
                 </Text>
+                </Flex>
                 <Text
-                    // gridArea="text"
                   variant="normal"
                   ml="1rem"
                   color={colorMode === "dark" ? "darktext" : "lighttext"}
