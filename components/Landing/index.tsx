@@ -6,7 +6,7 @@ import Strategy from "./strategy";
 
 const Landing = () => {
     return (
-        <Flex direction="column"         px="4rem"        >
+        <Flex direction="column"         px={{base: "0.5rem", md: "4rem"}}        >
             <Hero />
             <Values />
             <Strategy />
