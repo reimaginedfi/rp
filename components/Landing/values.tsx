@@ -51,8 +51,9 @@ export default function Values() {
           </Flex>
         </AccordionButton>
         <AccordionPanel pb={4}>
-            {values.map((value) => (
+            {values.map((value, index) => (
               <Grid
+              key={index}
               gridTemplateColumns="300px 2fr"
               dir={{base: "row", md: "column"} as any}
               py="2rem"
