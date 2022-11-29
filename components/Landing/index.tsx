@@ -3,6 +3,8 @@ import {Button, Flex, Text, Image, useColorMode} from "@chakra-ui/react";
 import Hero from "./hero";
 import Values from "./values";
 import Strategy from "./strategy";
+import Research from "./research";
+import Team from "./team";
 
 const Landing = () => {
     return (
@@ -10,8 +12,8 @@ const Landing = () => {
             <Hero />
             <Values />
             <Strategy />
-            {/* <Research /> */}
-            {/* <Team />  */}
+            <Research />
+            <Team /> 
         </Flex>
         );
 }
