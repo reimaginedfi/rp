@@ -9,14 +9,14 @@ export default function Team() {
           role: "Lead Dev",
           twitter: "https://twitter.com/mathdroid",
           ens: "mathdroid.eth",
-          desc: "Mathdroid is 155 Capital's founder & serves as lead developer.",
+          desc: "Mathdroid is 155 Capital's founder, creative genius & lead developer.",
         },
         {
           name: "Huf",
           role: "Lead Farmer",
           twitter: "https://twitter.com/hufhaus9",
           ens: "hufhaus.eth",
-          desc: "Huf is a 155 Capital co-founder and is in charge of the investment team and capital management.",
+          desc: "Huf is 155 Capital co-founder, in charge of the investment team and capital management.",
         },
         {
           name: "Marc",
