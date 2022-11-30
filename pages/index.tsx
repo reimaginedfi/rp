@@ -1,6 +1,7 @@
 import { NextSeo } from "next-seo";
 
 import Landing from "../components/Landing";
+import Footer from "../components/Layout/footer";
 
 const Index = () => {
   const title = "155 Capital";
@@ -31,6 +32,7 @@ const Index = () => {
         }}
       />
       <Landing />
+      <Footer/>
     </>
   );
 };

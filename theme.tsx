@@ -125,6 +125,18 @@ export const customTheme = {
             textDecoration: "none",
           },
         }),
+        link2: (props: any) => ({
+          fontFamily: "PT Mono",
+          p: "8px",
+          textDecoration: "underline",
+          color: mode("lighttext", "darktext")(props),
+          opacity: "0.7",
+          _hover: {
+            bg: "none",
+            cursor: "pointer",
+            textDecoration: "none",
+          },
+        }),
         small: (props: any) => ({
           fontFamily: "PT Mono",
           fontWeight: "400",

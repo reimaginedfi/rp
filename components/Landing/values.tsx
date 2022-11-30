@@ -9,6 +9,7 @@ import {
   AccordionItem,
   AccordionPanel,
   useColorMode,
+  Link
 } from "@chakra-ui/react";
 
 export default function Values() {
@@ -19,16 +20,19 @@ export default function Values() {
       title: "Transparency",
       text: "Don’t Trust, Verify. Unlike traditional funds, at 155 you know exactly where your capital is and how it’s being utilized. All of our investments are on-chain and visible 24/7/365.",
       image: colorMode === "dark" ? "/icons/transparency-dark.svg" : "/icons/transparency-light.svg",
+      link: "https://etherscan.io/address/0x00000008786611c72a00909bd8d398b1be195be3",
     },
     {
       title: "Safe",
       text: "155 Capital is secured by Fireblocks, the #1 institutional digital asset custody solution. Their proprietary wallet technology and multi-party computation (MPC) provide multi-layered digital asset custody security.",
         image: colorMode === "dark" ? "/icons/safety-dark.svg" : "/icons/safety-light.svg",
+      link: "https://fireblocks.com/",
     },
     {
       title: "Profitable",
       text: "Maintaining profitability through the volatility of crypto markets is difficult. Allow our world-class team of DeFi-native investors to do it for you. We’re plugged into the latest protocols, narratives, and macro happenings; more importantly, we understand the strategies & timing to capitalize on these opportunities.",
         image: colorMode === "dark" ? "/icons/profitability-dark.svg" : "/icons/profitability-light.svg",
+      link: "https://medium.com/155-capital/thirty-days-of-defi-1f3b0b5b5f8a",
     },
   ];
 
@@ -76,6 +80,10 @@ export default function Values() {
                   w="100%"
                 >
                   {value.text}
+                  <Link _hover={{
+            textDecoration: "none !important"}} px="none" href={value.link} isExternal>
+                <Text  variant="link2" px="0">{"Learn More >"}</Text>
+               </Link>
                 </Text>
               </Grid>
             ))}
