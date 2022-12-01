@@ -22,7 +22,7 @@ export default function Research() {
   ];
 
   return (
-    <Flex>
+    <Flex px="2rem">
       <Flex direction="column" py="2rem">
         <Flex alignItems="center" py="2rem">
           <Image
