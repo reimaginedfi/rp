@@ -36,7 +36,7 @@ export default function Research() {
           />
           <Text variant="normal">Research & Media</Text>
         </Flex>
-        <Flex gap="1rem">
+        <Flex gap="1rem" direction={{base: "column", md:"row"}}>
           {media.map((med) => (
             <Flex p="3rem" w="fit-content" direction="column" border="1px solid" borderColor={colorMode === "dark" ? "darktext" : "lighttext"}>
               <Text mb="0.5rem" variant="normal">{med.title}</Text>

@@ -142,7 +142,7 @@ export const customTheme = {
           fontWeight: "400",
           fontStyle: "normal",
           fontSize: "1rem",
-          lineHeight: "1.25rem",
+          lineHeight: "2rem",
           color: mode("lighttext", "darktext")(props),
         }),
         label: (props: any) => ({

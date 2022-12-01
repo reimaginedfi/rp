@@ -58,17 +58,18 @@ export default function Values() {
             {values.map((value, index) => (
               <Grid
               key={index}
-              gridTemplateColumns="300px 2fr"
+              gridTemplateColumns={{base: "none", md: "300px 2fr"}}
+              gridAutoFlow="row"
               dir={{base: "row", md: "column"} as any}
               py="2rem"
               >
-                <Flex direction="row" alignItems="center">
+                <Flex direction="row" alignItems="center" my="1rem" _first={{alignSelf: "start"}}>
                 <Image src={value.image} h="1.5rem"/>
                 <Text
                   variant="normal"
                   ml="1rem"
                   color={colorMode === "dark" ? "darktext" : "lighttext"}
-                  w={{base: "20%", md: "50%"}}
+                  w={{base: "100%", md: "50%"}}
                 >
                   {value.title}
                 </Text>
