@@ -37,8 +37,8 @@ export default function Research() {
           <Text variant="normal">Research & Media</Text>
         </Flex>
         <Flex gap="1rem" direction={{base: "column", md:"row"}}>
-          {media.map((med) => (
-            <Flex p={{base: "2rem", md: "3rem"}} w="fit-content" direction="column" border="1px solid" borderColor={colorMode === "dark" ? "darktext" : "lighttext"}>
+          {media.map((med, index) => (
+            <Flex key={index} p={{base: "2rem", md: "3rem"}} w="fit-content" direction="column" border="1px solid" borderColor={colorMode === "dark" ? "darktext" : "lighttext"}>
               <Text mb="0.5rem" variant="normal">{med.title}</Text>
               <Text mb="0.5rem" variant="small">{med.desc}</Text>
               <Link _hover={{

@@ -54,8 +54,9 @@ export default function Footer() {
             alignItems="space-evenly"
             alignContent="center"
           >
-            {links.map((link) => (
+            {links.map((link, index) => (
               <Link
+              key={index}
                 _hover={{
                   textDecoration: "none",
                 }}
