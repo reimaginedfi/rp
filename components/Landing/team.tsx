@@ -1,4 +1,4 @@
-import { Flex, Text, Grid, Image, useColorMode } from "@chakra-ui/react";
+import { Flex, Text, Heading, Grid, Image, useColorMode } from "@chakra-ui/react";
 
 export default function Team() {
     const { colorMode } = useColorMode();
@@ -60,12 +60,13 @@ export default function Team() {
                 </Flex>
                 <Grid
                     templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}
-                    pl="3rem" pr="5rem"
+                    pl={{base: "1.5rem", md: "3rem" }}
+                    pr={{base: "2rem", md: "5rem"}}
                 >
                     {teamData.map((team, index) => ( 
-                        <Flex direction="column" py="2rem" key={index}>
-                            <Text py="1rem" variant="large">{team.name}</Text>
-                            <Text variant="normal">{team.desc}</Text>
+                        <Flex direction="column" py="2rem" px="1rem" key={index}>
+                            <Heading variant={{ base: "small", md: "normal" }} py="1rem">{team.name}</Heading>
+                            <Text variant={{ base: "small", md: "normal" }}>{team.desc}</Text>
                         </Flex>
                     ))}
                 </Grid>

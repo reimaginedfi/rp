@@ -38,12 +38,12 @@ export default function Research() {
         </Flex>
         <Flex gap="1rem" direction={{base: "column", md:"row"}}>
           {media.map((med) => (
-            <Flex p="3rem" w="fit-content" direction="column" border="1px solid" borderColor={colorMode === "dark" ? "darktext" : "lighttext"}>
+            <Flex p={{base: "2rem", md: "3rem"}} w="fit-content" direction="column" border="1px solid" borderColor={colorMode === "dark" ? "darktext" : "lighttext"}>
               <Text mb="0.5rem" variant="normal">{med.title}</Text>
               <Text mb="0.5rem" variant="small">{med.desc}</Text>
               <Link _hover={{
             textDecoration: "none !important"}} px="none" href={med.link} isExternal>
-                <Text variant="link2" px="0">{"Learn More >"}</Text>
+                <Text variant="link2" px="0">{"Visit >"}</Text>
               </Link>
             </Flex>
           ))}
