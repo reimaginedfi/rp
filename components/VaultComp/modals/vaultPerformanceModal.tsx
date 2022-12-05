@@ -179,7 +179,7 @@ const ChartsModal = () => {
                 <TabList>
                   <Tab>All Epochs</Tab>
                   {Object.keys(groupedEpochData).map((key) => (
-                    <Tab>Epoch {key}</Tab>
+                    <Tab key={key}>Epoch {key}</Tab>
                   ))}
 
                 </TabList>
@@ -215,8 +215,8 @@ const ChartsModal = () => {
                   {Object.values(groupedEpochData).map((key: any) => {
                       let epochChange = key[key.length - 1].Change;
 
-                  return (
-                    <TabPanel maxW={"100%"} w="37rem" h="200px">
+                      return (
+                    <TabPanel key={key[0].Epoch} maxW={"100%"} w="37rem" h="200px">
                     <Flex my={2} direction="row" justify="center">
                       <InfoData
                         heading={"Total Gain"}
@@ -225,13 +225,13 @@ const ChartsModal = () => {
                           epochChange
                         }
                         value={`${
-                          epochChange.includes("+") && ""
+                          epochChange.includes("+") ? "" : ""
                         }${
                           key.length !== 0 && epochChange
                         }%`}
                       />
                     </Flex>
-                    <Charts epoch={2} data={key} />
+                    <Charts epoch={key[0].Epoch} data={key} />
                   </TabPanel>
                  )})}
 
