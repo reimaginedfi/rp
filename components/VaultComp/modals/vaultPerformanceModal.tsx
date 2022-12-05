@@ -19,7 +19,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useState, useContext } from "react";
-import supabaseClient from "../../../utils/supabaseClient";
 import { Charts } from "../../Charts";
 import { VaultData } from "../../../pages";
 
@@ -27,7 +26,6 @@ import { InfoOutlineIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 
 import { truncate } from "../../utils/stringsAndNumbers";
 import  groupBy from "lodash/groupBy";
-import mapValues from "lodash/mapValues";
 
 interface performanceDataProps {
   percentage_change: string;
@@ -66,8 +64,6 @@ const ChartsModal = () => {
       setGroupedEpochData(groupBy(renamedData, item => item.Epoch) as any)
   }, [value]);
 
-    // console.log(Object.keys(groupedEpochData).length)
-
   useEffect(() => {
     if (fullPerformance === 0 && Object.keys(groupedEpochData).length) {
 
@@ -86,8 +82,6 @@ const ChartsModal = () => {
       );
     }
   }, [pastEpochData]);
-
-  // console.log(Object.values(groupedEpochData))
 
   const InfoData = ({ heading, tooltipText, performance, value }: any) => {
     return (
@@ -234,99 +228,6 @@ const ChartsModal = () => {
                     <Charts epoch={key[0].Epoch} data={key} />
                   </TabPanel>
                  )})}
-
-                  {/* <TabPanel maxW={"100%"} w="37rem" h="200px">
-                    <Flex my={2} direction="row" justify="center">
-                      <InfoData
-                        heading={"Total Gain"}
-                        tooltipText={`Final performance of epoch 2 (${epoch2Data.length} days)`}
-                        performance={
-                          epoch2Data.length !== 0 &&
-                          epoch2Data[epoch2Data.length - 1].Change
-                        }
-                        value={`${
-                          epoch2Data.length !== 0 &&
-                          epoch2Data[epoch2Data.length - 1].Change > 0
-                            ? "+"
-                            : ""
-                        }${
-                          epoch2Data.length !== 0 &&
-                          truncate(epoch2Data[epoch2Data.length - 1].Change, 2)
-                        }%`}
-                      />
-                    </Flex>
-                    <Charts epoch={2} data={epoch2Data} />
-                  </TabPanel> */}
-                  {/* <TabPanel maxW={"100%"} w="37rem" h="200px">
-                    <Flex my={2} direction="row" justify="center">
-                      <InfoData
-                        heading={"Total Gain"}
-                        tooltipText={`Final performance of epoch 3 (${
-                          epoch3Data!.length
-                        } days)`}
-                        performance={
-                          epoch3Data.length !== 0 &&
-                          epoch3Data![epoch3Data.length - 1].Change
-                        }
-                        value={`${
-                          epoch3Data.length !== 0 &&
-                          truncate(epoch3Data![epoch3Data.length - 1].Change, 2)
-                        }%`}
-                      />
-                    </Flex>
-                    <Charts epoch={3} data={epoch3Data} />
-                  </TabPanel>
-                  <TabPanel maxW={"100%"} w="37rem" h="200px">
-                    <Flex my={2} direction="row" justify="center">
-                      <InfoData
-                        heading={"Total Gain"}
-                        tooltipText={`Final performance of epoch 4 (${epoch4Data.length} days)`}
-                        performance={
-                          epoch4Data.length !== 0 &&
-                          epoch4Data[epoch4Data!.length - 1].Change
-                        }
-                        value={`${
-                          epoch4Data.length !== 0 &&
-                          truncate(epoch4Data[epoch4Data!.length - 1].Change, 2)
-                        }%`}
-                      />
-                    </Flex>
-                    <Charts epoch={4} data={epoch4Data} />
-                  </TabPanel>
-                  <TabPanel maxW={"100%"} w="37rem" h="200px">
-                    <Flex my={2} direction="row" justify="center">
-                      <InfoData
-                        heading={"Total Gain"}
-                        tooltipText={`Final performance of epoch 5 (${epoch5Data.length} days)`}
-                        performance={
-                          epoch5Data.length !== 0 ?
-                          epoch5Data[epoch5Data!.length - 1].Change
-                        : 0}
-                        value={`${
-                          epoch5Data.length !== 0 ?
-                          truncate(epoch5Data[epoch5Data!.length - 1].Change, 2)
-                        : 0}%`}
-                      />
-                    </Flex>
-                    <Charts epoch={5} data={epoch5Data} />
-                  </TabPanel>
-                  <TabPanel maxW={"100%"} w="37rem" h="200px">
-                    <Flex my={2} direction="row" justify="center">
-                      <InfoData
-                        heading={"Total Gain"}
-                        tooltipText={`Final performance of epoch 6 (${epoch6Data.length} days)`}
-                        performance={
-                          epoch6Data.length !== 0 ?
-                          epoch6Data[epoch6Data!.length - 1].Change
-                        : 0}
-                        value={`${
-                          epoch6Data.length !== 0 ?
-                          truncate(epoch6Data[epoch6Data!.length - 1].Change, 2)
-                        : 0}%`}
-                      />
-                    </Flex>
-                    <Charts epoch={6} data={epoch6Data} />
-                  </TabPanel> */}
                 </TabPanels>
               </Tabs>
             </Box>
