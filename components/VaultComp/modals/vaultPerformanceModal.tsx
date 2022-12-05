@@ -26,6 +26,8 @@ import { VaultData } from "../../../pages";
 import { InfoOutlineIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 
 import { truncate } from "../../utils/stringsAndNumbers";
+import  groupBy from "lodash/groupBy";
+import mapValues from "lodash/mapValues";
 
 interface performanceDataProps {
   percentage_change: string;
@@ -39,11 +41,7 @@ const ChartsModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
   const [pastEpochData, setPastEpochData] = useState<any[]>([]);
-  const [epoch2Data, setepoch2Data] = useState<any[]>([]);
-  const [epoch3Data, setepoch3Data] = useState<any[]>([]);
-  const [epoch4Data, setepoch4Data] = useState<any[]>([]);
-  const [epoch5Data, setepoch5Data] = useState<any[]>([]);
-  const [epoch6Data, setepoch6Data] = useState<any[]>([]);
+  const [groupedEpochData, setGroupedEpochData] = useState<Array<[]>>([]);
   const [fullPerformance, setFullPerformance] = useState<number>(0);
   const value = useContext(VaultData);
 
@@ -65,31 +63,31 @@ const ChartsModal = () => {
         })
       );
       setPastEpochData(renamedData);
-      setepoch2Data(renamedData.filter((item: any) => item.Epoch === "2"));
-      setepoch3Data(renamedData.filter((item: any) => item.Epoch === "3"));
-      setepoch4Data(renamedData.filter((item: any) => item.Epoch === "4"));
-      setepoch5Data(renamedData.filter((item: any) => item.Epoch === "5"));
-      setepoch6Data(renamedData.filter((item: any) => item.Epoch === "6"));
+      setGroupedEpochData(groupBy(renamedData, item => item.Epoch) as any)
   }, [value]);
 
-  useEffect(() => {
-    if (fullPerformance === 0 && pastEpochData.length) {
-      let epoch2 =
-        epoch2Data.length !== 0 && epoch2Data[epoch2Data.length - 1].Change;
-      let epoch3 =
-        epoch3Data.length !== 0 && epoch3Data[epoch3Data.length - 1].Change;
-      let epoch4 =
-        epoch4Data.length !== 0 && epoch4Data[epoch4Data.length - 1].Change;
-      let epoch5 = 
-        epoch5Data.length !== 0 && epoch5Data[epoch5Data.length - 1].Change;
-      let epoch6 = 
-      epoch6Data.length !== 0 && epoch6Data[epoch6Data.length - 1].Change;
+    // console.log(Object.keys(groupedEpochData).length)
 
+  useEffect(() => {
+    if (fullPerformance === 0 && Object.keys(groupedEpochData).length) {
+
+      let performance = [];
+ 
+      for (let key in groupedEpochData) {
+        let epochData: any = groupedEpochData[key];
+        let epochChange = epochData[epochData.length - 1].Change;
+        performance.push(epochChange);
+      }
+
+      let total = performance.reduce((a, b) => Number(a) + Number(b), 0);
+     
       setFullPerformance(
-        (+epoch2 + +epoch3 + +epoch4 + +epoch5 + +epoch6) / 5
+        (total) / Object.keys(groupedEpochData).length
       );
     }
   }, [pastEpochData]);
+
+  console.log(pastEpochData)
 
   const InfoData = ({ heading, tooltipText, performance, value }: any) => {
     return (
@@ -180,11 +178,10 @@ const ChartsModal = () => {
               <Tabs colorScheme="red" variant="enclosed">
                 <TabList>
                   <Tab>All Epochs</Tab>
-                  <Tab>Epoch 2</Tab>
-                  <Tab>Epoch 3</Tab>
-                  <Tab>Epoch 4</Tab>
-                  <Tab>Epoch 5</Tab>
-                  <Tab>Epoch 6</Tab>
+                  {Object.keys(groupedEpochData).map((key) => (
+                    <Tab>Epoch {key}</Tab>
+                  ))}
+
                 </TabList>
                 <TabPanels>
                   <TabPanel maxW={"100%"} w="37rem" h="250px">
@@ -214,7 +211,39 @@ const ChartsModal = () => {
                     </Flex>
                     <Charts epoch={0} data={pastEpochData} />
                   </TabPanel>
-                  <TabPanel maxW={"100%"} w="37rem" h="200px">
+
+                  {/* {Object.keys(groupedEpochData).map((key: any) => {
+                      let epochData: any = groupedEpochData[key];
+                      let epochChange = epochData[epochData.length - 1].Change;
+
+                  return (
+                    <TabPanel maxW={"100%"} w="37rem" h="200px">
+                    <Flex my={2} direction="row" justify="center">
+                      <InfoData
+                        heading={"Total Gain"}
+                        tooltipText={`Final performance of epoch (${epochChange.length} days)`}
+                        performance={
+                          epochChange
+                          // epoch2Data.length !== 0 &&
+                          // epoch2Data[epoch2Data.length - 1].Change
+                        }
+                        value={`${
+                          // epoch2Data.length !== 0 &&
+                          // epoch2Data[epoch2Data.length - 1].Change 
+                          +epochChange > 0
+                            ? "+"
+                            : ""
+                        }${
+                          key.length !== 0 && epochChange
+                          // truncate(epoch2Data[epoch2Data.length - 1].Change, 2)
+                        }%`}
+                      />
+                    </Flex>
+                    <Charts epoch={2} data={key} />
+                  </TabPanel>
+                 )})} */}
+
+                  {/* <TabPanel maxW={"100%"} w="37rem" h="200px">
                     <Flex my={2} direction="row" justify="center">
                       <InfoData
                         heading={"Total Gain"}
@@ -235,8 +264,8 @@ const ChartsModal = () => {
                       />
                     </Flex>
                     <Charts epoch={2} data={epoch2Data} />
-                  </TabPanel>
-                  <TabPanel maxW={"100%"} w="37rem" h="200px">
+                  </TabPanel> */}
+                  {/* <TabPanel maxW={"100%"} w="37rem" h="200px">
                     <Flex my={2} direction="row" justify="center">
                       <InfoData
                         heading={"Total Gain"}
@@ -305,7 +334,7 @@ const ChartsModal = () => {
                       />
                     </Flex>
                     <Charts epoch={6} data={epoch6Data} />
-                  </TabPanel>
+                  </TabPanel> */}
                 </TabPanels>
               </Tabs>
             </Box>
