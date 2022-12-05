@@ -87,7 +87,7 @@ const ChartsModal = () => {
     }
   }, [pastEpochData]);
 
-  console.log(pastEpochData)
+  // console.log(Object.values(groupedEpochData))
 
   const InfoData = ({ heading, tooltipText, performance, value }: any) => {
     return (
@@ -212,9 +212,8 @@ const ChartsModal = () => {
                     <Charts epoch={0} data={pastEpochData} />
                   </TabPanel>
 
-                  {/* {Object.keys(groupedEpochData).map((key: any) => {
-                      let epochData: any = groupedEpochData[key];
-                      let epochChange = epochData[epochData.length - 1].Change;
+                  {Object.values(groupedEpochData).map((key: any) => {
+                      let epochChange = key[key.length - 1].Change;
 
                   return (
                     <TabPanel maxW={"100%"} w="37rem" h="200px">
@@ -224,24 +223,17 @@ const ChartsModal = () => {
                         tooltipText={`Final performance of epoch (${epochChange.length} days)`}
                         performance={
                           epochChange
-                          // epoch2Data.length !== 0 &&
-                          // epoch2Data[epoch2Data.length - 1].Change
                         }
                         value={`${
-                          // epoch2Data.length !== 0 &&
-                          // epoch2Data[epoch2Data.length - 1].Change 
-                          +epochChange > 0
-                            ? "+"
-                            : ""
+                          epochChange.includes("+") && ""
                         }${
                           key.length !== 0 && epochChange
-                          // truncate(epoch2Data[epoch2Data.length - 1].Change, 2)
                         }%`}
                       />
                     </Flex>
                     <Charts epoch={2} data={key} />
                   </TabPanel>
-                 )})} */}
+                 )})}
 
                   {/* <TabPanel maxW={"100%"} w="37rem" h="200px">
                     <Flex my={2} direction="row" justify="center">
