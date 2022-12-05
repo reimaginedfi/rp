@@ -257,8 +257,6 @@ export const useVaultDeposit = (
     },
   });
 
-  console.log(status, error);
-
   const depositFor = useContractWrite({
     ...contractConfig,
     contractInterface: [
