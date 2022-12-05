@@ -43,6 +43,7 @@ const ChartsModal = () => {
   const [epoch3Data, setepoch3Data] = useState<any[]>([]);
   const [epoch4Data, setepoch4Data] = useState<any[]>([]);
   const [epoch5Data, setepoch5Data] = useState<any[]>([]);
+  const [epoch6Data, setepoch6Data] = useState<any[]>([]);
   const [fullPerformance, setFullPerformance] = useState<number>(0);
   const value = useContext(VaultData);
 
@@ -68,6 +69,7 @@ const ChartsModal = () => {
       setepoch3Data(renamedData.filter((item: any) => item.Epoch === "3"));
       setepoch4Data(renamedData.filter((item: any) => item.Epoch === "4"));
       setepoch5Data(renamedData.filter((item: any) => item.Epoch === "5"));
+      setepoch6Data(renamedData.filter((item: any) => item.Epoch === "6"));
   }, [value]);
 
   useEffect(() => {
@@ -80,6 +82,8 @@ const ChartsModal = () => {
         epoch4Data.length !== 0 && epoch4Data[epoch4Data.length - 1].Change;
       let epoch5 = 
         epoch5Data.length !== 0 && epoch5Data[epoch5Data.length - 1].Change;
+      let epoch6 = 
+      epoch6Data.length !== 0 && epoch5Data[epoch5Data.length - 1].Change;
 
       setFullPerformance(
         (+epoch2 + +epoch3 + +epoch4 + +epoch5) / 4
@@ -162,7 +166,7 @@ const ChartsModal = () => {
         </Text>
       </Flex>
 
-      <Modal isCentered size="md" onClose={onClose!} isOpen={isOpen!}>
+      <Modal isCentered size="xl" onClose={onClose!} isOpen={isOpen!}>
         <ModalOverlay onClick={onClose} />
         <ModalContent overflow="visible">
           <ModalHeader>
@@ -180,6 +184,7 @@ const ChartsModal = () => {
                   <Tab>Epoch 3</Tab>
                   <Tab>Epoch 4</Tab>
                   <Tab>Epoch 5</Tab>
+                  <Tab>Epoch 6</Tab>
                 </TabList>
                 <TabPanels>
                   <TabPanel maxW={"100%"} w="37rem" h="250px">
@@ -283,6 +288,23 @@ const ChartsModal = () => {
                       />
                     </Flex>
                     <Charts epoch={5} data={epoch5Data} />
+                  </TabPanel>
+                  <TabPanel maxW={"100%"} w="37rem" h="200px">
+                    <Flex my={2} direction="row" justify="center">
+                      <InfoData
+                        heading={"Total Gain"}
+                        tooltipText={`Final performance of epoch 6 (${epoch6Data.length} days)`}
+                        performance={
+                          epoch6Data.length !== 0 ?
+                          epoch6Data[epoch6Data!.length - 1].Change
+                        : 0}
+                        value={`${
+                          epoch6Data.length !== 0 ?
+                          truncate(epoch6Data[epoch6Data!.length - 1].Change, 2)
+                        : 0}%`}
+                      />
+                    </Flex>
+                    <Charts epoch={6} data={epoch6Data} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>
