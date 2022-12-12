@@ -25,6 +25,7 @@ import { useCompleteAum } from "../../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../../Vault/hooks/useVaultAsset";
 import { commify, formatUnits } from "ethers/lib/utils";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useEffect, useState } from "react";
 
 export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
   const { colorMode } = useColorMode();
@@ -34,6 +35,46 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
     contractConfig,
     address ?? ""
   );
+
+  const [depositedUsdc, setDespositedUsdc] = useState<number | null>(null);
+
+  useEffect(() => {
+    const txnDetails = async () => {
+      const data = await fetch(
+        `https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&address=${address}&page=1&offset=100&startblock=0&endblock=27025780&sort=desc&apikey=39AQRIGRBAERBCDM7TUGXNYJN6MYXZ34BR`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const result = await data.json();
+
+      let depositedUsdc = 0;
+
+      result.result.forEach((txn: any) => {
+        if (
+          txn.to.toString().toLowerCase() ==
+          "0x00000008786611c72a00909bd8d398b1be195be3".toLowerCase()
+        ) {
+          depositedUsdc += +txn.value / 1000000;
+        } else if (
+          txn.from.toString().toLowerCase() ==
+          "0x00000008786611c72a00909bd8d398b1be195be3".toLowerCase()
+        ) {
+          depositedUsdc -= +txn.value / 1000000;
+        }
+      });
+
+      console.log("depositedUsdc: ", depositedUsdc);
+      setDespositedUsdc(depositedUsdc);
+    };
+
+    if (address) {
+      txnDetails();
+    }
+  }, [address]);
 
      const accordionBg = colorMode === "dark" ? "#1C1C1C" : "#F8F8F8";
   
@@ -174,6 +215,39 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
         </Heading>
         <Text textAlign={"center"} mt={-2} mb={4}>
           {asset.data?.symbol}
+        </Text>
+      </Box>
+      <Stack
+        w="100%"
+        direction="row"
+        justifyContent="center"
+        alignContent={"center"}
+      >
+        <Flex gap={1} alignItems="center" direction={"row"}>
+          <Text variant={"medium"} textAlign="center">
+            Total USDC Deposited
+          </Text>
+          <Tooltip
+            justifySelf="center"
+            hasArrow
+            label="Total amount of USDC tokens deposited into the vault"
+            bg={colorMode === "dark" ? "white" : "black"}
+          >
+            <InfoOutlineIcon w={3.5} h={3.5} />
+          </Tooltip>
+        </Flex>
+      </Stack>
+      <Box>
+        <Heading
+          textAlign={"center"}
+          textShadow={"1px 1px 2rem rgb(200 100 100 / 50%)"}
+          my={0}
+          py={0}
+        >
+          {depositedUsdc}
+        </Heading>
+        <Text textAlign={"center"} mt={-2} mb={4}>
+          USDC
         </Text>
       </Box>
       {/* <Stack
