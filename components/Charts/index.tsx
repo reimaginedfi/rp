@@ -56,7 +56,8 @@ export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?:
   };
 
   return (
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%"         minWidth={undefined}
+      minHeight={undefined}>
       <AreaChart
         width={500}
         height={400}

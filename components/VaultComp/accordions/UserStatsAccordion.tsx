@@ -39,6 +39,11 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
 
   const [depositedUsdc, setDespositedUsdc] = useState<number>(0);
   const [withdrawnUsdc, setWithdrawnUsdc] = useState<number>(0);
+  const [usdcDepositedLabel, setUsdcDepositedLabel] = useState<boolean>(false);
+  const [usdcWithdrawnLabel, setUsdcWithdrawnLabel] = useState<boolean>(false);
+  const [pnlLabel, setPnlLabel] = useState<boolean>(false);
+  const [currentValueLabel, setCurrentValueLabel] = useState<boolean>(false);
+  const [VTTokensLabel, setVTTokensLabel] = useState<boolean>(false);
 
   useEffect(() => {
     const txnDetails = async () => {
@@ -170,8 +175,11 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
             hasArrow
             label="Total amount of USDC tokens deposited into the vault"
             bg={colorMode === "dark" ? "white" : "black"}
+            isOpen={usdcDepositedLabel}
           >
-            <InfoOutlineIcon w={3.5} h={3.5} />
+            <InfoOutlineIcon w={3.5} h={3.5} onMouseEnter={() => setUsdcDepositedLabel(true)}
+            onMouseLeave={() => setUsdcDepositedLabel(false)}
+            onClick={() => setUsdcDepositedLabel(true)} />
           </Tooltip>
         </Flex>
       </Stack>
@@ -203,8 +211,11 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
             hasArrow
             label="Sum of total deposits plus total gains not yet withdrawn"
             bg={colorMode === "dark" ? "white" : "black"}
+            isOpen={currentValueLabel}
           >
-            <InfoOutlineIcon w={3.5} h={3.5} />
+            <InfoOutlineIcon w={3.5} h={3.5} onMouseEnter={() => setCurrentValueLabel(true)}
+            onMouseLeave={() => setCurrentValueLabel(false)}
+            onClick={() => setCurrentValueLabel(true)} />
           </Tooltip>
         </Flex>
       </Stack>
@@ -237,8 +248,11 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
             hasArrow
             label="Total gains or losses from all deposits not yet withdrawn"
             bg={colorMode === "dark" ? "white" : "black"}
+            isOpen={pnlLabel}
           >
-            <InfoOutlineIcon w={3.5} h={3.5} />
+            <InfoOutlineIcon w={3.5} h={3.5}             onMouseEnter={() => setPnlLabel(true)}
+            onMouseLeave={() => setPnlLabel(false)}
+            onClick={() => setPnlLabel(true)}/>
           </Tooltip>
         </Flex>
       </Stack>
@@ -306,8 +320,11 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
             hasArrow
             label="You can transform your deposited USDC into VT tokens for withdrawals"
             bg={colorMode === "dark" ? "white" : "black"}
+            isOpen={VTTokensLabel}
           >
-            <InfoOutlineIcon w={3.5} h={3.5} />
+            <InfoOutlineIcon w={3.5} h={3.5}             onMouseEnter={() => setVTTokensLabel(true)}
+            onMouseLeave={() => setVTTokensLabel(false)}
+            onClick={() => setVTTokensLabel(true)} />
           </Tooltip>
         </Flex>
 
@@ -372,8 +389,13 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
             hasArrow
             label="Total amount of USDC tokens withdrawn from the vault"
             bg={colorMode === "dark" ? "white" : "black"}
+            isOpen={usdcWithdrawnLabel}
           >
-            <InfoOutlineIcon w={3.5} h={3.5} />
+            <InfoOutlineIcon w={3.5} h={3.5} 
+                        onMouseEnter={() => setUsdcWithdrawnLabel(true)}
+                        onMouseLeave={() => setUsdcWithdrawnLabel(false)}
+                        onClick={() => setUsdcWithdrawnLabel(true)}
+            />
           </Tooltip>
         </Flex>
       </Stack>
