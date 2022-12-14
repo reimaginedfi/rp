@@ -168,7 +168,7 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
       >
         <Flex gap={1} alignItems="center" direction={"row"}>
           <Text variant={"medium"} textAlign="center">
-            Total USDC Deposited
+            Total Deposited
           </Text>
           <Tooltip
             justifySelf="center"
@@ -382,7 +382,7 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
       >
         <Flex gap={1} alignItems="center" direction={"row"}>
           <Text variant={"medium"} textAlign="center">
-            Total USDC Withdrawn
+            Total Withdrawn
           </Text>
           <Tooltip
             justifySelf="center"
