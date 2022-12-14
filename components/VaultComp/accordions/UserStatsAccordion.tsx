@@ -24,6 +24,7 @@ import { useContractConfig, useWatchVault } from "../../Vault/ContractContext";
 import { useCompleteAum } from "../../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../../Vault/hooks/useVaultAsset";
 import { commify, formatUnits } from "ethers/lib/utils";
+import { truncate } from "../../utils/stringsAndNumbers";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
 
@@ -36,7 +37,8 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
     address ?? ""
   );
 
-  const [depositedUsdc, setDespositedUsdc] = useState<number | null>(null);
+  const [depositedUsdc, setDespositedUsdc] = useState<number>(0);
+  const [withdrawnUsdc, setWithdrawnUsdc] = useState<number>(0);
 
   useEffect(() => {
     const txnDetails = async () => {
@@ -51,24 +53,30 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
       );
       const result = await data.json();
 
-      let depositedUsdc = 0;
+      let depositedUSDC = 0;
+      let withdrawnUSDC = 0;
 
       result.result.forEach((txn: any) => {
         if (
           txn.to.toString().toLowerCase() ==
           "0x00000008786611c72a00909bd8d398b1be195be3".toLowerCase()
         ) {
-          depositedUsdc += +txn.value / 1000000;
-        } else if (
+          depositedUSDC += +txn.value / 1000000;
+        } 
+
+        if (
           txn.from.toString().toLowerCase() ==
           "0x00000008786611c72a00909bd8d398b1be195be3".toLowerCase()
         ) {
-          depositedUsdc -= +txn.value / 1000000;
+          withdrawnUSDC += +txn.value / 1000000;
         }
       });
+     
 
       console.log("depositedUsdc: ", depositedUsdc);
-      setDespositedUsdc(depositedUsdc);
+      setDespositedUsdc(depositedUSDC);
+      setWithdrawnUsdc(withdrawnUSDC);
+
     };
 
     if (address) {
@@ -156,7 +164,40 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
       >
         <Flex gap={1} alignItems="center" direction={"row"}>
           <Text variant={"medium"} textAlign="center">
-            Total Asset Value
+            Total USDC Deposited
+          </Text>
+          <Tooltip
+            justifySelf="center"
+            hasArrow
+            label="Total amount of USDC tokens deposited into the vault"
+            bg={colorMode === "dark" ? "white" : "black"}
+          >
+            <InfoOutlineIcon w={3.5} h={3.5} />
+          </Tooltip>
+        </Flex>
+      </Stack>
+      <Box>
+        <Heading
+          textAlign={"center"}
+          textShadow={"1px 1px 2rem rgb(200 100 100 / 50%)"}
+          my={0}
+          py={0}
+        >
+          {depositedUsdc !== 0 ? truncate(commify(depositedUsdc!.toString()), 2) : 0}
+        </Heading>
+        <Text textAlign={"center"} mt={-2} mb={4}>
+          USDC
+        </Text>
+      </Box>
+      <Stack
+        w="100%"
+        direction="row"
+        justifyContent="center"
+        alignContent={"center"}
+      >
+        <Flex gap={1} alignItems="center" direction={"row"}>
+          <Text variant={"medium"} textAlign="center">
+            Current Asset Value
           </Text>
           <Tooltip
             justifySelf="center"
@@ -217,39 +258,6 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
           {asset.data?.symbol}
         </Text>
       </Box>
-      <Stack
-        w="100%"
-        direction="row"
-        justifyContent="center"
-        alignContent={"center"}
-      >
-        <Flex gap={1} alignItems="center" direction={"row"}>
-          <Text variant={"medium"} textAlign="center">
-            Total USDC Deposited
-          </Text>
-          <Tooltip
-            justifySelf="center"
-            hasArrow
-            label="Total amount of USDC tokens deposited into the vault"
-            bg={colorMode === "dark" ? "white" : "black"}
-          >
-            <InfoOutlineIcon w={3.5} h={3.5} />
-          </Tooltip>
-        </Flex>
-      </Stack>
-      <Box>
-        <Heading
-          textAlign={"center"}
-          textShadow={"1px 1px 2rem rgb(200 100 100 / 50%)"}
-          my={0}
-          py={0}
-        >
-          {depositedUsdc}
-        </Heading>
-        <Text textAlign={"center"} mt={-2} mb={4}>
-          USDC
-        </Text>
-      </Box>
       {/* <Stack
         w="100%"
         direction="row"
@@ -308,7 +316,6 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
           <Button
             size={"xs"}
             colorScheme="orange"
-            // variant={"outline"}
             isLoading={updatePendingDeposit.isLoading}
             onClick={() => {
               updatePendingDeposit.write();
@@ -350,6 +357,39 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
           </Text>
         </AlertDescription>
       </Alert>)}
+      </Box>
+      <Stack
+        w="100%"
+        direction="row"
+        justifyContent="center"
+        alignContent={"center"}
+      >
+        <Flex gap={1} alignItems="center" direction={"row"}>
+          <Text variant={"medium"} textAlign="center">
+            Total USDC Withdrawn
+          </Text>
+          <Tooltip
+            justifySelf="center"
+            hasArrow
+            label="Total amount of USDC tokens withdrawn from the vault"
+            bg={colorMode === "dark" ? "white" : "black"}
+          >
+            <InfoOutlineIcon w={3.5} h={3.5} />
+          </Tooltip>
+        </Flex>
+      </Stack>
+      <Box>
+        <Heading
+          textAlign={"center"}
+          textShadow={"1px 1px 2rem rgb(200 100 100 / 50%)"}
+          my={0}
+          py={0}
+        >
+          {withdrawnUsdc !== 0 ? truncate(commify(withdrawnUsdc!.toString()), 2) : 0}
+        </Heading>
+        <Text textAlign={"center"} mt={-2} mb={4}>
+          USDC
+        </Text>
       </Box>
     </Stack>) : <Stack
     alignItems="center"

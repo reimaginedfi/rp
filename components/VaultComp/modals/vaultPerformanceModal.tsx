@@ -43,7 +43,6 @@ const ChartsModal = () => {
   const [fullPerformance, setFullPerformance] = useState<number>(0);
   const value = useContext(VaultData);
 
-
   useEffect(() => {
       const renamedData = value!.performanceData!.map(
         ({
@@ -219,7 +218,7 @@ const ChartsModal = () => {
                           epochChange
                         }
                         value={`${
-                          epochChange.includes("+") ? "" : ""
+                          epochChange.includes("+") ? "" : key[0].Epoch === 2 ? "+" : ""
                         }${
                           key.length !== 0 && epochChange
                         }%`}
