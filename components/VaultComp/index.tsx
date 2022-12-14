@@ -90,6 +90,8 @@ const VaultComp = ({
   const { address } = useAccount();
   const [depositSuccess, setDepositSuccess] = useState<string>("");
   const [approvalSuccess, setApprovalSuccess] = useState<string>("");
+  const [totalAumLabel, setIsTotalAumLabel] = useState<boolean>(false);
+  const [totalDeposited, setCurrentDepositsLabel] = useState<boolean>(false);
   const value = useContext(VaultData);
 
   const {
@@ -227,7 +229,13 @@ const VaultComp = ({
                     label="Total USDC value of assets deposited and managed by farmer"
                     bg={colorMode === "dark" ? "white" : "black"}
                   >
-                    <InfoOutlineIcon w={3.5} h={3.5} />
+                    <InfoOutlineIcon
+                      w={3.5}
+                      h={3.5}
+                      onMouseEnter={() => setIsTotalAumLabel(true)}
+                      onMouseLeave={() => setIsTotalAumLabel(false)}
+                      onClick={() => setIsTotalAumLabel(true)}
+                    />
                   </Tooltip>
                   <Spacer />
 
@@ -263,7 +271,13 @@ const VaultComp = ({
                     label="Deposits made currently not shown in the vault's AUM (waiting for next epoch)"
                     bg={colorMode === "dark" ? "white" : "black"}
                   >
-                    <InfoOutlineIcon w={3.5} h={3.5} />
+                    <InfoOutlineIcon
+                      w={3.5}
+                      h={3.5}
+                      onMouseEnter={() => setCurrentDepositsLabel(true)}
+                      onMouseLeave={() => setCurrentDepositsLabel(false)}
+                      onClick={() => setCurrentDepositsLabel(true)}
+                    />
                   </Tooltip>
                   <Spacer />
                   <Tooltip label={`${commify(pendingDeposit)} USDC`}>

@@ -73,7 +73,6 @@ export default function UserStatsAccordion({previewAum}: { previewAum: any}) {
       });
      
 
-      console.log("depositedUsdc: ", depositedUsdc);
       setDespositedUsdc(depositedUSDC);
       setWithdrawnUsdc(withdrawnUSDC);
 
