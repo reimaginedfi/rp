@@ -166,7 +166,7 @@ export default function UserStatsAccordion({
            {!isLoadingData && depositedUsdc === 0 ? (
             <Flex m="auto" w="75%" direction="column">
             <Text my="1rem" variant={"large"} textAlign="center">
-            You have not deposited any USDC into the vault
+            You have not made a deposit yet
           </Text>
             <DepositButton />
             </Flex>
