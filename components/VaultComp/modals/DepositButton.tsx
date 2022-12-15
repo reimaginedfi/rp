@@ -15,7 +15,7 @@ import {
   Tooltip,
   useColorMode,
   useDisclosure,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import { commify, parseUnits } from "ethers/lib/utils";
 import { useEffect, useState } from "react";
@@ -39,6 +39,9 @@ import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { TokenInput } from "../../TokenInput";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
+import Confetti from "react-confetti";
+import useWindowSize from "react-use/lib/useWindowSize";
+
 interface DepositButtonProps {
   depositSuccess: string;
   setDepositSuccess: React.Dispatch<React.SetStateAction<string>>;
@@ -46,18 +49,15 @@ interface DepositButtonProps {
   setApprovalSuccess: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const DepositButton: React.FC<DepositButtonProps> = ({
-  depositSuccess,
-  setDepositSuccess,
-  approvalSuccess,
-  setApprovalSuccess,
-}) => {
+export const DepositButton = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [amount, setAmount] = useState<string>("0.0");
   const toast = useToast();
   const { chain } = useNetwork();
   const [contractConfig, setContractConfig] = useState<any>();
   const { epoch, asset } = useVaultMeta(contractConfig);
+
+  const { width, height } = useWindowSize();
 
   //CONTRACT READ FOR DEPOSIT FUNCTIONS
   const {
@@ -74,6 +74,9 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
     depositData,
     approveData,
   } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
+
+  const [depositSuccess, setDepositSuccess] = useState<string>("");
+  const [approvalSuccess, setApprovalSuccess] = useState<string>("");
 
   const { colorMode } = useColorMode();
 
@@ -453,6 +456,17 @@ export const DepositButton: React.FC<DepositButtonProps> = ({
           )}
         </ModalContent>
       </Modal>
+
+      <Confetti
+        run={depositSuccess === "true"}
+        recycle={false}
+        width={width}
+        height={height}
+        numberOfPieces={500}
+        onConfettiComplete={() => {
+          setDepositSuccess("");
+        }}
+      />
     </>
   );
 };
