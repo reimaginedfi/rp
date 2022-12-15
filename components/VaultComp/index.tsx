@@ -39,7 +39,6 @@ import { commify } from "ethers/lib/utils";
 import { BigNumber } from "ethers";
 import { truncate } from "../utils/stringsAndNumbers";
 import { Number } from "../Number";
-import useWindowSize from "react-use/lib/useWindowSize";
 
 //Fetching stuff
 import millify from "millify";
@@ -88,8 +87,7 @@ const VaultComp = ({
 }: VaultProps) => {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
-  const [depositSuccess, setDepositSuccess] = useState<string>("");
-  const [approvalSuccess, setApprovalSuccess] = useState<string>("");
+
   const [totalAumLabel, setIsTotalAumLabel] = useState<boolean>(false);
   const [totalDeposited, setCurrentDepositsLabel] = useState<boolean>(false);
   const value = useContext(VaultData);
@@ -113,7 +111,6 @@ const VaultComp = ({
     watch: true,
   });
 
-  const { width, height } = useWindowSize();
   // const {
   //   sharesValue,
   //   user,
@@ -178,12 +175,7 @@ const VaultComp = ({
                   ) : (
                     <>
                       <GridItem alignItems="center">
-                        <DepositButton
-                          depositSuccess={depositSuccess}
-                          setDepositSuccess={setDepositSuccess}
-                          approvalSuccess={approvalSuccess}
-                          setApprovalSuccess={setApprovalSuccess}
-                        />
+                        <DepositButton />
                       </GridItem>
                       <GridItem>
                         <Button
@@ -475,17 +467,6 @@ const VaultComp = ({
           )}
         </AccordionItem>
       </Accordion>
-
-      <Confetti
-        run={depositSuccess === "true"}
-        recycle={false}
-        width={width}
-        height={height}
-        numberOfPieces={500}
-        onConfettiComplete={() => {
-          setDepositSuccess("");
-        }}
-      />
 
       {withdrawIsOpen && (
         <WithdrawModal onClose={onCloseWithdraw} isOpen={withdrawIsOpen} />
