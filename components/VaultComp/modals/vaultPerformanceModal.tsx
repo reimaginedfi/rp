@@ -81,6 +81,26 @@ const ChartsModal = () => {
     }
   }, [pastEpochData]);
 
+  useEffect(() => {
+    const fetchWithdrawn = async () => {
+
+    const data = await fetch(
+      `https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&page=1&offset=100&startblock=0&endblock=27025780&sort=desc&apikey=39AQRIGRBAERBCDM7TUGXNYJN6MYXZ34BR`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const result = await data.json();
+    console.log(result);
+    }
+
+    fetchWithdrawn();
+  })
+
   const InfoData = ({ heading, tooltipText, performance, value }: any) => {
     return (
       <Flex p="4px" direction="column" alignItems="center" gap="12px">
@@ -188,7 +208,7 @@ const ChartsModal = () => {
                           "How much the vault has grown every epoch (averaged from all epochs)"
                         }
                         performance={fullPerformance}
-                        value={`${fullPerformance > 0 && "+"}${truncate(
+                        value={`${truncate(
                           fullPerformance.toString(),
                           2
                         )}%`}
@@ -199,7 +219,7 @@ const ChartsModal = () => {
                           "Probable gains from performance of all epochs (current and past) averaged and extended over a 12-month period."
                         }
                         performance={fullPerformance}
-                        value={`${fullPerformance > 0 && "+"}${truncate(
+                        value={`${truncate(
                           (fullPerformance * 12).toString(),
                           2
                         )}%`}
