@@ -71,7 +71,7 @@ export const VaultHeroLeft = () => {
         .select("*")
         .order("created_at", { ascending: true });
 
-      if (data && !error) {
+      if ( data && data?.length > 0 && !error) {
         // console.log("supabaseData: ", data);
         if (factor && rawGains && epoch.data && previewValue && aum.data) {
           const epochData = epoch.data?.toString();

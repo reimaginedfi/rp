@@ -33,6 +33,7 @@ interface performanceDataProps {
   amount_after: string;
   amount_before: string;
   epoch_number: string;
+  deposit: string;
 }
 
 const ChartsModal = () => {
@@ -52,14 +53,16 @@ const ChartsModal = () => {
         created_at,
         amount_after,
         epoch_number,
+        deposit,
         ...rest
       }: performanceDataProps) => ({
-        ...rest,
-        Change: percentage_change,
-        Date: created_at,
-        Amount: amount_after.replaceAll(",", ""),
-        Epoch: epoch_number,
-      })
+          ...rest,
+          Change: percentage_change,
+          Date: created_at,
+          Amount: +(amount_after.replaceAll(",", "")) + +(deposit),
+          Epoch: epoch_number,
+        }
+      )
     );
     setPastEpochData(renamedData);
     setGroupedEpochData(groupBy(renamedData, (item) => item.Epoch) as any);
@@ -83,23 +86,22 @@ const ChartsModal = () => {
 
   useEffect(() => {
     const fetchWithdrawn = async () => {
+      const data = await fetch(
+        `https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&page=1&offset=100&startblock=0&endblock=27025780&sort=desc&apikey=39AQRIGRBAERBCDM7TUGXNYJN6MYXZ34BR`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-    const data = await fetch(
-      `https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&page=1&offset=100&startblock=0&endblock=27025780&sort=desc&apikey=39AQRIGRBAERBCDM7TUGXNYJN6MYXZ34BR`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const result = await data.json();
-    console.log(result);
-    }
+      const result = await data.json();
+      console.log(result);
+    };
 
     fetchWithdrawn();
-  })
+  });
 
   const InfoData = ({ heading, tooltipText, performance, value }: any) => {
     return (
@@ -208,10 +210,7 @@ const ChartsModal = () => {
                           "How much the vault has grown every epoch (averaged from all epochs)"
                         }
                         performance={fullPerformance}
-                        value={`${truncate(
-                          fullPerformance.toString(),
-                          2
-                        )}%`}
+                        value={`${truncate(fullPerformance.toString(), 2)}%`}
                       />
                       <InfoData
                         heading={"Annualized Gains"}
