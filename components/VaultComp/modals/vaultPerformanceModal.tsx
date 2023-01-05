@@ -81,25 +81,25 @@ const ChartsModal = () => {
     }
   }, [pastEpochData]);
 
-  useEffect(() => {
-    const fetchWithdrawn = async () => {
+  // useEffect(() => {
+  //   const fetchWithdrawn = async () => {
 
-    const data = await fetch(
-      `https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&page=1&offset=100&startblock=0&endblock=27025780&sort=desc&apikey=39AQRIGRBAERBCDM7TUGXNYJN6MYXZ34BR`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  //   const data = await fetch(
+  //     `https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&page=1&offset=100&startblock=0&endblock=27025780&sort=desc&apikey=39AQRIGRBAERBCDM7TUGXNYJN6MYXZ34BR`,
+  //     {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   );
 
-    const result = await data.json();
-    console.log(result);
-    }
+  //   const result = await data.json();
+  //   // console.log(result);
+  //   }
 
-    fetchWithdrawn();
-  })
+  //   fetchWithdrawn();
+  // })
 
 
   const InfoData = ({ heading, tooltipText, performance, value }: any) => {
