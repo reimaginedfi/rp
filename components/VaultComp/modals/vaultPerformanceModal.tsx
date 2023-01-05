@@ -71,7 +71,8 @@ const ChartsModal = () => {
 
       for (let key in groupedEpochData) {
         let epochData: any = groupedEpochData[key];
-        let epochChange = epochData[epochData.length - 1].Change;
+        console.log(epochData)
+        let epochChange = epochData[epochData.length - 1].id >= 595 ? epochData[epochData.length - 1].Change : null;
         performance.push(epochChange);
       }
 
@@ -80,6 +81,8 @@ const ChartsModal = () => {
       setFullPerformance(total / Object.keys(groupedEpochData).length);
     }
   }, [pastEpochData]);
+
+  console.log(groupedEpochData.length)
 
   useEffect(() => {
     const fetchWithdrawn = async () => {
@@ -100,6 +103,7 @@ const ChartsModal = () => {
 
     fetchWithdrawn();
   })
+
 
   const InfoData = ({ heading, tooltipText, performance, value }: any) => {
     return (
