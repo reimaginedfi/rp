@@ -71,7 +71,7 @@ const ChartsModal = () => {
 
       for (let key in groupedEpochData) {
         let epochData: any = groupedEpochData[key];
-        let epochChange = epochData[epochData.length - 1].id >= 584 ? epochData[epochData.length - 1].Change : null;
+        let epochChange = epochData[epochData.length - 1].id >= 564 ? epochData[epochData.length - 1].Change : null;
         // let epochChange = epochData[epochData.length - 1].Change;
         performance.push(epochChange);
       }
