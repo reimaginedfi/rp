@@ -185,7 +185,7 @@ const ChartsModal = () => {
         </Text>
       </Flex>
 
-      <Modal isCentered size="4xl" onClose={onClose!} isOpen={isOpen!}>
+      <Modal isCentered size={{base: "4xl", md: "xl"}} onClose={onClose!} isOpen={isOpen!}>
         <ModalOverlay onClick={onClose} />
         <ModalContent overflow="visible">
           <ModalHeader>
