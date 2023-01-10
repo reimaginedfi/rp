@@ -56,7 +56,7 @@ export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?:
   };
 
   return (
-      <ResponsiveContainer width="100%" height="100%"         minWidth={undefined}
+      <ResponsiveContainer width="100%" height="100%" minWidth={undefined}
       minHeight={undefined}>
       <AreaChart
         width={500}
@@ -66,7 +66,7 @@ export const Charts = ({data, forHero = false, epoch = 0}: {data: any, forHero?:
           top: (epoch === 0 && !forHero) ? 75 : forHero ? 30 : 10,
           right: 10,
           left: 0,
-          bottom: forHero ? 10 : epoch !== 0 ? 53 : 60,
+          bottom: 10,
         }}
       >
         <defs>

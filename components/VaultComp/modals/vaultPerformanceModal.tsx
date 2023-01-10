@@ -71,7 +71,10 @@ const ChartsModal = () => {
 
       for (let key in groupedEpochData) {
         let epochData: any = groupedEpochData[key];
-        let epochChange = epochData[epochData.length - 1].id >= 566 ? epochData[epochData.length - 1].Change : null;
+        let epochChange =
+          epochData[epochData.length - 1].id >= 566
+            ? epochData[epochData.length - 1].Change
+            : null;
         // let epochChange = epochData[epochData.length - 1].Change;
         performance.push(epochChange);
       }
@@ -101,7 +104,6 @@ const ChartsModal = () => {
 
   //   fetchWithdrawn();
   // })
-
 
   const InfoData = ({ heading, tooltipText, performance, value }: any) => {
     return (
@@ -183,7 +185,7 @@ const ChartsModal = () => {
         </Text>
       </Flex>
 
-      <Modal isCentered size="xl" onClose={onClose!} isOpen={isOpen!}>
+      <Modal isCentered size="4xl" onClose={onClose!} isOpen={isOpen!}>
         <ModalOverlay onClick={onClose} />
         <ModalContent overflow="visible">
           <ModalHeader>
@@ -194,7 +196,7 @@ const ChartsModal = () => {
           <ModalCloseButton _focus={{ boxShadow: "none" }} />
           <ModalBody px="0.25rem">
             <Box>
-              <Tabs colorScheme="red" variant="enclosed">
+              <Tabs colorScheme="red" variant="enclosed" orientation="vertical">
                 <TabList>
                   <Tab>All Epochs</Tab>
                   {Object.keys(groupedEpochData).map((key) => (
@@ -202,18 +204,23 @@ const ChartsModal = () => {
                   ))}
                 </TabList>
                 <TabPanels>
-                  <TabPanel maxW={"100%"} w="37rem" h="250px">
-                    <Flex my={3} direction="row" justify="space-around">
+                  <TabPanel
+                    maxW={"100%"}
+                    w={{ base: "15rem", md: "30rem" }}
+                    h="250px"
+                  >
+                    <Flex
+                      my={3}
+                      direction={{ base: "column", md: "row" }}
+                      justify="space-around"
+                    >
                       <InfoData
                         heading={"Average per Epoch"}
                         tooltipText={
                           "How much the vault has grown every epoch (averaged from all epochs)"
                         }
                         performance={fullPerformance}
-                        value={`${truncate(
-                          fullPerformance.toString(),
-                          2
-                        )}%`}
+                        value={`${truncate(fullPerformance.toString(), 2)}%`}
                       />
                       <InfoData
                         heading={"Annualized Gains"}
@@ -237,10 +244,14 @@ const ChartsModal = () => {
                       <TabPanel
                         key={key[0].Epoch}
                         maxW={"100%"}
-                        w="37rem"
+                        w={{ base: "15rem", md: "30rem" }}
                         h="200px"
                       >
-                        <Flex my={2} direction="row" justify="center">
+                        <Flex
+                          my={2}
+                          direction={{ base: "column", md: "row" }}
+                          justify="center"
+                        >
                           <InfoData
                             heading={"Total Gain"}
                             tooltipText={`Final performance of epoch (${epochChange.length} days)`}
