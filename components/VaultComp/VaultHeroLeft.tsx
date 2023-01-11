@@ -47,22 +47,6 @@ export const VaultHeroLeft = () => {
     chainId: 1
   });
 
-  // const formatDate = () => {
-  //   const today = new Date();
-  //   const yyyy = today.getFullYear();
-  //   let mm: number | string = today.getMonth() + 1; // Months start at 0!
-  //   let dd: number | string = today.getDate();
-
-  //   if (dd < 10) dd = "0" + dd;
-  //   if (mm < 10) mm = "0" + mm;
-
-  //   const formattedToday = yyyy + "-" + mm + "-" + dd;
-  //   return formattedToday;
-  // };`
-
-  // console.log(epoch, aum, rawGains, factor, previewValue);
-
-
   useEffect(() => {
     const storeData = async () => {
       // console.log("getData executing");
@@ -105,23 +89,19 @@ export const VaultHeroLeft = () => {
 
           console.log("hours: ", days);
 
-          if (days >= 1) {
+          // if (days >= 1) {
             console.log("inserting data");
-            const { data, error } = await supabaseClient
-              .from("rp_data")
-              .insert([
-                {
-                  created_at: new Date(),
-                  epoch_number: epochData,
-                  percentage_change: percentageChange,
-                  amount_change: amountChange,
-                  amount_before: amountBefore,
-                  amount_after: amountAfter,
-                },
-              ]);
-            // console.log("supabaseData after inserting: ", data);
-            // console.log("supabaseError after inserting: ", error);
-          }
+            const { data: supabaseData, error } = await supabaseClient.from("rp_data").upsert([
+              {
+                created_at: new Date(),
+                epoch_number: epochData,
+                percentage_change: percentageChange,
+                amount_change: amountChange,
+                amount_before: amountBefore,
+                amount_after: amountAfter,
+              },
+            ]);
+          // }
         }
       }
       if (error) {
