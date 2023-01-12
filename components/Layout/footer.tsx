@@ -43,7 +43,7 @@ export default function Footer() {
               fontWeight="400"
               ml="0.5rem"
               color={colorMode === "dark" ? "darktext" : "lighttext"}
-              fontSize={{base: "0.5rem", md: "1.75rem", lg: "2rem"}}            >
+              fontSize={{base: "0.5rem", md: "1.5rem"}}            >
               Capital
             </Heading>
           </Flex>
@@ -63,7 +63,7 @@ export default function Footer() {
                 href={link[1]}
                 isExternal
               >
-                <Text variant="link" fontSize={{base: "0.5rem", md: "1.75rem", lg: "2rem"}}>{link[0]}</Text>
+                <Text variant="link" fontSize={{base: "0.5rem", md: "1rem"}}>{link[0]}</Text>
               </Link>
             ))}
           </HStack>
