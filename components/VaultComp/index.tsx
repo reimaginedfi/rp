@@ -1,6 +1,5 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 
-import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
   Accordion,
   AccordionButton,
@@ -16,10 +15,6 @@ import {
   Flex,
   Grid,
   GridItem,
-  Heading,
-  Image,
-  Link,
-  SkeletonText,
   Spacer,
   Stack,
   Text,
@@ -37,7 +32,6 @@ import dynamic from "next/dynamic";
 import { ContractConfig } from "../../contracts";
 import { commify } from "ethers/lib/utils";
 import { BigNumber } from "ethers";
-import { truncate } from "../utils/stringsAndNumbers";
 import { Number } from "../Number";
 
 //Fetching stuff
@@ -48,18 +42,18 @@ import { useVaultMeta, useVaultState } from "../hooks/useVault";
 import VaultActivityAccordion from "./accordions/VaultActivityAccordion";
 import VaultPerformanceAccordion from "./accordions/VaultPerformanceAccordion";
 import UserStatsAccordion from "./accordions/UserStatsAccordion";
+import VaultAssetsAccordion from "./accordions/VaultAssetsAccordion";
+import VaultDetailsAccordion from "./accordions/VaultDetailsAccordion";
 import { VaultHeroLeft } from "./VaultHeroLeft";
 import { VaultTitle } from "./VaultTitle";
 import { VaultTruncated } from "./VaultTruncated";
 
 //UI
-import Confetti from "react-confetti";
 import ProgressBar from "../ui/ProgressBar";
 
 //Modals
 import WithdrawModal from "./modals/withdrawModal";
 import { DepositButton } from "./modals/DepositButton";
-import { Charts } from "../Charts";
 import ChartsModal from "./modals/vaultPerformanceModal";
 import { VaultData } from "../../pages";
 
@@ -103,13 +97,7 @@ const VaultComp = ({
   });
 
   //VAULT META - fetches vault information from the contract
-  const { assetToken, farmer } = useVaultMeta(contractConfig);
-
-  const feeReceiver = useContractRead({
-    ...contractConfig,
-    functionName: "feeDistributor",
-    watch: true,
-  });
+  const { farmer } = useVaultMeta(contractConfig);
 
   // const {
   //   sharesValue,
@@ -303,160 +291,8 @@ const VaultComp = ({
                 </Accordion> */}
 
                 <UserStatsAccordion previewAum={(value as any).previewAum} />
-                <Accordion
-                  borderRadius="1rem"
-                  pt="1rem"
-                  allowToggle
-                  border="none"
-                >
-                  <AccordionItem border="none">
-                    <AccordionButton
-                      borderRadius="1rem"
-                      justifyItems="space-between"
-                      justifyContent="space-between"
-                    >
-                      <Heading variant="medium">Vault Details</Heading>
-                      <AccordionIcon />
-                    </AccordionButton>
-                    <AccordionPanel
-                      borderRadius="1rem"
-                      bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
-                    >
-                      <Flex alignItems={"center"}>
-                        <Text variant="medium">Deposit Fee</Text>
-                        <Spacer />
-                        {feeReceiver.isLoading ? (
-                          <SkeletonText />
-                        ) : (
-                          <Text variant="medium">2%</Text>
-                        )}
-                      </Flex>
-                      <Flex alignItems={"center"}>
-                        <Text variant="medium">Withdraw Fee</Text>
-                        <Spacer />
-                        {feeReceiver.isLoading ? (
-                          <SkeletonText />
-                        ) : (
-                          <Text variant="medium">0%</Text>
-                        )}
-                      </Flex>
-                      <Flex alignItems={"center"}>
-                        <Text variant="medium">
-                          Performance Fee (of profits)
-                        </Text>
-                        <Spacer />
-                        {feeReceiver.isLoading ? (
-                          <SkeletonText />
-                        ) : (
-                          <Text variant="medium">20%</Text>
-                        )}
-                      </Flex>
-                      <Flex alignItems={"center"}>
-                        <Text variant="medium">Minimum Size</Text>
-                        <Spacer />
-                        {feeReceiver.isLoading ? (
-                          <SkeletonText />
-                        ) : (
-                          <Text variant="medium">25,000.00 USDC</Text>
-                        )}
-                      </Flex>
-                      <Flex alignItems={"center"}>
-                        <Text variant="medium">Vault Capacity</Text>
-                        <Spacer />
-                        {feeReceiver.isLoading ? (
-                          <SkeletonText />
-                        ) : (
-                          <Text variant="medium">
-                            {truncate(commify(aumCap.toString()), 1)} USDC
-                          </Text>
-                        )}
-                      </Flex>
-
-                      <Flex alignItems={"center"}>
-                        <Text variant="medium">Farmer Address</Text>
-                        <Spacer />
-                        {farmer.isLoading ? (
-                          <SkeletonText />
-                        ) : (
-                          <Link
-                            href={`https://etherscan.io/address/${farmer.data}`}
-                            isExternal
-                          >
-                            <Text variant="medium">
-                              {`${farmer.data?.slice(
-                                0,
-                                8
-                              )}...${farmer.data?.slice(-2)}`}{" "}
-                              <ExternalLinkIcon mx="2px" />
-                            </Text>
-                          </Link>
-                        )}
-                      </Flex>
-                      <Flex alignItems={"center"}>
-                        <Text variant="medium">Fee Receiver</Text>
-                        <Spacer />
-                        {feeReceiver.isLoading ? (
-                          <SkeletonText />
-                        ) : (
-                          <Link
-                            href={`https://etherscan.io/address/${feeReceiver.data}`}
-                            isExternal
-                          >
-                            <Text variant="medium">
-                              {`${feeReceiver.data?.slice(
-                                0,
-                                8
-                              )}...${feeReceiver.data?.slice(-2)}`}{" "}
-                              <ExternalLinkIcon mx="2px" />
-                            </Text>
-                          </Link>
-                        )}
-                      </Flex>
-                      <Flex alignItems={"center"}>
-                        <Text variant="medium">Asset Address</Text>
-                        <Spacer />
-                        {assetToken.isLoading ? (
-                          <SkeletonText />
-                        ) : (
-                          <Link
-                            href={`https://etherscan.io/address/${assetToken.data?.address}`}
-                            isExternal
-                          >
-                            <Text variant="medium">
-                              {`${assetToken.data?.address.slice(
-                                0,
-                                8
-                              )}...${assetToken.data?.address.slice(-2)}`}{" "}
-                              <ExternalLinkIcon mx="2px" />
-                            </Text>
-                          </Link>
-                        )}
-                      </Flex>
-                      <Flex alignItems={"center"}>
-                        <Text variant="medium">Contract Address</Text>
-                        <Spacer />
-                        {farmer.isLoading ? (
-                          <SkeletonText />
-                        ) : (
-                          <Link
-                            href={`https://etherscan.io/address/${contractConfig.addressOrName}`}
-                            isExternal
-                          >
-                            <Text variant="medium">
-                              {`${contractConfig.addressOrName.slice(
-                                0,
-                                8
-                              )}...${contractConfig.addressOrName.slice(
-                                -2
-                              )}`}{" "}
-                              <ExternalLinkIcon mx="2px" />
-                            </Text>
-                          </Link>
-                        )}
-                      </Flex>
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
+                <VaultAssetsAccordion />
+                <VaultDetailsAccordion contractConfig={contractConfig} currentAum={currentAum} aumCap={aumCap} />
                 {farmer.data && farmer.data.toString() === address && (
                   <FarmerSettingsAccordion contractConfig={contractConfig} />
                 )}

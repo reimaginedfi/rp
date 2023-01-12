@@ -13,23 +13,21 @@ const PageContent = dynamic(() => import("../components/PageContent"), {
 interface defaultValues {
   previewAum: string,
   performanceData: any,
-  chains: any
+  chainList: any
 }
 
 export const VaultData = createContext<defaultValues | undefined>(undefined);
 
-const Page = ({ previewAum, performanceData, chains }: defaultValues ) => {
+const Page = ({ previewAum, performanceData, chainList }: defaultValues ) => {
   const title = "REFI Pro";
   const description = "$REFI is DeFi, reimagined.";
 
   const value: any = {
     previewAum,
     performanceData,
-    chains
+    chainList
   };
-
-  console.log(value.chains)
-
+  
   return (
     <>
       <NextSeo
@@ -89,21 +87,8 @@ export const getStaticProps = async () => {
     }
   );
 
-    
-  const getChains = await fetch(
-    'https://pro-openapi.debank.com/v1/user/used_chain_list?id=0x4457df4a5bccf796662b6374d5947c881cc83ac7',
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
-      },
-    }
-  )
-
-  const { total_usd_value } = await totalBalance.json();
+  const { total_usd_value, chain_list } = await totalBalance.json();
   const { price } = await usdc.json();
-  const chains = await getChains.json();
 
   const debank = BigNumber.from(Math.ceil((total_usd_value / price) * 1e6));
 
@@ -117,13 +102,13 @@ export const getStaticProps = async () => {
     debank,
     adjustments,
     total_usdc_value: debank.add(adjustments),
-    adjustmentsNotes
+    adjustmentsNotes,
   };
   return {
     props: {
       previewAum: JSON.stringify({ data }),
       performanceData: performanceData,
-      chains: chains
+      chainList: chain_list
     },
     revalidate: 14400
   };
