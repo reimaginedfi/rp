@@ -185,7 +185,12 @@ const ChartsModal = () => {
         </Text>
       </Flex>
 
-      <Modal isCentered size={{base: "4xl", md: "xl"}} onClose={onClose!} isOpen={isOpen!}>
+      <Modal
+        isCentered
+        size={{ base: "4xl", md: "xl" }}
+        onClose={onClose!}
+        isOpen={isOpen!}
+      >
         <ModalOverlay onClick={onClose} />
         <ModalContent overflow="visible">
           <ModalHeader>
@@ -197,17 +202,25 @@ const ChartsModal = () => {
           <ModalBody px="0.25rem">
             <Box>
               <Tabs colorScheme="red" variant="enclosed" orientation="vertical">
-                <TabList>
-                  <Tab>All Epochs</Tab>
+                <TabList border="none">
+                  <Tab border="none"
+                  _selected={{border: "1px solid #E53E3E", color: "#E53E3E"}}
+                  borderRadius="8px"
+                  >All Epochs</Tab>
                   {Object.keys(groupedEpochData).map((key) => (
-                    <Tab key={key}>Epoch {key}</Tab>
+                    <Tab                 
+                    _selected={{border: "1px solid #E53E3E", color: "#E53E3E"}}
+                    border="none"                   borderRadius="8px"
+                    key={key}>
+                      Epoch {key}
+                    </Tab>
                   ))}
                 </TabList>
                 <TabPanels>
                   <TabPanel
                     maxW={"100%"}
                     w={{ base: "15rem", md: "30rem" }}
-                    h="250px"
+                    h="300px"
                   >
                     <Flex
                       my={3}
@@ -245,12 +258,13 @@ const ChartsModal = () => {
                         key={key[0].Epoch}
                         maxW={"100%"}
                         w={{ base: "15rem", md: "30rem" }}
-                        h="200px"
-                      >
+                        h="300px"
+                        >
                         <Flex
                           my={2}
                           direction={{ base: "column", md: "row" }}
                           justify="center"
+                          align="center"
                         >
                           <InfoData
                             heading={"Total Gain"}
