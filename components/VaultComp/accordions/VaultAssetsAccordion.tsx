@@ -14,7 +14,7 @@ import {
   useColorMode,
   Stat,
   StatArrow,
-  Image
+  Image,
 } from "@chakra-ui/react";
 
 import { VaultData } from "../../../pages";
@@ -26,7 +26,11 @@ export default function VaultAssetsAccordion() {
 
   const value = useContext(VaultData);
 
-  const chainValues = value!.chainList.filter((chain: any) => chain.usd_value !== 0)
+  const chainValues = value!.chainList.filter(
+    (chain: any) => chain.usd_value !== 0
+  );
+
+  console.log(chainValues);
 
   return (
     <Accordion borderRadius="1rem" pt="1rem" allowToggle border="none">
@@ -42,62 +46,63 @@ export default function VaultAssetsAccordion() {
         <AccordionPanel w="full" display={"grid"}>
           <Grid templateColumns="repeat(2, 1fr)">
             <Text
-              variant="medium"
+              variant="large"
               color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
               textAlign={"center"}
             >
               Chain
             </Text>
             <Text
-              variant="medium"
+              variant="large"
               color={colorMode === "dark" ? "#7E7E7E" : "#858585"}
               textAlign={"center"}
             >
               Value
             </Text>
-           </Grid>
+          </Grid>
 
           {chainValues.length > 1 ? (
-            chainValues.map((data: any) => {
-              return (
-                <Grid
-                  key={data.community_id}
-                  templateColumns="repeat(2, 1fr)"
-                  alignContent="center"
-                  justifyContent={"center"}
-                  py="0.5rem"
-                >
-                  <Flex
-                    alignItems="center"
-                    justifyContent="center"
-                    textAlign={"center"}
+            chainValues
+              .sort((a: any, b: any) => a.usd_value - b.usd_value)
+              .map((data: any) => {
+                return (
+                  <Grid
+                    key={data.community_id}
+                    templateColumns="repeat(2, 1fr)"
+                    alignContent="center"
+                    justifyContent={"center"}
+                    py="0.5rem"
                   >
-                    <Image
-                    src={data.logo_url}
-                    alt={data.name}
-                    w="1.5rem"
-                    h="1.5rem"
-                    />
-                    <Text
-                      variant="medium"
-                      color={colorMode === "dark" ? "#EDEDED" : "#171717"}
-                    >
-                      {data.name}
-                    </Text>
-                  </Flex>
-                  <Flex direction="row" gap="0.25rem" alignItems="center">
-                    <Heading
-                      fontWeight="400"
-                      variant="small"
-                      textAlign={"center"}
-                      w="full"
-                    >
-                      ${truncate(commify(data.usd_value), 2)}
-                    </Heading>
-                  </Flex>
-                </Grid>
-              );
-            }).reverse()
+                    <Flex alignItems="center" justifyContent="center">
+                      <Image
+                        src={data.logo_url}
+                        alt={data.name}
+                        w="2rem"
+                        h="2rem"
+                        mr="1rem"
+                      />
+                      <Text
+                        textAlign={"left"}
+                        variant="large"
+                        color={colorMode === "dark" ? "#EDEDED" : "#171717"}
+                      >
+                        {data.name}
+                      </Text>
+                    </Flex>
+                    <Flex direction="row" gap="0.25rem" alignItems="center">
+                      <Heading
+                        fontWeight="400"
+                        variant="medium"
+                        textAlign={"center"}
+                        w="full"
+                      >
+                        ${truncate(commify(data.usd_value), 2)}
+                      </Heading>
+                    </Flex>
+                  </Grid>
+                );
+              })
+              .reverse()
           ) : (
             <SkeletonText />
           )}
