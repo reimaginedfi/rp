@@ -40,7 +40,7 @@ export default function VaultAssetsAccordion() {
           justifyItems="space-between"
           justifyContent="space-between"
         >
-          <Heading variant="medium">Vault Asset Value</Heading>
+          <Heading variant="medium">Vault Assets Allocation</Heading>
           <AccordionIcon />
         </AccordionButton>
         <AccordionPanel w="full" display={"grid"}>
