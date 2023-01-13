@@ -12,20 +12,22 @@ const PageContent = dynamic(() => import("../components/PageContent"), {
 
 interface defaultValues {
   previewAum: string,
-  performanceData: any
+  performanceData: any,
+  chainList: any
 }
 
 export const VaultData = createContext<defaultValues | undefined>(undefined);
 
-const Page = ({ previewAum, performanceData }: defaultValues ) => {
+const Page = ({ previewAum, performanceData, chainList }: defaultValues ) => {
   const title = "REFI Pro";
   const description = "$REFI is DeFi, reimagined.";
 
   const value: any = {
     previewAum,
-    performanceData
+    performanceData,
+    chainList
   };
-
+  
   return (
     <>
       <NextSeo
@@ -85,7 +87,7 @@ export const getStaticProps = async () => {
     }
   );
 
-  const { total_usd_value } = await totalBalance.json();
+  const { total_usd_value, chain_list } = await totalBalance.json();
   const { price } = await usdc.json();
 
   const debank = BigNumber.from(Math.ceil((total_usd_value / price) * 1e6));
@@ -105,7 +107,8 @@ export const getStaticProps = async () => {
   return {
     props: {
       previewAum: JSON.stringify({ data }),
-      performanceData: performanceData
+      performanceData: performanceData,
+      chainList: chain_list
     },
     revalidate: 14400
   };
