@@ -13,19 +13,21 @@ const PageContent = dynamic(() => import("../components/PageContent"), {
 interface defaultValues {
   previewAum: string,
   performanceData: any,
-  chainList: any
+  chainList: any,
+  tokenList: any
 }
 
 export const VaultData = createContext<defaultValues | undefined>(undefined);
 
-const Page = ({ previewAum, performanceData, chainList }: defaultValues ) => {
+const Page = ({ previewAum, performanceData, chainList, tokenList }: defaultValues ) => {
   const title = "REFI Pro";
   const description = "$REFI is DeFi, reimagined.";
 
   const value: any = {
     previewAum,
     performanceData,
-    chainList
+    chainList,
+    tokenList
   };
   
   return (
@@ -76,6 +78,17 @@ export const getStaticProps = async () => {
     }
   );
 
+  const totalTokens = await fetch(
+    'https://pro-openapi.debank.com/v1/user/all_token_list?id=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7',
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
+      },
+    }
+  );
+
   const usdc = await fetch(
     "https://pro-openapi.debank.com/v1/token?chain_id=eth&id=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
     {
@@ -89,6 +102,7 @@ export const getStaticProps = async () => {
 
   const { total_usd_value, chain_list } = await totalBalance.json();
   const { price } = await usdc.json();
+  const tokenList = await totalTokens.json();
 
   const debank = BigNumber.from(Math.ceil((total_usd_value / price) * 1e6));
 
@@ -108,7 +122,8 @@ export const getStaticProps = async () => {
     props: {
       previewAum: JSON.stringify({ data }),
       performanceData: performanceData,
-      chainList: chain_list
+      chainList: chain_list,
+      tokenList: tokenList
     },
     revalidate: 14400
   };
