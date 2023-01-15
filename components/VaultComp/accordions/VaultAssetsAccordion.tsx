@@ -134,7 +134,11 @@ export default function VaultAssetsAccordion() {
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Full Assets</ModalHeader>
+          <ModalHeader >
+            <Heading variant="large" textAlign="center">
+            Full Assets
+            </Heading>
+            </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <>
