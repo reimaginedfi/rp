@@ -91,7 +91,8 @@ export const VaultHeroLeft = () => {
 
           // if (days >= 1) {
             console.log("inserting data");
-            const { data: supabaseData, error } = await supabaseClient.from("rp_data").upsert([
+            if (process.env.NODE_ENV === "production") {
+              const { data: supabaseData, error } = await supabaseClient.from("rp_data").upsert([
               {
                 created_at: new Date(),
                 epoch_number: epochData,
@@ -102,7 +103,10 @@ export const VaultHeroLeft = () => {
               },
             ]);
           // }
+        } else {
+          console.log("skipping insert");
         }
+      }
       }
       if (error) {
         console.log("supabaseError: ", error);

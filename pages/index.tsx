@@ -67,6 +67,8 @@ export const getStaticProps = async () => {
   .select("*")
   .order("created_at", { ascending: true });
 
+  if (process.env.NODE_ENV === "production") {
+
   const totalBalance = await fetch(
     "https://pro-openapi.debank.com/v1/user/total_balance?id=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
     {
@@ -118,6 +120,7 @@ export const getStaticProps = async () => {
     total_usdc_value: debank.add(adjustments),
     adjustmentsNotes,
   };
+
   return {
     props: {
       previewAum: JSON.stringify({ data }),
@@ -127,5 +130,26 @@ export const getStaticProps = async () => {
     },
     revalidate: 14400
   };
+
+} else {
+  const data = {
+    total_usd_value: BigNumber.from(performanceData![0].amount_after.replace(".", "").replace(",", "")),
+    usdPerUsdc: 1,
+    debank: BigNumber.from(Math.ceil((0 / 1) * 1e6)),
+    adjustments:  BigNumber.from(0),
+    total_usdc_value: BigNumber.from(performanceData![0].amount_after.replace(".", "").replace(",", "")),
+    adjustmentsNotes: "MLP Position",
+  };
+
+  return {
+    props: {
+      previewAum: JSON.stringify({ data }),
+      performanceData: performanceData,
+      // chainList: chain_list,
+      // tokenList: tokenList
+    },
+    revalidate: 14400
+  };
+}
 };
 export default Page;
