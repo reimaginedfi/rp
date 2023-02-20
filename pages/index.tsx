@@ -4,7 +4,7 @@ import axios from "axios";
 import { BigNumber } from "ethers";
 import { createContext, useContext } from "react";
 import supabaseClient from "../utils/supabaseClient";
-
+import { useEffect } from "react";
 
 const PageContent = dynamic(() => import("../components/PageContent"), {
   ssr: false,
@@ -29,7 +29,27 @@ const Page = ({ previewAum, performanceData, chainList, tokenList }: defaultValu
     chainList,
     tokenList
   };
-  
+
+  useEffect(() => {
+    const getData = async () => {
+
+    const totalBalance = await fetch(
+      // "https://pro-openapi.debank.com/v1/user/total_balance?id=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
+      "https://api.zapper.fi/v2/balances/tokens?addresses%5B%5D=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          AccessKey: process.env.NEXT_PUBLIC_ZAPPER_API!,
+        },
+      }
+    );
+
+    console.log("data", totalBalance);
+    }
+    getData()
+  }, [])
+
   return (
     <>
       <NextSeo
