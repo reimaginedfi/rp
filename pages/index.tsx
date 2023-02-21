@@ -30,26 +30,6 @@ const Page = ({ previewAum, performanceData, chainList, tokenList }: defaultValu
     tokenList
   };
 
-  useEffect(() => {
-    const getData = async () => {
-
-    const totalBalance = await fetch(
-      // "https://pro-openapi.debank.com/v1/user/total_balance?id=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
-      "https://api.zapper.fi/v2/balances/tokens?addresses%5B%5D=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          AccessKey: process.env.NEXT_PUBLIC_ZAPPER_API!,
-        },
-      }
-    );
-
-    console.log("data", totalBalance);
-    }
-    getData()
-  }, [])
-
   return (
     <>
       <NextSeo
@@ -87,78 +67,132 @@ export const getStaticProps = async () => {
   .select("*")
   .order("created_at", { ascending: true });
 
-  if (process.env.NODE_ENV === "production") {
+  // if (process.env.NODE_ENV === "production") {
 
-  const totalBalance = await fetch(
-    "https://pro-openapi.debank.com/v1/user/total_balance?id=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
+  // const totalBalance = await fetch(
+  //   "https://pro-openapi.debank.com/v1/user/total_balance?id=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
+  //   {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
+  //     },
+  //   }
+  // );
+
+  // const totalTokens = await fetch(
+  //   'https://pro-openapi.debank.com/v1/user/all_token_list?id=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7',
+  //   {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
+  //     },
+  //   }
+  // );
+
+  // const usdc = await fetch(
+  //   "https://pro-openapi.debank.com/v1/token?chain_id=eth&id=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  //   {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
+  //     },
+  //   }
+  // );
+
+  const Authorization = `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_ZAPPER_API}:`, "binary").toString(
+    "base64"
+  )}`;
+
+  const totalTokensBalance = await fetch(
+    "https://api.zapper.xyz/v2/balances/tokens?addresses%5B%5D=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
     {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
+        accept: "*/*",
+        Authorization,
       },
     }
   );
 
-  const totalTokens = await fetch(
-    'https://pro-openapi.debank.com/v1/user/all_token_list?id=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7',
+  const totalAppsBalance = await fetch(
+    "https://api.zapper.xyz/v2/balances/apps?addresses%5B%5D=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
     {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
+        accept: "*/*",
+        Authorization,
       },
     }
   );
 
-  const usdc = await fetch(
-    "https://pro-openapi.debank.com/v1/token?chain_id=eth&id=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
-      },
+  const reader = totalTokensBalance!.body!.getReader();
+  const reader2 = totalAppsBalance!.body!.getReader();
+
+  let json = "";
+  let decoded = "";
+  let brokeDown: any = [];
+  let total = 0;
+
+  let json2 = "";
+  let decoded2 = "";
+  let total2 = 0;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) {
+      break;
     }
-  );
+    json += new TextDecoder().decode(value);
 
-  const { total_usd_value, chain_list } = await totalBalance.json();
-  const { price } = await usdc.json();
-  const tokenList = await totalTokens.json();
+    decoded = JSON.parse(json);
 
-  const debank = BigNumber.from(Math.ceil((total_usd_value / price) * 1e6));
+    Object.entries(decoded).filter((item: any) => {
+      item.length && (brokeDown = item)
+    })
+
+    brokeDown[1].forEach((item: any) => { 
+        total += item.token.balanceUSD
+    })
+  }
+
+  while (true) {
+    const { done: done2, value: value2 } = await reader2.read();
+    if (done2) {
+      break;
+    }
+    json2 += new TextDecoder().decode(value2);
+
+    decoded2 = JSON.parse(json2);
+
+    Object.entries(decoded2).forEach((item: any) => {
+      item.filter((app: any) => { 
+      app.balanceUSD > 0 && (total2 += app.balanceUSD)
+        }
+      )
+      
+      })
+  }
+
+  // const { total_usd_value, chain_list } = await totalBalance.json();
+  // const { price } = await usdc.json();
+  // const tokenList = await totalTokens.json();
+
+  // const debank = BigNumber.from(Math.ceil((total_usd_value / price) * 1e6));
 
   // EDIT THIS for adjustments (not from debank)
   const adjustments = BigNumber.from(0);
   const adjustmentsNotes = "MLP Position";
 
   const data = {
-    total_usd_value,
-    usdPerUsdc: price,
-    debank,
-    adjustments,
-    total_usdc_value: debank.add(adjustments),
-    adjustmentsNotes,
-  };
-
-  return {
-    props: {
-      previewAum: JSON.stringify({ data }),
-      performanceData: performanceData,
-      chainList: chain_list,
-      tokenList: tokenList
-    },
-    revalidate: 14400
-  };
-
-} else {
-  const data = {
-    total_usd_value: BigNumber.from(performanceData![0].amount_after.replace(".", "").replace(",", "")),
+    total_usd_value: total2 + total,
     usdPerUsdc: 1,
-    debank: BigNumber.from(Math.ceil((0 / 1) * 1e6)),
-    adjustments:  BigNumber.from(0),
-    total_usdc_value: BigNumber.from(performanceData![0].amount_after.replace(".", "").replace(",", "")),
-    adjustmentsNotes: "MLP Position",
+    debank: total2 + total,
+    adjustments,
+    total_usdc_value: BigNumber.from(total + total2),
+    adjustmentsNotes,
   };
 
   return {
@@ -170,6 +204,26 @@ export const getStaticProps = async () => {
     },
     revalidate: 14400
   };
-}
+
+// } else {
+//   const data = {
+//     total_usd_value: BigNumber.from(performanceData![0].amount_after.replace(".", "").replace(",", "")),
+//     usdPerUsdc: 1,
+//     debank: BigNumber.from(Math.ceil((0 / 1) * 1e6)),
+//     adjustments:  BigNumber.from(0),
+//     total_usdc_value: BigNumber.from(performanceData![0].amount_after.replace(".", "").replace(",", "")),
+//     adjustmentsNotes: "MLP Position",
+//   };
+
+//   return {
+//     props: {
+//       previewAum: JSON.stringify({ data }),
+//       performanceData: performanceData,
+//       // chainList: chain_list,
+//       // tokenList: tokenList
+//     },
+//     revalidate: 14400
+//   };
+// }
 };
 export default Page;
