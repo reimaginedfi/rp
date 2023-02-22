@@ -40,8 +40,6 @@ const value = useContext(VaultData);
     : value!.totalAum / +formatUnits(aumValue, 6) +
       previewValue.mod(aumValue).toNumber() / aumValue.toNumber();
 
-    console.log(factor)
-
   return {
     aum,
     epoch,
