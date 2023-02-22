@@ -124,17 +124,15 @@ export default function UserStatsAccordion({
         .add(userResult.data?.[0] ?? 0)
     : BigNumber.from(0);
 
-  const { factor, isAumLoading } = useCompleteAum(previewAum);
+  const { factor } = useCompleteAum();
 
-  const unrealizedBN = isAumLoading
-    ? totalValue.toNumber()
-    : totalValue.toNumber() * factor;
+  const unrealizedBN = totalValue.toNumber() * factor;
 
   const unrealized = (unrealizedBN / 1000000).toFixed(2);
 
   const value = BigNumber.from(sharesValue?.data?._hex! ?? 0);
 
-  const totalValueVT = isAumLoading ? 0 : (value.toNumber() * factor) / 1000000;
+  const totalValueVT = (value.toNumber() * factor) / 1000000;
 
   const pnlVT = totalValueVT - value.toNumber() / 1000000;
 

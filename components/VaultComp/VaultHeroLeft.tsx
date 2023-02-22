@@ -32,7 +32,7 @@ export const VaultHeroLeft = () => {
 
   // VAULT META DATA - used to display vault info
   const { epoch, aum, aumCap, rawGains, factor, previewValue } =
-    useCompleteAum((value as any).previewAum);
+    useCompleteAum();
 
   // VAULT CONTRACT - fetches current vault state
   const vaultState = useVaultState(BigNumber.from(epoch.data ?? 0).toNumber());
@@ -63,14 +63,14 @@ export const VaultHeroLeft = () => {
             (factor >= 1 ? "+" : "") + ((factor - 1) * 100).toFixed(2);
           const amountChange =
             (factor >= 1 ? "+" : "-") +
-            truncate(commify(formatUnits(rawGains.abs().toString(), 6)), 2);
+            truncate(commify(rawGains.toString()), 2);
 
           const amountBefore = truncate(
             commify(formatUnits(aum?.data?._hex, 6)),
             2
           );
           const amountAfter = truncate(
-            commify(formatUnits(previewValue, 6)),
+            commify(formatUnits(previewValue, 0)),
             2
           );
 
@@ -192,7 +192,7 @@ export const VaultHeroLeft = () => {
         <Skeleton isLoaded={!value.previewAum?.isValidating && !aum.isLoading}>
           <Tooltip
             label={`Projected AUM: ${commify(
-              formatUnits(previewValue, 6)
+              formatUnits(previewValue, 0)
             )} USDC`}
             aria-label="A tooltip"
           >
@@ -202,10 +202,10 @@ export const VaultHeroLeft = () => {
             >
               <StatHelpText>
                 <StatArrow
-                  type={rawGains.isNegative() ? "decrease" : "increase"}
+                  type={rawGains < 0 ? "decrease" : "increase"}
                 />
                 {truncate(
-                  commify(formatUnits(rawGains.abs().toString(), 6)),
+                  commify(rawGains.toString()),
                   2
                 )}{" "}
                 USDC
