@@ -112,8 +112,10 @@ export const getStaticProps = async () => {
 
     let brokeDown: any = [];
     let total = 0;
-
     let total2 = 0;
+    let products: any = []
+    let chains: any = []
+
 
     Object.entries(reader).filter((item: any) => {
       item.length && (brokeDown = item);
@@ -129,30 +131,40 @@ export const getStaticProps = async () => {
       });
     });
 
+   Object.values(reader).forEach((item: any) => {
+      Object.values(item).forEach((chain: any) => {chains.push(chain)})
+   });
+
+   Object.entries(reader2).forEach((item: any) => {
+    item.filter((app: any) => {
+      app.balanceUSD > 0 && products.push(app);
+    });
+  });
+
     const totalAum = total + total2;
 
   // if (process.env.NODE_ENV === "production") {
-    // const totalBalance = await fetch(
-    //   "https://pro-openapi.debank.com/v1/user/total_balance?id=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
-    //   {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
-    //     },
-    //   }
-    // );
+    const totalBalance = await fetch(
+      "https://pro-openapi.debank.com/v1/user/total_balance?id=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
+        },
+      }
+    );
 
-  //   const totalTokens = await fetch(
-  //     "https://pro-openapi.debank.com/v1/user/all_token_list?id=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
-  //     {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
-  //       },
-  //     }
-  //   );
+    const totalTokens = await fetch(
+      "https://pro-openapi.debank.com/v1/user/all_token_list?id=0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
+        },
+      }
+    );
 
   //   const usdc = await fetch(
   //     "https://pro-openapi.debank.com/v1/token?chain_id=eth&id=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
@@ -165,9 +177,9 @@ export const getStaticProps = async () => {
   //     }
   //   );
 
-    // const { chain_list } = await totalBalance.json();
+    const { chain_list } = await totalBalance.json();
     // const { price } = await usdc.json();
-    // const tokenList = await totalTokens.json();
+    const tokenList = await totalTokens.json();
 
     const debank = BigNumber.from(Math.ceil((totalAum / 1) * 1e6));
 
@@ -188,8 +200,8 @@ export const getStaticProps = async () => {
       props: {
         previewAum: JSON.stringify({ data }),
         performanceData: performanceData,
-        // chainList: chain_list,
-        // tokenList: tokenList,
+        chainList: chain_list,
+        tokenList: tokenList,
         totalAum: totalAum
       },
       revalidate: 14400,

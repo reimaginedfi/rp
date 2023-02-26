@@ -172,6 +172,7 @@ export default function VaultAssetsAccordion() {
                   )
                   .map((data: any) => {
                     const usd_value = data.price * data.amount;
+                    console.log(usd_value, data.amount);
                     return (
                       <Grid
                         key={data.community_id}
@@ -216,7 +217,7 @@ export default function VaultAssetsAccordion() {
                             textAlign={"center"}
                             w="full"
                           >
-                            ${truncate(commify(usd_value), 2)}
+                            ${data.symbol === "CP" ? "0" : truncate(commify(usd_value), 2)}
                           </Heading>
                         </Flex>
                       </Grid>
