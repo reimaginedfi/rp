@@ -1,13 +1,8 @@
 import { NextSeo } from "next-seo";
 import dynamic from "next/dynamic";
-import axios from "axios";
 import { BigNumber } from "ethers";
-import { createContext, useContext } from "react";
+import { createContext } from "react";
 import supabaseClient from "../utils/supabaseClient";
-import { useEffect, useState } from "react";
-
-import { Readable } from "stream";
-import { pipeline } from "stream/promises";
 
 const PageContent = dynamic(() => import("../components/PageContent"), {
   ssr: false,
@@ -113,8 +108,6 @@ export const getStaticProps = async () => {
     let brokeDown: any = [];
     let total = 0;
     let total2 = 0;
-    let products: any = []
-    let chains: any = []
 
 
     Object.entries(reader).filter((item: any) => {
@@ -131,17 +124,7 @@ export const getStaticProps = async () => {
       });
     });
 
-   Object.values(reader).forEach((item: any) => {
-      Object.values(item).forEach((chain: any) => {chains.push(chain)})
-   });
-
-   Object.entries(reader2).forEach((item: any) => {
-    item.filter((app: any) => {
-      app.balanceUSD > 0 && products.push(app);
-    });
-  });
-
-    const totalAum = total + total2;
+   const totalAum = total + total2;
 
   // if (process.env.NODE_ENV === "production") {
     const totalBalance = await fetch(

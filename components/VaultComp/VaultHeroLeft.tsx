@@ -62,7 +62,7 @@ export const VaultHeroLeft = () => {
           const percentageChange =
             (factor >= 1 ? "+" : "") + ((factor - 1) * 100).toFixed(2);
           const amountChange =
-            (factor >= 1 ? "+" : "-") +
+            (factor >= 1 ? "+" : "") +
             truncate(commify(rawGains.toString()), 2);
 
           const amountBefore = truncate(
