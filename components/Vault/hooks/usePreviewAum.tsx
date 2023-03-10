@@ -21,23 +21,24 @@ export const useCompleteAum = () => {
 
 const value = useContext(VaultData);
 
+
   // const previewAum = JSON.parse(_previewAum);
-  const previewAum = value!.totalAum;
+  const previewAum = value!.totalAum > value!.totalBalance ? value!.totalAum : value!.totalBalance;
   const contractConfig = useContractConfig();
   const { aum, epoch, aumCap } = useVaultMeta(contractConfig);
   // const previewValue = BigNumber.from(previewAum.data?.total_usdc_value ?? 0);
-  const previewValue = BigNumber.from(Math.trunc(value!.totalAum) ?? 0);
+  const previewValue = BigNumber.from(Math.trunc(previewAum) ?? 0);
   const aumValue = BigNumber.from(aum.data ?? 0);
 
   const rawGains = !aumValue.isZero()
-    ? value!.totalAum - +formatUnits(aumValue, 6)
+    ? previewAum - +formatUnits(aumValue, 6)
     : BigNumber.from(0);
 
   // const isAumLoading = !aum.data || !previewAum.data;
 
   const factor = aumValue.isZero()
     ? 1
-    : value!.totalAum / +formatUnits(aumValue, 6) +
+    : previewAum / +formatUnits(aumValue, 6) +
       previewValue.mod(aumValue).toNumber() / aumValue.toNumber();
 
   return {

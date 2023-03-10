@@ -14,6 +14,7 @@ interface defaultValues {
   chainList: any;
   tokenList: any;
   totalAum: number;
+  totalBalance: number;
 }
 
 export const VaultData = createContext<defaultValues | undefined>(undefined);
@@ -23,7 +24,8 @@ const Page = ({
   performanceData,
   chainList,
   tokenList,
-  totalAum
+  totalAum,
+  totalBalance
 }: defaultValues) => {
   const title = "REFI Pro";
   const description = "$REFI is DeFi, reimagined.";
@@ -33,7 +35,8 @@ const Page = ({
     performanceData,
     chainList,
     tokenList,
-    totalAum
+    totalAum,
+    totalBalance
   };
 
   return (
@@ -124,7 +127,7 @@ export const getStaticProps = async () => {
       });
     });
 
-   const totalAum = total + total2;
+   const zapperAum = total + total2;
 
   // if (process.env.NODE_ENV === "production") {
     const totalBalance = await fetch(
@@ -149,29 +152,17 @@ export const getStaticProps = async () => {
       }
     );
 
-  //   const usdc = await fetch(
-  //     "https://pro-openapi.debank.com/v1/token?chain_id=eth&id=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-  //     {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
-  //       },
-  //     }
-  //   );
-
-    const { chain_list } = await totalBalance.json();
-    // const { price } = await usdc.json();
+    const { total_usd_value , chain_list } = await totalBalance.json();
     const tokenList = await totalTokens.json();
 
-    const debank = BigNumber.from(Math.ceil((totalAum / 1) * 1e6));
+    const debank = BigNumber.from(Math.ceil((zapperAum / 1) * 1e6));
 
     // EDIT THIS for adjustments (not from debank)
     const adjustments = BigNumber.from(0);
     const adjustmentsNotes = "MLP Position";
 
     const data = {
-      total_usd_value: totalAum,
+      total_usd_value: zapperAum,
       usdPerUsdc: 1,
       debank,
       adjustments,
@@ -185,7 +176,8 @@ export const getStaticProps = async () => {
         performanceData: performanceData,
         chainList: chain_list,
         tokenList: tokenList,
-        totalAum: totalAum
+        totalAum: zapperAum,
+        totalBalance: total_usd_value
       },
       revalidate: 14400,
     };
