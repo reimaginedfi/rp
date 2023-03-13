@@ -177,9 +177,21 @@ export const VaultHeroLeft = () => {
 
   return (
     <GridItem justifySelf="center" textAlign="center">
-      <Badge colorScheme="green" variant={"outline"}>
-        Running
-      </Badge>
+            <Text
+        style={{
+          backgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          WebkitBackgroundClip: "text",
+        }}
+        bg="radial-gradient(136.45% 135.17% at 9.91% 100%, #FF3F46 0%, #FF749E 57.68%, #FFE3AB 100%)"
+        fontSize="24px"
+        fontWeight={700}
+      >
+        EPOCH {epoch.data?.toString()}
+      </Text>
+      <Text variant="small">
+        Performance
+      </Text>
       <Stat mt={"0.5rem"}>
         {/* @ts-expect-error */}
         <Skeleton isLoaded={!value.previewAum?.isValidating && !aum.isLoading}>
@@ -214,18 +226,9 @@ export const VaultHeroLeft = () => {
           </Tooltip>
         </Skeleton>
       </Stat>
-      <Text
-        style={{
-          backgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          WebkitBackgroundClip: "text",
-        }}
-        bg="radial-gradient(136.45% 135.17% at 9.91% 100%, #FF3F46 0%, #FF749E 57.68%, #FFE3AB 100%)"
-        fontSize="24px"
-        fontWeight={700}
-      >
-        EPOCH {epoch.data?.toString()}
-      </Text>
+      <Badge colorScheme="green" variant={"outline"}>
+        Running
+      </Badge>
     </GridItem>
   );
 };
