@@ -172,6 +172,7 @@ export default function VaultAssetsAccordion() {
                   )
                   .map((data: any) => {
                     const usd_value = data.price * data.amount;
+                    // console.log('data.amount from tokenValues: ', Number(data.amount).toLocaleString('fullwide', { useGrouping: false }))
                     return (
                       <Grid
                         key={data.community_id}
@@ -206,7 +207,8 @@ export default function VaultAssetsAccordion() {
                           textAlign={"center"}
                           w="full"
                         >
-                          {truncate(commify(data.amount), 2)} {data.symbol}
+
+                          {data?.amount && truncate(commify( Number(data.amount).toLocaleString('fullwide', { useGrouping: false })), 2)} {data.symbol}
                         </Heading>
                         </Flex>
                         <Flex direction="row" gap="0.25rem" alignItems="center">
