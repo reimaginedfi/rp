@@ -70,7 +70,7 @@ export default function VaultPerformanceAccordion() {
             </Text>
           </Grid>
           {value!.performanceData.length > 1 ? (
-            value!.performanceData.reverse().slice(-10).map((data: any) => {
+            value!.performanceData.slice(-10).map((data: any) => {
               return (
                 <Grid
                   key={data.id}
@@ -164,7 +164,7 @@ export default function VaultPerformanceAccordion() {
             </Button>
           </Flex>
           {showDropdown && (
-            value!.performanceData.slice(0, -10).map((data: any) => {
+            [...value!.performanceData].slice(0, -10).map((data: any) => {
               return (
                 <Grid
                   key={data.id}
