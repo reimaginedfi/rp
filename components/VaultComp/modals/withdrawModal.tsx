@@ -51,7 +51,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   const [withdrawActive, setWithdrawActive] = useState<boolean>(false);
   const { chain } = useNetwork();
   const [contractConfig, setContractConfig] = useState<any>();
-  const { address } = useAccount();
+  // const { address } = useAccount();
+  const address = "0xDBBC6627012928B35fba37E222a7292EF28C1ae2"
 
   const {
     hasPendingWithdrawal,

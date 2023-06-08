@@ -89,9 +89,8 @@ export const VaultHeroLeft = () => {
 
           console.log("hours: ", days);
 
-          // if (days >= 1) {
+          if (days >= 1) {
             console.log("inserting data");
-            if (process.env.NODE_ENV === "production") {
               const { data: supabaseData, error } = await supabaseClient.from("rp_data").upsert([
               {
                 created_at: new Date(),
@@ -214,7 +213,7 @@ export const VaultHeroLeft = () => {
             >
               <StatHelpText>
                 <StatArrow
-                  type={rawGains < 0 ? "decrease" : "increase"}
+                  type={Number(rawGains) < 0 ? "decrease" : "increase"}
                 />
                 {truncate(
                   commify(rawGains.toString()),
