@@ -207,7 +207,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   };
 
   useEffect(() => {
-    if (parseInt(user.data?.epochToRedeem) <= parseInt(epoch!.data?._hex)) {
+    if (parseInt(user.data?.epochToRedeem) !== 0 && parseInt(user.data?.epochToRedeem) <= parseInt(epoch!.data?._hex)) {
       setWithdrawActive(true);
     }
   }, [user, epoch, withdrawable]);
