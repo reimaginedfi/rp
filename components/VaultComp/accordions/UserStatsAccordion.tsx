@@ -233,7 +233,7 @@ export default function UserStatsAccordion({
                       <Tooltip
                         justifySelf="center"
                         hasArrow
-                        label="You can transform your deposited USDC into VT tokens for withdrawals"
+                        label="You can transform your deposited USDC into VT tokens to show full asset value. VT tokens are redeemable for USDC at any time."
                         bg={colorMode === "dark" ? "white" : "black"}
                         isOpen={VTTokensLabel}
                       >
@@ -289,7 +289,7 @@ export default function UserStatsAccordion({
                         <AlertIcon boxSize={"1rem"}></AlertIcon>
                         <AlertDescription>
                           <Text fontSize={"xs"}>
-                            You have claimable Vault Tokens. They will be
+                            You have claimable VT tokens. They will be
                             automatically claimed when you do another deposit,
                             or you can claim them manually. Unclaimed VT will
                             still count towards this epoch
