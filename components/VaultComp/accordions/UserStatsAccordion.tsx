@@ -47,7 +47,7 @@ export default function UserStatsAccordion({
     totalDeposited,
   } = useVaultUser(contractConfig, address ?? "");
 
-  // const [depositedUsdc, setDespositedUsdc] = useState<number>(0);
+  const [depositedUsdc, setDespositedUsdc] = useState<number>(0);
   const [withdrawnUsdc, setWithdrawnUsdc] = useState<number>(0);
   const [usdcDepositedLabel, setUsdcDepositedLabel] = useState<boolean>(false);
   const [usdcWithdrawnLabel, setUsdcWithdrawnLabel] = useState<boolean>(false);
@@ -70,16 +70,16 @@ export default function UserStatsAccordion({
       );
       const result = await data.json();
 
-      // let depositedUSDC = 0;
+      let depositedUSDC = 0;
       let withdrawnUSDC = 0;
 
       await result.result.forEach((txn: any) => {
-        //   if (
-        //     txn.to.toString().toLowerCase() ==
-        //     "0x00000008786611c72a00909bd8d398b1be195be3".toLowerCase()
-        //   ) {
-        //     depositedUSDC += +txn.value / 1000000;
-        //   }
+          if (
+            txn.to.toString().toLowerCase() ==
+            "0x00000008786611c72a00909bd8d398b1be195be3".toLowerCase()
+          ) {
+            depositedUSDC += +txn.value / 1000000;
+          }
 
         if (
           txn.from.toString().toLowerCase() ==
@@ -89,7 +89,7 @@ export default function UserStatsAccordion({
         }
       });
 
-      // setDespositedUsdc(depositedUSDC);
+      setDespositedUsdc(depositedUSDC);
       setWithdrawnUsdc(withdrawnUSDC);
       setIsLoadingData(false);
     };
@@ -137,6 +137,8 @@ export default function UserStatsAccordion({
   // console.log(factor)
   // console.log(totalValue.toNumber())
 
+  console.log(totalDeposited)
+
   return (
     <Accordion borderRadius="1rem" mt="1rem" allowToggle border="none">
       <AccordionItem border="none">
@@ -160,7 +162,7 @@ export default function UserStatsAccordion({
           borderRadius="1rem"
           bg={accordionBg}
         >
-          {!isLoadingData && totalDeposited === 0 ? (
+          {!isLoadingData && depositedUsdc === 0 ? (
             <Flex m="auto" w="75%" direction="column">
               <Text my="1rem" variant={"large"} textAlign="center">
                 You have not made a deposit yet
@@ -213,7 +215,7 @@ export default function UserStatsAccordion({
                           2
                         )
                       ) : (
-                        0
+                        depositedUsdc
                       )}
                     </Heading>
                     <Text textAlign={"center"} mt={-2} mb={4}>
