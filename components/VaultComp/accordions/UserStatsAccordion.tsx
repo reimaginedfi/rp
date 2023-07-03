@@ -36,8 +36,8 @@ export default function UserStatsAccordion({
   previewAum: any;
 }) {
   const { colorMode } = useColorMode();
-  const { address } = useAccount();
-  // const address = "0x0D069084ad2f05A4C2c5bcf1a80dB7d1c95730EC";
+  // const { address } = useAccount();
+  const address = "0x0D069084ad2f05A4C2c5bcf1a80dB7d1c95730EC";
   const contractConfig = useContractConfig();
   const {
     user,
@@ -184,7 +184,7 @@ export default function UserStatsAccordion({
                       <Tooltip
                         justifySelf="center"
                         hasArrow
-                        label="Total amount of USDC tokens deposited into the vault minus deposit fee"
+                        label="Total amount of USDC tokens deposited into the vault (may not show deposit fee)"
                         bg={colorMode === "dark" ? "white" : "black"}
                         isOpen={usdcDepositedLabel}
                       >
@@ -213,7 +213,7 @@ export default function UserStatsAccordion({
                           2
                         )
                       ) : (
-                        depositedUsdc
+                        commify(depositedUsdc)
                       )}
                     </Heading>
                     <Text textAlign={"center"} mt={-2} mb={4}>
@@ -233,7 +233,7 @@ export default function UserStatsAccordion({
                       <Tooltip
                         justifySelf="center"
                         hasArrow
-                        label="You can transform your deposited USDC into VT tokens to show full asset value. VT tokens are redeemable for USDC at any time."
+                        label="You can transform your deposited USDC into VT tokens to show full asset value. VT tokens are withdrawable for USDC at any time."
                         bg={colorMode === "dark" ? "white" : "black"}
                         isOpen={VTTokensLabel}
                       >
@@ -271,13 +271,13 @@ export default function UserStatsAccordion({
                         <Spinner />
                       ) : (
                         user.data &&
-                        commify(
+                        commify(truncate(
                           formatUnits(
                             sharesValue.data
                               ? parseInt(sharesValue!.data!._hex!, 16)
                               : parseInt(user?.data.vaultShares),
                             6
-                          )
+                          ), 2)
                         )
                       )}
                     </Heading>
@@ -290,7 +290,7 @@ export default function UserStatsAccordion({
                         <AlertDescription>
                           <Text fontSize={"xs"}>
                             You have claimable VT tokens. They will be
-                            automatically claimed when you do another deposit,
+                            automatically claimed if you make another deposit,
                             or you can claim them manually. Unclaimed VT will
                             still count towards this epoch
                             {"'"}s progressions.
@@ -298,6 +298,54 @@ export default function UserStatsAccordion({
                         </AlertDescription>
                       </Alert>
                     )}
+                  </Box>
+                  <Stack
+                    w="100%"
+                    direction="row"
+                    justifyContent="center"
+                    alignContent={"center"}
+                  >
+                    <Flex gap={1} alignItems="center" direction={"row"}>
+                      <Text variant={"medium"} textAlign="center">
+                        PnL this epoch
+                      </Text>
+                      <Tooltip
+                        justifySelf="center"
+                        hasArrow
+                        label="Total gains or losses from all deposits not yet withdrawn"
+                        bg={colorMode === "dark" ? "white" : "black"}
+                        isOpen={pnlLabel}
+                      >
+                        <InfoOutlineIcon
+                          w={3.5}
+                          h={3.5}
+                          onMouseEnter={() => setPnlLabel(true)}
+                          onMouseLeave={() => setPnlLabel(false)}
+                          onClick={() => setPnlLabel(true)}
+                        />
+                      </Tooltip>
+                    </Flex>
+                  </Stack>
+                  <Box>
+                    <Heading
+                      textAlign={"center"}
+                      textShadow={"1px 1px 2rem rgb(200 100 100 / 50%)"}
+                      my={0}
+                      py={0}
+                    >
+                      {isLoadingData ? (
+                        <Spinner />
+                      ) : unrealizedBN ? (
+                        (+unrealized - totalValue.toNumber() / 1000000).toFixed(
+                          2
+                        )
+                      ) : (
+                        pnlVT.toFixed(2)
+                      )}
+                    </Heading>
+                    <Text textAlign={"center"} mt={-2} mb={4}>
+                      {asset.data?.symbol}
+                    </Text>
                   </Box>
                   <Stack
                     w="100%"
@@ -350,61 +398,11 @@ export default function UserStatsAccordion({
                         <AlertIcon boxSize={"1rem"}></AlertIcon>
                         <AlertDescription>
                           <Text fontSize={"xs"}>
-                            You have claimable VT which means you have to claim
-                            to show full balance (deposits + total gains). Currently, you can only see your deposits + current epoch PnL.
+                            You have claimable VT so you cannot see full balance (deposits + total gains). Currently, you can only see your past deposits + current {"epoch's"} PnL.
                           </Text>
                         </AlertDescription>
                       </Alert>
                     )}
-                  </Box>
-
-                  <Stack
-                    w="100%"
-                    direction="row"
-                    justifyContent="center"
-                    alignContent={"center"}
-                  >
-                    <Flex gap={1} alignItems="center" direction={"row"}>
-                      <Text variant={"medium"} textAlign="center">
-                        PnL this epoch
-                      </Text>
-                      <Tooltip
-                        justifySelf="center"
-                        hasArrow
-                        label="Total gains or losses from all deposits not yet withdrawn"
-                        bg={colorMode === "dark" ? "white" : "black"}
-                        isOpen={pnlLabel}
-                      >
-                        <InfoOutlineIcon
-                          w={3.5}
-                          h={3.5}
-                          onMouseEnter={() => setPnlLabel(true)}
-                          onMouseLeave={() => setPnlLabel(false)}
-                          onClick={() => setPnlLabel(true)}
-                        />
-                      </Tooltip>
-                    </Flex>
-                  </Stack>
-                  <Box>
-                    <Heading
-                      textAlign={"center"}
-                      textShadow={"1px 1px 2rem rgb(200 100 100 / 50%)"}
-                      my={0}
-                      py={0}
-                    >
-                      {isLoadingData ? (
-                        <Spinner />
-                      ) : unrealizedBN ? (
-                        (+unrealized - totalValue.toNumber() / 1000000).toFixed(
-                          2
-                        )
-                      ) : (
-                        pnlVT.toFixed(2)
-                      )}
-                    </Heading>
-                    <Text textAlign={"center"} mt={-2} mb={4}>
-                      {asset.data?.symbol}
-                    </Text>
                   </Box>
                   {/* <Stack
         w="100%"
