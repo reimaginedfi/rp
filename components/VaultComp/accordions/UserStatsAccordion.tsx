@@ -137,8 +137,6 @@ export default function UserStatsAccordion({
   // console.log(factor)
   // console.log(totalValue.toNumber())
 
-  console.log(totalDeposited)
-
   return (
     <Accordion borderRadius="1rem" mt="1rem" allowToggle border="none">
       <AccordionItem border="none">
