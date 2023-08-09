@@ -70,6 +70,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
 
   const {hasPendingDeposit, updatePendingDeposit} = useVaultUser(contractConfig, address!);
 
+
   const withdrawalFeeAmount = useContractRead({
     ...contractConfig,
     functionName: "getWithdrawalFee",
@@ -82,6 +83,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     functionName: "exitFeeBps",
     watch: true,
   });
+
 
   const [claimDataSuccess, setClaimDataSuccess] = useState<string>("");
   const [unlockDataSuccess, setUnlockDataSuccess] = useState<string>("");
@@ -205,7 +207,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   };
 
   useEffect(() => {
-    if (parseInt(user.data?.epochToRedeem) === parseInt(epoch!.data?._hex)) {
+    if (parseInt(user.data?.epochToRedeem) !== 0 && parseInt(user.data?.epochToRedeem) <= parseInt(epoch!.data?._hex)) {
       setWithdrawActive(true);
     }
   }, [user, epoch, withdrawable]);

@@ -6,6 +6,7 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
+  Button,
   Flex,
   Grid,
   Heading,
@@ -19,7 +20,7 @@ import {
 import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
 import { HiSave, HiPlay, HiPlus } from "react-icons/hi";
 import { AiFillUnlock, AiFillFastForward } from "react-icons/ai";
-import {FaFileContract} from "react-icons/fa";
+import { FaFileContract } from "react-icons/fa";
 
 //Fetching stuff
 import axios from "axios";
@@ -64,6 +65,7 @@ export default function VaultActivityAccordion({ contractConfig }: any) {
   );
 
   const [vaultTxns, setVaultTxns] = useState<any[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     if (vaultActivity?.data) setVaultTxns(vaultActivity.data?.result);
@@ -114,7 +116,7 @@ export default function VaultActivityAccordion({ contractConfig }: any) {
           </Grid>
 
           {vaultTxns.length > 1 ? (
-            vaultTxns.map((txn: any) => {
+            vaultTxns.slice(0, 10).map((txn: any) => {
               if (
                 txn.functionName.includes("setFees") ||
                 txn.functionName.includes("send") ||
@@ -150,11 +152,13 @@ export default function VaultActivityAccordion({ contractConfig }: any) {
                       <AiFillUnlock />
                     ) : txn.functionName.includes("DepositState") ? (
                       <GiPayMoney />
-                    ) :
-                    txn.functionName.includes("update") ? (<HiPlus/>) 
-                    : (
-                      txn.functionName.includes("start") ? <HiPlay />
-                     : <FaFileContract/>)}
+                    ) : txn.functionName.includes("update") ? (
+                      <HiPlus />
+                    ) : txn.functionName.includes("start") ? (
+                      <HiPlay />
+                    ) : (
+                      <FaFileContract />
+                    )}
                     <Heading
                       fontWeight="400"
                       variant="small"
@@ -170,8 +174,10 @@ export default function VaultActivityAccordion({ contractConfig }: any) {
                         ? "Withdraw"
                         : txn.functionName.includes("DepositState")
                         ? "Claim VT"
-                        : txn.functionName.includes("update") ? "Update AUM"
-                        : txn.functionName.includes("start") ? "Start Vault"
+                        : txn.functionName.includes("update")
+                        ? "Update AUM"
+                        : txn.functionName.includes("start")
+                        ? "Start Vault"
                         : "Contract"}
                     </Heading>
                   </Flex>
@@ -224,6 +230,121 @@ export default function VaultActivityAccordion({ contractConfig }: any) {
           ) : (
             <SkeletonText />
           )}
+          <Flex
+            direction="column"
+            gap="0.25rem"
+            alignItems="center"
+            justifyContent="center"
+            ml={{ base: "0", md: "1rem" }}
+          >
+            <Button
+              onClick={() => setShowDropdown(!showDropdown)}
+              cursor="pointer"
+              w="100%"
+              variant="secondary"
+            >
+              {showDropdown ? "Show Less" : `Show ${vaultTxns.length - 10} more transactions...`}
+            </Button>
+          </Flex>
+            {showDropdown && (
+              vaultTxns.slice(10).map((txn: any) => {
+                if (
+                  txn.functionName.includes("setFees") ||
+                  txn.functionName.includes("send") ||
+                  txn.functionName.includes("setAum") ||
+                  txn.functionName.includes("VaultConfig") ||
+                  txn.functionName.includes("IsFee") ||
+                  txn.isError === "1"
+                ) {
+                  return;
+                }
+             return (
+              <Grid
+              key={txn.hash}
+              templateColumns="repeat(3, 1fr)"
+              alignContent="center"
+              justifyContent={"center"}
+              py="0.5rem"
+            >
+                  <Flex
+                    direction="row"
+                    gap="0.25rem"
+                    alignItems="center"
+                    justifyContent="left"
+                    ml={{ base: "0", md: "1rem" }}
+                  >
+                    {txn.functionName.includes("deposit") ? (
+                      <HiSave />
+                    ) : txn.functionName.includes("progressEpoch") ? (
+                      <AiFillFastForward />
+                    ) : txn.functionName.includes("withdraw") ? (
+                      <GiReceiveMoney />
+                    ) : txn.functionName.includes("unlock") ? (
+                      <AiFillUnlock />
+                    ) : txn.functionName.includes("DepositState") ? (
+                      <GiPayMoney />
+                    ) : txn.functionName.includes("update") ? (
+                      <HiPlus />
+                    ) : txn.functionName.includes("start") ? (
+                      <HiPlay />
+                    ) : (
+                      <FaFileContract />
+                    )}
+                    <Heading
+                      fontWeight="400"
+                      variant="small"
+                      textAlign={"center"}
+                    >
+                      {txn.functionName.includes("deposit")
+                        ? "Deposit"
+                        : txn.functionName.includes("unlock")
+                        ? "Unlock VT"
+                        : txn.functionName.includes("progressEpoch")
+                        ? "Next Epoch"
+                        : txn.functionName.includes("withdraw")
+                        ? "Withdraw"
+                        : txn.functionName.includes("DepositState")
+                        ? "Claim VT"
+                        : txn.functionName.includes("update")
+                        ? "Update AUM"
+                        : txn.functionName.includes("start")
+                        ? "Start Vault"
+                        : "Contract"}
+                    </Heading>
+                  </Flex>
+                  <Flex
+                    alignItems="center"
+                    justifyContent="center"
+                    textAlign={"center"}
+                  >
+                    <Link
+                      target="_blank"
+                      href={`https://etherscan.io/tx/` + txn.hash}
+                    >
+                      <Text
+                        variant="medium"
+                        color={colorMode === "dark" ? "#EDEDED" : "#171717"}
+                      >
+                        {trimAddress(txn.hash, 5, -4)}
+                      </Text>
+                    </Link>
+                  </Flex>
+                  <Flex
+                    alignItems="center"
+                    justifyContent="center"
+                    textAlign={"center"}
+                  >
+                    <Text
+                      variant="medium"
+                      color={colorMode === "dark" ? "#EDEDED" : "#171717"}
+                      textAlign={"center"}
+                    >
+                      {moment.unix(txn.timeStamp).format("ll").toString()}
+                    </Text>
+                  </Flex>
+                  </Grid>             
+              )})
+            )}
         </AccordionPanel>
       </AccordionItem>
     </Accordion>

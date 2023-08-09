@@ -71,14 +71,9 @@ const ChartsModal = () => {
 
       for (let key in groupedEpochData) {
         let epochData: any = groupedEpochData[key];
-        let epochChange =
-          epochData[epochData.length - 1].id >= 566
-            ? epochData[epochData.length - 1].Change
-            : null;
-        // let epochChange = epochData[epochData.length - 1].Change;
+         let epochChange = epochData[epochData.length - 1].Change;
         performance.push(epochChange);
       }
-
       let total = performance.reduce((a, b) => Number(a) + Number(b), 0);
 
       setFullPerformance(total / Object.keys(groupedEpochData).length);
