@@ -4,34 +4,40 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { Global } from "@emotion/react";
 import "@fontsource/inter";
 import "@fontsource/inter/variable-full.css";
-import { getDefaultWallets } from "@rainbow-me/rainbowkit";
+import { getDefaultWallets, connectorsForWallets } from "@rainbow-me/rainbowkit";
+
 import type { AppProps } from "next/app";
-import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { mainnet } from 'wagmi/chains';
+
 import { infuraProvider } from "wagmi/providers/infura";
-import { publicProvider } from "wagmi/providers/public";
+// import { publicProvider } from "wagmi/providers/public";
 
 import Layout from "../components/Layout";
 import theme from "../theme";
 
-export const { chains, provider, webSocketProvider } = configureChains(
-  [chain.mainnet],
+export const { chains, publicClient } = configureChains(
+  [mainnet],
   [
     infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_ID as string }),
     // publicProvider(),
-  ]
+  ],
+  { pollingInterval: 12_000 },
 );
 
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_ID as string;
+
 const { connectors } = getDefaultWallets({
-  appName: "REFI Pro",
+  appName: 'REFI Pro',
+  projectId: projectId,
   chains,
 });
 
-const wagmiClient = createClient({
+const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
-  provider,
-  webSocketProvider,
-});
+  publicClient
+})
 
 export const Fonts = () => (
   <Global
@@ -50,7 +56,7 @@ export const Fonts = () => (
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme} resetCSS>
-      <WagmiConfig client={wagmiClient}>
+      <WagmiConfig config={wagmiConfig}>
         <Fonts />
         <Layout chains={chains}>
           <Component {...pageProps} />
