@@ -70,7 +70,6 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
 
   const {hasPendingDeposit, updatePendingDeposit} = useVaultUser(address!);
 
-
   const withdrawalFeeAmount: any = useContractRead({
     ...contractConfig,
     functionName: "getWithdrawalFee",
@@ -216,9 +215,9 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     parseInt(user?.data?.sharesToRedeem) > 0 && !withdrawActive;
 
   const exceedsHoldings =
-    user?.data && +amount > +formatUnits(user.data?.vaultShares, 6);
+    user?.data && +amount > Number(user.data?.[2])
 
-  const needToClaim = formatUnits(user.data?.vaultShares ?? 0, 6) === "0.0" && hasPendingDeposit.data
+  const needToClaim =  Number(user.data?.[2]) === 0 && hasPendingDeposit.data
   
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
@@ -276,7 +275,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                   borderRadius="8px"
                   border={
                     user?.data &&
-                    +amount > +formatUnits(user?.data?.vaultShares, 6)
+                    +amount > Number(user.data?.[2])
                       ? "solid 1px red"
                       : (null as any)
                   }
