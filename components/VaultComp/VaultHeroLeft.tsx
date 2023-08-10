@@ -66,7 +66,7 @@ export const VaultHeroLeft = () => {
             truncate(commify(rawGains.toString()), 2);
 
           const amountBefore = truncate(
-            commify(formatUnits(aum?.data?._hex, 6)),
+            commify(aum?.data?.toString() ?? "0"),
             2
           );
           const amountAfter = truncate(

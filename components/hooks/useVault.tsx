@@ -14,6 +14,7 @@ import { ContractConfig } from "../../contracts";
 import { useContractConfig } from "../Vault/ContractContext";
 import { noSpecialCharacters } from "../utils/stringsAndNumbers";
 import { useEffect } from "react";
+import vaultContractInterface from "../../abi/vault.abi.json";
 
 // export const useVault = (addressOrName: string) => {
 //   const vault = useMemo(() => {
@@ -85,32 +86,48 @@ export const useVaultMeta = (contractConfig: ContractConfig) => {
   };
 };
 
+type User = {
+  assetsDeposited: string;
+  epochLastDeposited: string;
+  vaultShares: string;
+  sharesToRedeem: string;
+  epochToRedeem: string;
+}
+
 export const useVaultUser = (
-  contractConfig: ContractConfig,
+  // contractConfig: ContractConfig,
   vaultUserAddress: string
 ) => {
+  // console.log(contractConfig)
+
   const user: any = useContractRead({
-    ...contractConfig,
+    address: "0x00000008786611c72a00909bd8d398b1be195be3",
+    abi: vaultContractInterface,
     functionName: "vaultUsers",
     watch: true,
     args: [vaultUserAddress],
   });
 
+  // console.log(user)
+
   const sharesValue: any = useContractRead({
-    ...contractConfig,
+    address: "0x00000008786611c72a00909bd8d398b1be195be3",
+    abi: vaultContractInterface,
     functionName: "previewRedeem",
     args: [user.data?.vaultShares],
   });
 
   const hasPendingDeposit: any = useContractRead({
-    ...contractConfig,
+    address: "0x00000008786611c72a00909bd8d398b1be195be3",
+    abi: vaultContractInterface,
     functionName: "userHasPendingDeposit",
     args: [vaultUserAddress],
     watch: true,
   });
 
   const updatePendingDeposit = useContractWrite({
-    ...contractConfig,
+    address: "0x00000008786611c72a00909bd8d398b1be195be3",
+    abi: vaultContractInterface,
     functionName: "updatePendingDepositState",
     args: [vaultUserAddress],
     // mode: "recklesslyUnprepared",
@@ -209,6 +226,8 @@ export const useVaultDeposit = (
 
   // }
 
+  const maxUint256 = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
+
   const {
     write: approveMax,
     isLoading: isApprovingMax,
@@ -218,7 +237,7 @@ export const useVaultDeposit = (
     address: assetToken.data?.address as `0x${string}` ?? "",
     abi: erc20ABI,
     functionName: "approve",
-    args: [contractConfig?.address, BigInt(constants.MaxUint256.toNumber())],
+    args: [contractConfig?.address, maxUint256],
     // mode: "recklesslyUnprepared",
   });
 
@@ -315,7 +334,7 @@ export const useVaultWithdraw = (
     args: [address ?? ""],
   });
 
-  const { user } = useVaultUser(contractConfig, address ?? "");
+  const { user } = useVaultUser(address ?? "");
 
   const {
     write: unlockShares,
