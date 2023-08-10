@@ -30,8 +30,9 @@ export const useVaultMeta = (contractConfig: ContractConfig) => {
     ...contractConfig,
     functionName: "asset",
   });
+
   const assetToken = useToken({
-    address: asset.data?.toString(),
+    address: asset.data?.toString() as `0x${string}`,
   });
   const aum = useContractRead({
     ...contractConfig,

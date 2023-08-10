@@ -168,14 +168,14 @@ export default function VaultDetailsAccordion({
               <SkeletonText />
             ) : (
               <Link
-                href={`https://etherscan.io/address/${contractConfig.addressOrName}`}
+                href={`https://etherscan.io/address/${contractConfig.address}`}
                 isExternal
               >
                 <Text variant="medium">
-                  {`${contractConfig.addressOrName.slice(
+                  {`${contractConfig.address.slice(
                     0,
                     8
-                  )}...${contractConfig.addressOrName.slice(-2)}`}{" "}
+                  )}...${contractConfig.address.slice(-2)}`}{" "}
                   <ExternalLinkIcon mx="2px" />
                 </Text>
               </Link>

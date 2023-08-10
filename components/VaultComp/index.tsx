@@ -296,7 +296,7 @@ const VaultComp = ({
                 {farmer.data && farmer.data.toString() === address && (
                   <FarmerSettingsAccordion contractConfig={contractConfig} />
                 )}
-                <VaultActivityAccordion contractConfig={contractConfig} />
+                {/* <VaultActivityAccordion contractConfig={contractConfig} /> */}
                 <VaultPerformanceAccordion />
               </AccordionPanel>
             </>
