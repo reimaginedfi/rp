@@ -24,7 +24,7 @@ import { useVaultUser } from "../../hooks/useVault";
 import { useContractConfig, useWatchVault } from "../../Vault/ContractContext";
 import { useCompleteAum } from "../../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../../Vault/hooks/useVaultAsset";
-import { commify, formatUnits } from "ethers/lib/utils";
+import { commify } from "ethers/lib/utils";
 import { truncate } from "../../utils/stringsAndNumbers";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
@@ -44,7 +44,13 @@ export default function UserStatsAccordion({
     hasPendingDeposit,
     updatePendingDeposit,
     totalDeposited,
-  } = useVaultUser(contractConfig, address ?? "");
+  } = useVaultUser(address ?? "");
+
+  console.log(user)
+  // console.log(sharesValue)
+  // console.log(hasPendingDeposit)
+  // console.log(updatePendingDeposit)
+  // console.log(totalDeposited)
 
   const [depositedUsdc, setDespositedUsdc] = useState<number>(0);
   const [withdrawnUsdc, setWithdrawnUsdc] = useState<number>(0);
@@ -112,7 +118,7 @@ export default function UserStatsAccordion({
   // total value: pd + vt * totalAssets / totalSupply
   const totalValue = isLoading
     ? BigNumber.from(0)
-    : user.data?.[0].toNumber() !== 0
+    : user.data?.[0] !== 0
     ? BigNumber.from(user.data?.[2] ?? 0)
         .mul(totalAssets.data!)
         .div(totalSupply.data!)
@@ -208,7 +214,7 @@ export default function UserStatsAccordion({
                         <Spinner />
                       ) : totalDeposited !== 0 ? (
                         truncate(
-                          commify(formatUnits(totalDeposited, 6)!.toString()),
+                          commify(totalDeposited)!.toString(),
                           2
                         )
                       ) : (
@@ -270,15 +276,12 @@ export default function UserStatsAccordion({
                         <Spinner />
                       ) : (
                         user.data &&
-                        commify(truncate(
-                          formatUnits(
-                            sharesValue.data
-                              ? parseInt(sharesValue!.data!._hex!, 16)
-                              : parseInt(user?.data.vaultShares),
-                            6
-                          ), 2)
+                          truncate(
+                            commify(user?.data[3])!.toString(),
+                            2
+                          )
                         )
-                      )}
+                      }
                     </Heading>
                     <Text textAlign={"center"} mt={-2} mb={4}>
                       VT

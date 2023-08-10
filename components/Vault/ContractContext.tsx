@@ -23,7 +23,7 @@ export const useContractConfig = () => {
 
 export const useReadVault = (functionName: string, opts?: ReadVaultOpts) => {
   const contractConfig = useContractConfig();
-  const readResult = useContractRead({
+  const readResult: any = useContractRead({
     ...contractConfig,
     ...opts,
     functionName,
@@ -33,7 +33,7 @@ export const useReadVault = (functionName: string, opts?: ReadVaultOpts) => {
 
 export const useWatchVault = (functionName: string, opts?: WatchVaultOpts) => {
   const contractConfig = useContractConfig();
-  const readResult = useContractRead({
+  const readResult: any = useContractRead({
     ...contractConfig,
     ...opts,
     functionName,

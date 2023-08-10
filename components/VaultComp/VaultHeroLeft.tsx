@@ -18,7 +18,7 @@ import { BigNumber } from "ethers";
 import { commify, formatUnits } from "ethers/lib/utils";
 import moment from "moment";
 import { useContext, useEffect } from "react";
-import { useBlockNumber, useProvider } from "wagmi";
+import { useBlockNumber } from "wagmi";
 import { VaultData } from "../../pages";
 import supabaseClient from "../../utils/supabaseClient";
 import { useVaultState } from "../hooks/useVault";
@@ -66,7 +66,7 @@ export const VaultHeroLeft = () => {
             truncate(commify(rawGains.toString()), 2);
 
           const amountBefore = truncate(
-            commify(formatUnits(aum?.data?._hex, 6)),
+            commify(aum?.data?.toString() ?? "0"),
             2
           );
           const amountAfter = truncate(
@@ -163,11 +163,11 @@ export const VaultHeroLeft = () => {
         <Stack pt={4}>
           <ProgressBar
             // color="orange"
-            partial={(blockNumber.data ?? 0) - lastManagementBlock + 6000}
+            partial={(Number(blockNumber.data) ?? 0) - lastManagementBlock + 6000}
             total={6000}
           />
           <Text>
-            {lastManagementBlock - blockNumber.data!} blocks remaining
+            {lastManagementBlock - Number(blockNumber.data!)} blocks remaining
           </Text>
         </Stack>
       </GridItem>

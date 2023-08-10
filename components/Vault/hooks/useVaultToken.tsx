@@ -4,7 +4,7 @@ import { useContractConfig } from "../ContractContext";
 export const useVaultToken = () => {
   const contractConfig = useContractConfig();
   const vaultToken = useToken({
-    address: contractConfig.addressOrName,
+    address: contractConfig.address,
   });
   return vaultToken;
 };

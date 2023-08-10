@@ -21,8 +21,6 @@ import {
 import { NextSeo } from "next-seo";
 
 import React from "react";
-import {BigNumber} from "ethers";
-import {formatUnits} from "ethers/lib/utils";
 
 export default function FAQ() {
   const { colorMode } = useColorMode();

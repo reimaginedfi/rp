@@ -107,7 +107,7 @@ const VaultComp = ({
   //   totalDeposited,
   // } = useVaultUser(contractConfig, address ?? "");
 
-  const vaultState = useVaultState(BigNumber.from(epoch ?? 0).toNumber());
+  const vaultState: any = useVaultState(BigNumber.from(epoch ?? 0).toNumber());
 
   // MANAGEMENT BLOCK -
   const lastManagementBlock = BigNumber.from(
@@ -295,7 +295,7 @@ const VaultComp = ({
                 <VaultDetailsAccordion contractConfig={contractConfig} currentAum={currentAum} aumCap={aumCap} />
                 {farmer.data && farmer.data.toString() === address && (
                   <FarmerSettingsAccordion contractConfig={contractConfig} />
-                )}
+                 )}
                 {/* <VaultActivityAccordion contractConfig={contractConfig} /> */}
                 <VaultPerformanceAccordion />
               </AccordionPanel>

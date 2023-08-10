@@ -47,21 +47,23 @@ export const EndEpochModal = ({
   const toast = useToast();
   const { epoch } = useVaultMeta(contractConfig);
   const [aumString, setAumString] = useState("0.0");
-  const aumBN = parseUnits(aumString, 6);
-  const preview = useContractRead({
+  const aumBN = BigInt(Number(aumString));
+  const preview: any = useContractRead({
     ...contractConfig,
     functionName: "previewProgress",
     args: [aumBN],
   });
+
+  // console.log(preview)
 
   const progressEpoch = useContractWrite({
     ...contractConfig,
     functionName: "progressEpoch",
     args: [aumBN],
     onMutate: (variables: any) => {
-      console.log(variables);
+      // console.log(variables);
     },
-    mode: "recklesslyUnprepared",
+    // mode: "recklesslyUnprepared",
   });
 
   const handleEpoch = async () => {
@@ -81,9 +83,9 @@ export const EndEpochModal = ({
 
   useWaitForTransaction({
     confirmations: 1,
-    wait: progressEpoch.data?.wait,
+    hash: progressEpoch.data?.hash,
     onSuccess: (data) => {
-      if (data.status === 1) {
+      if (data.status === 'success') {
         toast({
           title: "Epoch Progressed",
           description: progressEpoch.data?.hash,
@@ -145,16 +147,10 @@ export const EndEpochModal = ({
                 {preview.data && (
                   <AlertDescription>
                     This will send{" "}
-                    {commify(
-                      truncate(
-                        formatUnits(
-                          preview.data.totalAssetsToTransfer.toString(),
-                          6
-                        ),
-                        2
-                      )
+                    {                      truncate(commify(
+                          Number(preview.data?.[1]).toString()), 2
                     )}{" "}
-                    USDC {preview.data.shouldTransferToFarm ? "to" : "from"}{" "}
+                    USDC {preview.data?.[2] ? "to" : "from"}{" "}
                     farmer address. You have enough balance to end the epoch.
                   </AlertDescription>
                 )}

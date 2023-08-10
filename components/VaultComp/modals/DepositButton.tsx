@@ -41,6 +41,8 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
+import configContractInterface from "../../../abi/vaultconfig.abi.json";
+
 
 interface DepositButtonProps {
   depositSuccess: string;
@@ -82,14 +84,14 @@ export const DepositButton = () => {
 
   // CHECKS DEPOSIT TXN UNTIL IT SUCCEEDS
   const { isLoading } = useWaitForTransaction({
-    hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
+    hash: typeof depositData?.hash === "string" ? depositData?.hash as `0x${string}` : undefined,
     enabled: typeof depositData?.hash === "string",
     // onSuccess never fails
     //https://github.com/wagmi-dev/wagmi/discussions/428
     onSuccess: (data) => {
-      if (data.status === 1) {
+      if (data.status === 'success') {
         setDepositSuccess("true");
-      } else if (data.status === 0) {
+      } else if (data.status === 'reverted') {
         setDepositSuccess("false");
       }
     },
@@ -97,15 +99,15 @@ export const DepositButton = () => {
 
   // CHECKS APPROVE TXN UNTIL IT SUCCEEDS
   const { isLoading: isLoadingApprove } = useWaitForTransaction({
-    hash: typeof approveData?.hash === "string" ? approveData?.hash : "",
+    hash: typeof depositData?.hash === "string" ? depositData?.hash as `0x${string}` : undefined,
     enabled: typeof approveData?.hash === "string",
     // onSuccess never fails
     //https://github.com/wagmi-dev/wagmi/discussions/428
     onSuccess: (data) => {
-      if (data.status === 1) {
+      if (data.status === 'success') {
         setApprovalSuccess("true");
       } else {
-        data.status === 0;
+        data.status === 'reverted';
       }
       {
         setApprovalSuccess("false");
@@ -122,7 +124,7 @@ export const DepositButton = () => {
     });
   }, [chain, vaults]);
 
-  const { totalDeposited } = useVaultUser(contractConfig, address ?? "");
+  // const { totalDeposited } = useVaultUser(address ?? "");
 
   useEffect(() => {
     console.log("storeAssetError: ", storeAssetError);
@@ -238,22 +240,30 @@ export const DepositButton = () => {
   }, [isLoading, depositSuccess]);
 
   //VAULT CONTRAG CONFIG
-  const vaultConfig = vaultConfigs[0];
+  // const vaultConfig = vaultConfigs[0];
+  const vaultConfig = {
+    address: "0x00000997e18087b2477336fe87B0c486c6A2670D",
+    abi: configContractInterface,
+  }
 
   //CAN DEPOSIT / DEPOSIT ALLOWED - checks whether user meets the criteria (has enough REFI tokens, has deposited 25K before)
-  const canDeposit = useContractRead({
-    ...vaultConfig,
+  const canDeposit: any = useContractRead({
+    // ...vaultConfig,
+    address: vaultConfig.address as `0x${string}`,
+    abi: vaultConfig.abi,
     functionName: "canDeposit",
     args: [
       address,
       parseUnits(amount === "" ? "0" : noSpecialCharacters(amount), 6),
     ],
   });
+
   const depositAllowed = canDeposit.data?.toString() === "true";
 
   //MINIMUM DEPOSIT - fetches minimum deposit amount for users who have not deposited before
-  const minimumDeposit = useContractRead({
-    ...vaultConfig,
+  const minimumDeposit: any = useContractRead({
+    address: vaultConfig.address as `0x${string}`,
+    abi: vaultConfig.abi,
     functionName: "minimumStoredValueBeforeFees",
   });
   const meetsMinimum = +amount >= 25000 || depositAllowed;

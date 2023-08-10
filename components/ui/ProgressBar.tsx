@@ -9,6 +9,13 @@ type ProgressBarProps = {
     size?: string;
 };
 
+type ProgressValue = {
+    name: string;
+    value: number | undefined;
+    color: string;
+    radius: string;
+};
+
 export default function ProgressBar({
   total,
   totalColor,
@@ -19,7 +26,7 @@ export default function ProgressBar({
 }: ProgressBarProps) {
   const { colorMode } = useColorMode();
 
-  const progressValues = [
+  const progressValues: ProgressValue[] = [
     {
       name: "TOTAL",
       value: total && partial && ((100 * partial) / total),
@@ -28,7 +35,7 @@ export default function ProgressBar({
     },
     {
       name: "REMAINING",
-      value: remaining && ((100 * parseFloat(remaining)) / total),
+      value: remaining ? ((100 * parseFloat(remaining)) / total) : 0,
       color: partialColor ?? "#E9A9AB",
       radius: "1rem",
     },

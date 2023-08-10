@@ -3,7 +3,7 @@ import { useContractConfig } from "../ContractContext";
 
 export const useVaultAsset = () => {
   const contractConfig = useContractConfig();
-  const asset = useContractRead({
+  const asset: any = useContractRead({
     ...contractConfig,
     functionName: "asset",
   });

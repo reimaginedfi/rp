@@ -1,5 +1,5 @@
 import type { GetContractArgs } from "@wagmi/core";
-import { ContractInterface } from "ethers";
+// import { ContractInterface } from "ethers";
 // import { chain } from "wagmi";
 import vaultContractInterface from "./abi/vault.abi.json";
 import configContractInterface from "./abi/vaultconfig.abi.json";
@@ -10,7 +10,7 @@ interface ContractsMap {
   id: number;
   name?: string;
   address: string;
-  abi: ContractInterface;
+  abi: any;
 }
 
 // export const vaults: ContractsMap[] = [

@@ -20,7 +20,7 @@ export const Vault = ({
     useVaultMeta(contractConfig);
 
   //VAULT CONTRACT - fetches current vault state
-  const vaultState = useContractRead({
+  const vaultState: any = useContractRead({
     ...contractConfig,
     functionName: "vaultStates",
     args: [BigNumber.from(epoch.data ?? 0)],
