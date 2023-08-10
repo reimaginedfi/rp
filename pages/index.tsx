@@ -136,7 +136,7 @@ export const getStaticProps = async () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          AccessKey: process.env.NEXT_PUBLIC_DEBANK_API2!,
+          AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
         },
       }
     );
@@ -147,7 +147,7 @@ export const getStaticProps = async () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          AccessKey: process.env.NEXT_PUBLIC_DEBANK_API2!,
+          AccessKey: process.env.NEXT_PUBLIC_DEBANK_API!,
         },
       }
     );
