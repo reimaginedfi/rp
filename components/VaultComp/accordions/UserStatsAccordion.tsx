@@ -46,7 +46,7 @@ export default function UserStatsAccordion({
     totalDeposited,
   } = useVaultUser(address ?? "");
 
-  console.log(user)
+  // console.log(user)
   // console.log(sharesValue)
   // console.log(hasPendingDeposit)
   // console.log(updatePendingDeposit)
