@@ -49,6 +49,8 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
   const { colorMode } = useColorMode();
   const meta = useVaultMeta(contractConfig);
 
+  console.log(meta);
+
   const aumCapModal = useDisclosure();
   const startVaultModal = useDisclosure();
   const aumCapAlert = useDisclosure();

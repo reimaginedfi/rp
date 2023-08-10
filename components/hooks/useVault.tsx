@@ -133,16 +133,15 @@ export const useVaultUser = (
     // mode: "recklesslyUnprepared",
   });
 
-  const totalDeposited = Number(user.data[0])=== 0 ? Number(user.data[0]) : 0;
+  const totalDeposited = user.data && Number(user.data[0]) === 0 ? Number(user.data[0]) : 0;
 
   return {
     user,
     sharesValue,
     hasPendingDeposit,
     hasPendingDepositValue:
-      hasPendingDeposit.data ||
-      (BigNumber.isBigNumber(user.data?.[1]) &&
-        BigNumber.from(user.data?.[1]).gt(0)),
+      hasPendingDeposit.data || 
+      Number(user.data?.[1]) === 0 ? 0 : Number(user.data?.[1]),
     totalDeposited,
     updatePendingDeposit
   };

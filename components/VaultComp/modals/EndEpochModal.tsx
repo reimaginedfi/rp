@@ -47,19 +47,21 @@ export const EndEpochModal = ({
   const toast = useToast();
   const { epoch } = useVaultMeta(contractConfig);
   const [aumString, setAumString] = useState("0.0");
-  const aumBN = parseUnits(aumString, 6);
+  const aumBN = BigInt(Number(aumString));
   const preview: any = useContractRead({
     ...contractConfig,
     functionName: "previewProgress",
     args: [aumBN],
   });
 
+  // console.log(preview)
+
   const progressEpoch = useContractWrite({
     ...contractConfig,
     functionName: "progressEpoch",
     args: [aumBN],
     onMutate: (variables: any) => {
-      console.log(variables);
+      // console.log(variables);
     },
     // mode: "recklesslyUnprepared",
   });
@@ -81,7 +83,7 @@ export const EndEpochModal = ({
 
   useWaitForTransaction({
     confirmations: 1,
-    hash: progressEpoch.data!.hash,
+    hash: progressEpoch.data?.hash,
     onSuccess: (data) => {
       if (data.status === 'success') {
         toast({
@@ -145,16 +147,10 @@ export const EndEpochModal = ({
                 {preview.data && (
                   <AlertDescription>
                     This will send{" "}
-                    {commify(
-                      truncate(
-                        formatUnits(
-                          preview.data.totalAssetsToTransfer.toString(),
-                          6
-                        ),
-                        2
-                      )
+                    {                      truncate(commify(
+                          Number(preview.data?.[1]).toString()), 2
                     )}{" "}
-                    USDC {preview.data.shouldTransferToFarm ? "to" : "from"}{" "}
+                    USDC {preview.data?.[2] ? "to" : "from"}{" "}
                     farmer address. You have enough balance to end the epoch.
                   </AlertDescription>
                 )}
