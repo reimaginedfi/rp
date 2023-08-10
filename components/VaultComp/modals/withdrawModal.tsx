@@ -68,7 +68,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     claimData,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
 
-  const {hasPendingDeposit, updatePendingDeposit} = useVaultUser(contractConfig, address!);
+  const {hasPendingDeposit, updatePendingDeposit} = useVaultUser(address!);
 
 
   const withdrawalFeeAmount: any = useContractRead({

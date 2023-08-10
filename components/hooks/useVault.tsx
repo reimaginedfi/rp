@@ -134,8 +134,8 @@ export const useVaultUser = (
   });
 
   const totalDeposited =
-    user.data && BigNumber.isBigNumber(user.data.assetsDeposited)
-      ? BigNumber.from(user.data.assetsDeposited).toNumber()
+    user.data 
+      ? user.data[0].toNumber()
       : 0;
 
   return {

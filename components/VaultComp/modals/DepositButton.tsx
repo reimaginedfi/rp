@@ -124,7 +124,7 @@ export const DepositButton = () => {
     });
   }, [chain, vaults]);
 
-  const { totalDeposited } = useVaultUser(contractConfig, address ?? "");
+  // const { totalDeposited } = useVaultUser(address ?? "");
 
   useEffect(() => {
     console.log("storeAssetError: ", storeAssetError);
