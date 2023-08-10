@@ -133,10 +133,7 @@ export const useVaultUser = (
     // mode: "recklesslyUnprepared",
   });
 
-  const totalDeposited =
-    user.data 
-      ? user.data[0].toNumber()
-      : 0;
+  const totalDeposited = Number(user.data[0])=== 0 ? Number(user.data[0]) : 0;
 
   return {
     user,
