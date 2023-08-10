@@ -33,7 +33,7 @@ export const TokenInput: React.FC<TokenInputProps> = ({
 }) => {
   const { colorMode } = useColorMode();
 
-  const { data } = useToken({ address: tokenAddress });
+  const { data } = useToken({ address: tokenAddress as `0x${string}` });
   const images: Record<string, string> = {
     USDC: "/icons/usdc.svg",
   };
