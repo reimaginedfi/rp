@@ -82,14 +82,14 @@ export const DepositButton = () => {
 
   // CHECKS DEPOSIT TXN UNTIL IT SUCCEEDS
   const { isLoading } = useWaitForTransaction({
-    hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
+    hash: typeof depositData?.hash! === "string" ? depositData?.hash! as any : "",
     enabled: typeof depositData?.hash === "string",
     // onSuccess never fails
     //https://github.com/wagmi-dev/wagmi/discussions/428
     onSuccess: (data) => {
-      if (data.status === 1) {
+      if (data.status === 'success') {
         setDepositSuccess("true");
-      } else if (data.status === 0) {
+      } else if (data.status === 'reverted') {
         setDepositSuccess("false");
       }
     },
@@ -97,17 +97,14 @@ export const DepositButton = () => {
 
   // CHECKS APPROVE TXN UNTIL IT SUCCEEDS
   const { isLoading: isLoadingApprove } = useWaitForTransaction({
-    hash: typeof approveData?.hash === "string" ? approveData?.hash : "",
+    hash: typeof approveData?.hash === "string" ? approveData?.hash as any : "",
     enabled: typeof approveData?.hash === "string",
     // onSuccess never fails
     //https://github.com/wagmi-dev/wagmi/discussions/428
     onSuccess: (data) => {
-      if (data.status === 1) {
+      if (data.status === 'success') {
         setApprovalSuccess("true");
-      } else {
-        data.status === 0;
-      }
-      {
+      } else if (data.status === 'reverted') {
         setApprovalSuccess("false");
       }
     },
@@ -122,7 +119,7 @@ export const DepositButton = () => {
     });
   }, [chain, vaults]);
 
-  const { totalDeposited } = useVaultUser(contractConfig, address ?? "");
+  // const { totalDeposited } = useVaultUser(contractConfig, address ?? "");
 
   useEffect(() => {
     console.log("storeAssetError: ", storeAssetError);
@@ -192,7 +189,7 @@ export const DepositButton = () => {
       return;
     }
     try {
-      await storeAsset();
+      await storeAsset!();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       toast({
@@ -207,7 +204,7 @@ export const DepositButton = () => {
   // APPROVE ERC20 TOKEN on button click
   const handleApprove = async () => {
     try {
-      await approve();
+      await approve!();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       toast({
@@ -242,7 +239,7 @@ export const DepositButton = () => {
 
   //CAN DEPOSIT / DEPOSIT ALLOWED - checks whether user meets the criteria (has enough REFI tokens, has deposited 25K before)
   const canDeposit = useContractRead({
-    ...vaultConfig,
+    ...vaultConfig as any,
     functionName: "canDeposit",
     args: [
       address,
@@ -253,7 +250,7 @@ export const DepositButton = () => {
 
   //MINIMUM DEPOSIT - fetches minimum deposit amount for users who have not deposited before
   const minimumDeposit = useContractRead({
-    ...vaultConfig,
+    ...vaultConfig as any,
     functionName: "minimumStoredValueBeforeFees",
   });
   const meetsMinimum = +amount >= 25000 || depositAllowed;

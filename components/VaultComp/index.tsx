@@ -61,7 +61,7 @@ type VaultProps = {
   currentAum: string;
   aumCap: string;
   epoch: number | undefined;
-  pendingDeposit: string;
+  pendingDeposit?: string;
   contractConfig: ContractConfig;
 };
 
@@ -110,9 +110,9 @@ const VaultComp = ({
   const vaultState = useVaultState(BigNumber.from(epoch ?? 0).toNumber());
 
   // MANAGEMENT BLOCK -
-  const lastManagementBlock = BigNumber.from(
-    vaultState.data?.lastManagementBlock ?? 0
-  ).toNumber();
+  // const lastManagementBlock = BigNumber.from(
+  //   vaultState.data?.lastManagementBlock ?? 0
+  // ).toNumber();
 
   // CURRENT CHAIN BLOCK - to calculate against management block
   const blockNumber = useBlockNumber({
@@ -158,7 +158,7 @@ const VaultComp = ({
                     <ChartsModal />
                   </GridItem>
 
-                  {lastManagementBlock > (blockNumber.data ?? 0) ? (
+                  {/* {lastManagementBlock > (blockNumber.data ?? 0) ? (
                     <></>
                   ) : (
                     <>
@@ -175,9 +175,9 @@ const VaultComp = ({
                         </Button>
                       </GridItem>
                     </>
-                  )}
+                  )} */}
                 </Grid>
-                {+pendingDeposit + +currentAum > 0 &&
+                {/* {+pendingDeposit + +currentAum > 0 &&
                   (+pendingDeposit + +currentAum) / +aumCap > 0.95 &&
                   isWarningVisible && (
                     <Flex w="full" px={"1rem"}>
@@ -198,7 +198,7 @@ const VaultComp = ({
                         <CloseButton onClick={onClose} />
                       </Alert>
                     </Flex>
-                  )}
+                  )} */}
                 <Flex px="1rem" mt={2} alignItems="center">
                   <Box mr={2} rounded={"full"} w="11px" h="11px" bg="#C51E25" />
                   <Text mr={1} variant="medium">
@@ -260,43 +260,20 @@ const VaultComp = ({
                     />
                   </Tooltip>
                   <Spacer />
-                  <Tooltip label={`${commify(pendingDeposit)} USDC`}>
+                  {/* <Tooltip label={`${commify(pendingDeposit)} USDC`}>
                     <Text variant="medium">
                       <Number>{millify(+pendingDeposit)}</Number> USDC
                     </Text>
-                  </Tooltip>
+                  </Tooltip> */}
                 </Flex>
-                {/* <Accordion
-                  borderRadius="1rem"
-                  defaultChecked={true}
-                  pt="1rem"
-                  allowToggle
-                  border="none"
-                >
-                  <AccordionItem border="none">
-                    <AccordionButton
-                      borderRadius="1rem"
-                      justifyItems="space-between"
-                      justifyContent="space-between"
-                    >
-                      <Heading variant="medium">Charts</Heading>
-                      <AccordionIcon />
-                    </AccordionButton>
-                    <AccordionPanel
-                      borderRadius="1rem"
-                      bg={colorMode === "dark" ? "#1C1C1C" : "#F8F8F8"}
-                    >
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion> */}
 
                 <UserStatsAccordion previewAum={(value as any).previewAum} />
                 {/* <VaultAssetsAccordion /> */}
-                <VaultDetailsAccordion contractConfig={contractConfig} currentAum={currentAum} aumCap={aumCap} />
+                {/* <VaultDetailsAccordion contractConfig={contractConfig} currentAum={currentAum} aumCap={aumCap} /> */}
                 {farmer.data && farmer.data.toString() === address && (
                   <FarmerSettingsAccordion contractConfig={contractConfig} />
                 )}
-                <VaultActivityAccordion contractConfig={contractConfig} />
+                {/* <VaultActivityAccordion contractConfig={contractConfig} /> */}
                 <VaultPerformanceAccordion />
               </AccordionPanel>
             </>

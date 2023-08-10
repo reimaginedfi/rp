@@ -24,10 +24,10 @@ export const PageContent = () => {
           >
             {vaults.map((contractConfig) => (
               <GridItem
-                key={contractConfig.addressOrName}
+                key={contractConfig.address}
                 m={{ base: "5%", md: "2.5%" }}
               >
-                <Vault contractConfig={contractConfig} />
+                <Vault contractConfig={contractConfig as any} />
               </GridItem>
             ))}
           </Grid>

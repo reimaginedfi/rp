@@ -31,7 +31,7 @@ export const useVaultMeta = (contractConfig: ContractConfig) => {
     functionName: "asset",
   });
   const assetToken = useToken({
-    address: asset.data?.toString(),
+    address: asset.data?.toString() as `0x${string}`,
   });
   const aum = useContractRead({
     ...contractConfig,
@@ -95,11 +95,11 @@ export const useVaultUser = (
     args: [vaultUserAddress],
   });
 
-  const sharesValue = useContractRead({
-    ...contractConfig,
-    functionName: "previewRedeem",
-    args: [user.data?.vaultShares],
-  });
+  // const sharesValue = useContractRead({
+  //   ...contractConfig,
+  //   functionName: "previewRedeem",
+  //   args: [user.data?.vaultShares],
+  // });
 
   const hasPendingDeposit = useContractRead({
     ...contractConfig,
@@ -108,27 +108,28 @@ export const useVaultUser = (
     watch: true,
   });
 
-  const updatePendingDeposit = useContractWrite({
-    ...contractConfig,
+  const { config } = usePrepareContractWrite({
+    ...contractConfig as any,
     functionName: "updatePendingDepositState",
     args: [vaultUserAddress],
-    mode: "recklesslyUnprepared",
-  });
+  })
 
-  const totalDeposited =
-    user.data && BigNumber.isBigNumber(user.data.assetsDeposited)
-      ? BigNumber.from(user.data.assetsDeposited).toNumber()
-      : 0;
+  const updatePendingDeposit = useContractWrite(config);
+
+  // const totalDeposited =
+  //   user.data && BigNumber.isBigNumber(user.data?.assetsDeposited)
+  //     ? BigNumber.from(user.data.assetsDeposited).toNumber()
+  //     : 0;
 
   return {
     user,
-    sharesValue,
+    // sharesValue,
     hasPendingDeposit,
-    hasPendingDepositValue:
-      hasPendingDeposit.data ||
-      (BigNumber.isBigNumber(user.data?.[1]) &&
-        BigNumber.from(user.data?.[1]).gt(0)),
-    totalDeposited,
+    // hasPendingDepositValue:
+    //   hasPendingDeposit.data ||
+    //   (BigNumber.isBigNumber(user.data?.[1]) &&
+    //     BigNumber.from(user.data?.[1]).gt(0)),
+    // totalDeposited,
     updatePendingDeposit
   };
 };
@@ -143,10 +144,10 @@ export const useVaultDeposit = (
   const addRecentTransaction = useAddRecentTransaction();
 
   const { data: balance } = useContractRead({
-    addressOrName: assetToken.data?.address ?? "",
-    contractInterface: erc20ABI,
+    address: assetToken.data?.address as `0x${string}` ?? "",
+    abi: erc20ABI,
     functionName: "balanceOf",
-    args: [address],
+    args: [address!],
     watch: true,
   });
 
@@ -156,10 +157,10 @@ export const useVaultDeposit = (
   );
 
   const { data: allowance } = useContractRead({
-    addressOrName: assetToken.data?.address ?? "",
-    contractInterface: erc20ABI,
+    address: assetToken.data?.address as `0x${string}` ?? "",
+    abi: erc20ABI,
     functionName: "allowance",
-    args: [address, contractConfig?.addressOrName],
+    args: [address as `0x${string}`, contractConfig?.address],
     watch: true,
   });
 
@@ -179,13 +180,13 @@ export const useVaultDeposit = (
     error: approveError,
     status: approveStatus,
   } = useContractWrite({
-    addressOrName: assetToken.data?.address ?? "",
-    contractInterface: erc20ABI,
+    address: assetToken.data?.address as `0x${string}` ?? "",
+    abi: erc20ABI,
     functionName: "approve",
-    mode: "recklesslyUnprepared",
+    // mode: "recklesslyUnprepared",
     args: [
-      contractConfig?.addressOrName,
-      parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals),
+      contractConfig?.address,
+      parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals) as any,
     ],
     onSuccess(data: any, variables: any, context: any) {
       addRecentTransaction({
@@ -214,11 +215,11 @@ export const useVaultDeposit = (
     error: approveMaxError,
     status: approveMaxStatus,
   } = useContractWrite({
-    addressOrName: assetToken.data?.address ?? "",
-    contractInterface: erc20ABI,
+    address: assetToken.data?.address as `0x${string}` ?? "",
+    abi: erc20ABI,
     functionName: "approve",
-    args: [contractConfig?.addressOrName, constants.MaxUint256],
-    mode: "recklesslyUnprepared",
+    args: [contractConfig?.address, constants.MaxUint256 as any],
+    // mode: "recklesslyUnprepared",
   });
 
   const {
@@ -245,21 +246,19 @@ export const useVaultDeposit = (
         confirmations: 1,
       });
     },
-    mode: "recklesslyUnprepared",
+    // mode: "recklesslyUnprepared",
     onSettled(data: any, error: any, variables: any, context: any) {
       console.log({ data });
       console.log({ error });
       console.log({ variables });
       console.log({ context });
     },
-    overrides: {
-      gasLimit: 1000000,
-    },
+    gas: BigInt(1000000),
   });
 
   const depositFor = useContractWrite({
-    ...contractConfig,
-    contractInterface: [
+    ...contractConfig as any,
+    abi: [
       {
         inputs: [
           {
@@ -290,7 +289,7 @@ export const useVaultDeposit = (
       parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals),
       _for,
     ],
-    mode: "recklesslyUnprepared",
+    // mode: "recklesslyUnprepared",
   });
 
   return {
@@ -345,7 +344,7 @@ export const useVaultWithdraw = (
   const { user } = useVaultUser(contractConfig, address ?? "");
 
   const { config } = usePrepareContractWrite({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "unlock",
     args: [parseUnits(unlockAmount ? unlockAmount : "0", 6)],
   });
@@ -383,10 +382,8 @@ export const useVaultWithdraw = (
   } = useContractWrite({
     ...contractConfig,
     functionName: "withdraw",
-    overrides: {
-      gasLimit: 500000,
-    },
-    mode: "recklesslyUnprepared",
+    gas: BigInt(500000),
+    // mode: "recklesslyUnprepared",
   });
 
   // const {
