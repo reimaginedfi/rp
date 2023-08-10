@@ -202,12 +202,12 @@ export default function DepositForModal({
   };
 
   const { isLoading } = useWaitForTransaction({
-    hash: typeof depositData?.hash === "string" ? depositData?.hash : "",
+    hash: typeof depositData?.hash === "string" ? depositData?.hash : undefined,
     enabled: typeof depositData?.hash === "string",
     // onSuccess never fails
     //https://github.com/wagmi-dev/wagmi/discussions/428
     onSuccess: (data) => {
-      if (data.status === 1) {
+      if (data.status === 'success') {
         setDepositSuccess(true);
       }
     },

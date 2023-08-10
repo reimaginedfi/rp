@@ -33,7 +33,7 @@ export default function VaultDetailsAccordion({
 }: VaultProps) {
   const { colorMode } = useColorMode();
 
-  const feeReceiver = useContractRead({
+  const feeReceiver: any = useContractRead({
     ...contractConfig,
     functionName: "feeDistributor",
     watch: true,

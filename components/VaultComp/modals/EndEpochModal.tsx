@@ -48,7 +48,7 @@ export const EndEpochModal = ({
   const { epoch } = useVaultMeta(contractConfig);
   const [aumString, setAumString] = useState("0.0");
   const aumBN = parseUnits(aumString, 6);
-  const preview = useContractRead({
+  const preview: any = useContractRead({
     ...contractConfig,
     functionName: "previewProgress",
     args: [aumBN],
@@ -61,7 +61,7 @@ export const EndEpochModal = ({
     onMutate: (variables: any) => {
       console.log(variables);
     },
-    mode: "recklesslyUnprepared",
+    // mode: "recklesslyUnprepared",
   });
 
   const handleEpoch = async () => {
@@ -81,9 +81,9 @@ export const EndEpochModal = ({
 
   useWaitForTransaction({
     confirmations: 1,
-    wait: progressEpoch.data?.wait,
+    hash: progressEpoch.data!.hash,
     onSuccess: (data) => {
-      if (data.status === 1) {
+      if (data.status === 'success') {
         toast({
           title: "Epoch Progressed",
           description: progressEpoch.data?.hash,

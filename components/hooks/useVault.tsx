@@ -26,7 +26,7 @@ import { useEffect } from "react";
 // };
 
 export const useVaultMeta = (contractConfig: ContractConfig) => {
-  const asset = useContractRead({
+  const asset: any = useContractRead({
     ...contractConfig,
     functionName: "asset",
   });
@@ -34,39 +34,39 @@ export const useVaultMeta = (contractConfig: ContractConfig) => {
   const assetToken = useToken({
     address: asset.data?.toString() as `0x${string}`,
   });
-  const aum = useContractRead({
+  const aum: any = useContractRead({
     ...contractConfig,
     functionName: "aum",
     watch: true,
   });
-  const epoch = useContractRead({
+  const epoch: any = useContractRead({
     ...contractConfig,
     functionName: "epoch",
     watch: true,
   });
-  const farmer = useContractRead({
+  const farmer: any = useContractRead({
     ...contractConfig,
     functionName: "farmer",
   });
 
-  const aumCap = useContractRead({
+  const aumCap: any = useContractRead({
     ...contractConfig,
     functionName: "aumCap",
     watch: true,
   });
 
-  const vaultName = useContractRead({
+  const vaultName: any = useContractRead({
     ...contractConfig,
     functionName: "name",
   });
 
-  const storedFee = useContractRead({
+  const storedFee: any = useContractRead({
     ...contractConfig,
     functionName: "storedFee",
     watch: true,
   });
 
-  const maxDeposit = useContractRead({
+  const maxDeposit: any = useContractRead({
     ...contractConfig,
     functionName: "getMaxDeposit",
     watch: true,
@@ -89,20 +89,20 @@ export const useVaultUser = (
   contractConfig: ContractConfig,
   vaultUserAddress: string
 ) => {
-  const user = useContractRead({
+  const user: any = useContractRead({
     ...contractConfig,
     functionName: "vaultUsers",
     watch: true,
     args: [vaultUserAddress],
   });
 
-  const sharesValue = useContractRead({
+  const sharesValue: any = useContractRead({
     ...contractConfig,
     functionName: "previewRedeem",
     args: [user.data?.vaultShares],
   });
 
-  const hasPendingDeposit = useContractRead({
+  const hasPendingDeposit: any = useContractRead({
     ...contractConfig,
     functionName: "userHasPendingDeposit",
     args: [vaultUserAddress],
@@ -113,7 +113,7 @@ export const useVaultUser = (
     ...contractConfig,
     functionName: "updatePendingDepositState",
     args: [vaultUserAddress],
-    mode: "recklesslyUnprepared",
+    // mode: "recklesslyUnprepared",
   });
 
   const totalDeposited =
@@ -144,10 +144,10 @@ export const useVaultDeposit = (
   const addRecentTransaction = useAddRecentTransaction();
 
   const { data: balance } = useContractRead({
-    addressOrName: assetToken.data?.address ?? "",
-    contractInterface: erc20ABI,
+    address: assetToken.data?.address as `0x${string}` ?? "",
+    abi: erc20ABI,
     functionName: "balanceOf",
-    args: [address],
+    args: [address as `0x${string}` ?? ""],
     watch: true,
   });
 
@@ -157,10 +157,10 @@ export const useVaultDeposit = (
   );
 
   const { data: allowance } = useContractRead({
-    addressOrName: assetToken.data?.address ?? "",
-    contractInterface: erc20ABI,
+    address: assetToken.data?.address as `0x${string}` ?? "",
+    abi: erc20ABI,
     functionName: "allowance",
-    args: [address, contractConfig?.addressOrName],
+    args: [address as `0x${string}`, contractConfig?.address],
     watch: true,
   });
 
@@ -180,13 +180,13 @@ export const useVaultDeposit = (
     error: approveError,
     status: approveStatus,
   } = useContractWrite({
-    addressOrName: assetToken.data?.address ?? "",
-    contractInterface: erc20ABI,
+    address: assetToken.data?.address as `0x${string}` ?? "",
+    abi: erc20ABI,
     functionName: "approve",
-    mode: "recklesslyUnprepared",
+    // mode: "recklesslyUnprepared",
     args: [
-      contractConfig?.addressOrName,
-      parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals),
+      contractConfig?.address,
+      BigInt(parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals).toNumber()),
     ],
     onSuccess(data: any, variables: any, context: any) {
       addRecentTransaction({
@@ -215,11 +215,11 @@ export const useVaultDeposit = (
     error: approveMaxError,
     status: approveMaxStatus,
   } = useContractWrite({
-    addressOrName: assetToken.data?.address ?? "",
-    contractInterface: erc20ABI,
+    address: assetToken.data?.address as `0x${string}` ?? "",
+    abi: erc20ABI,
     functionName: "approve",
-    args: [contractConfig?.addressOrName, constants.MaxUint256],
-    mode: "recklesslyUnprepared",
+    args: [contractConfig?.address, BigInt(constants.MaxUint256.toNumber())],
+    // mode: "recklesslyUnprepared",
   });
 
   const {
@@ -246,52 +246,24 @@ export const useVaultDeposit = (
         confirmations: 1,
       });
     },
-    mode: "recklesslyUnprepared",
+    // mode: "recklesslyUnprepared",
     onSettled(data: any, error: any, variables: any, context: any) {
       console.log({ data });
       console.log({ error });
       console.log({ variables });
       console.log({ context });
     },
-    overrides: {
-      gasLimit: 1000000,
-    },
+    gas: BigInt(1000000),
   });
 
   const depositFor = useContractWrite({
     ...contractConfig,
-    contractInterface: [
-      {
-        inputs: [
-          {
-            internalType: "uint256",
-            name: "_assets",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "_for",
-            type: "address",
-          },
-        ],
-        name: "deposit",
-        outputs: [
-          {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
-          },
-        ],
-        stateMutability: "nonpayable",
-        type: "function",
-      },
-    ],
     functionName: "deposit",
     args: [
       parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals),
       _for,
     ],
-    mode: "recklesslyUnprepared",
+    // mode: "recklesslyUnprepared",
   });
 
   return {
@@ -327,7 +299,7 @@ export const useVaultWithdraw = (
   const { address } = useAccount();
   const { assetToken } = useVaultMeta(contractConfig);
 
-  const userHasPendingRedeem = useContractRead({
+  const userHasPendingRedeem: any = useContractRead({
     ...contractConfig,
     functionName: "userHasPendingWithdrawal",
     watch: true,
@@ -336,7 +308,7 @@ export const useVaultWithdraw = (
 
   const hasPendingWithdrawal = userHasPendingRedeem.data;
 
-  const userHasPendingDeposit = useContractRead({
+  const userHasPendingDeposit: any = useContractRead({
     ...contractConfig,
     functionName: "userHasPendingDeposit",
     watch: true,
@@ -345,12 +317,6 @@ export const useVaultWithdraw = (
 
   const { user } = useVaultUser(contractConfig, address ?? "");
 
-  const { config } = usePrepareContractWrite({
-    ...contractConfig,
-    functionName: "unlock",
-    args: [parseUnits(unlockAmount ? unlockAmount : "0", 6)],
-  });
-
   const {
     write: unlockShares,
     isLoading: unlockingShares,
@@ -358,9 +324,11 @@ export const useVaultWithdraw = (
     isSuccess: unlockingSuccess,
     status: unlockingStatus,
     data: unlockData,
-  } = useContractWrite(config);
+  } = useContractWrite({  ...contractConfig,
+    functionName: "unlock",
+    args: [parseUnits(unlockAmount ? unlockAmount : "0", 6)]});
 
-  const { data: withdrawable, error } = useContractRead({
+  const withdrawable: any = useContractRead({
     ...contractConfig,
     functionName: "getWithdrawalAmount",
     args: [address ?? ""],
@@ -384,10 +352,8 @@ export const useVaultWithdraw = (
   } = useContractWrite({
     ...contractConfig,
     functionName: "withdraw",
-    overrides: {
-      gasLimit: 500000,
-    },
-    mode: "recklesslyUnprepared",
+    gas: BigInt(500000),
+    // mode: "recklesslyUnprepared",
   });
 
   // const {
@@ -405,9 +371,9 @@ export const useVaultWithdraw = (
   //   },
   // });
 
-  useEffect(() => {
-    console.log("error while previewing Claim: ", error);
-  }, [error]);
+  // useEffect(() => {
+  //   console.log("error while previewing Claim: ", error);
+  // }, [error]);
 
   return {
     hasPendingWithdrawal,
@@ -432,7 +398,7 @@ export const useVaultWithdraw = (
 
 export const useVaultState = (epoch = 0) => {
   const contractConfig = useContractConfig();
-  const vaultState = useContractRead({
+  const vaultState: any = useContractRead({
     ...contractConfig,
     functionName: "vaultStates",
     args: [epoch],

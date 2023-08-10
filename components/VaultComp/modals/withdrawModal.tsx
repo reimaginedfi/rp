@@ -71,7 +71,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   const {hasPendingDeposit, updatePendingDeposit} = useVaultUser(contractConfig, address!);
 
 
-  const withdrawalFeeAmount = useContractRead({
+  const withdrawalFeeAmount: any = useContractRead({
     ...contractConfig,
     functionName: "getWithdrawalFee",
     watch: true,
@@ -89,24 +89,24 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   const [unlockDataSuccess, setUnlockDataSuccess] = useState<string>("");
 
   const { isLoading: claimDataLoading } = useWaitForTransaction({
-    hash: typeof claimData?.hash === "string" ? claimData?.hash : "",
+    hash: typeof claimData?.hash === "string" ? claimData?.hash : undefined,
     enabled: typeof claimData?.hash === "string",
     onSuccess: (data) => {
-      if (data.status === 1) {
+      if (data.status === 'success') {
         setClaimDataSuccess("true");
-      } else if (data.status === 0) {
+      } else if (data.status === 'reverted') {
         setClaimDataSuccess("false");
       }
     },
   });
 
   const { isLoading: unlockDataLoading } = useWaitForTransaction({
-    hash: typeof unlockData?.hash === "string" ? unlockData?.hash : "",
+    hash: typeof unlockData?.hash === "string" ? unlockData?.hash : undefined,
     enabled: typeof unlockData?.hash === "string",
     onSuccess: (data) => {
-      if (data.status === 1) {
+      if (data.status === 'success') {
         setUnlockDataSuccess("true");
-      } else if (data.status === 0) {
+      } else if (data.status === 'reverted') {
         setUnlockDataSuccess("false");
       }
     },
@@ -471,8 +471,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                             hasArrow
                             label={`REFI currently takes ${
                               withdrawalFeeAmount.data
-                                ? +formatUnits(withdrawalFee.data!, 6)
-                                : 0
+                                // ? +formatUnits(withdrawalFee.data!, 6)
+                                // : 0
                             }% management fee on all withdrawals.`}
                             bg={colorMode === "dark" ? "white" : "black"}
                           >
@@ -506,8 +506,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                             hasArrow
                             label={`Amount that goes into your wallet (what you withdraw minus the ${
                               withdrawalFeeAmount.data
-                                ? +formatUnits(withdrawalFee.data!, 6)
-                                : 0
+                                // ? +formatUnits(withdrawalFee.data!, 6)
+                                // : 0
                             }% fees).`}
                             bg={colorMode === "dark" ? "white" : "black"}
                           >
