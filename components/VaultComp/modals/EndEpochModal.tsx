@@ -23,7 +23,8 @@ import {
   UseDisclosureReturn,
   useToast,
 } from "@chakra-ui/react";
-import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
+import { commify } from "ethers/lib/utils";
+import { parseUnits } from 'viem';
 import { useState } from "react";
 import {
   useContractRead,
@@ -35,7 +36,6 @@ import { useVaultMeta } from "../../hooks/useVault";
 import { truncate } from "../../utils/stringsAndNumbers";
 import getErrorMessage from "../../utils/errors";
 import { DangerToast, SuccessToast } from "../../Toasts";
-import { BigNumber } from "ethers";
 
 export const EndEpochModal = ({
   disclosure,
@@ -47,7 +47,7 @@ export const EndEpochModal = ({
   const toast = useToast();
   const { epoch } = useVaultMeta(contractConfig);
   const [aumString, setAumString] = useState("0.0");
-  const aumBN = Number(aumString);
+  const aumBN = parseUnits(Math.trunc(Number(aumString)).toString(), 6);
   const preview: any = useContractRead({
     ...contractConfig,
     functionName: "previewProgress",
@@ -92,7 +92,7 @@ export const EndEpochModal = ({
           status: "success",
           duration: 9000,
           isClosable: true,
-          render: () => <SuccessToast message={`You've successfuly progressed to ${BigNumber.from(epoch.data)}`}/>,
+          render: () => <SuccessToast message={`You've successfuly progressed to ${Number(epoch.data)}`}/>,
         });
         disclosure.onClose();
       }

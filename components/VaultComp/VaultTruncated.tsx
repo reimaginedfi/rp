@@ -1,7 +1,7 @@
 import { Badge, Flex, Skeleton, Text } from "@chakra-ui/react";
-import { BigNumber } from "ethers";
-import { commify, formatUnits } from "ethers/lib/utils";
-import { Number } from "../Number";
+import { commify } from "ethers/lib/utils";
+import { formatUnits } from 'viem';
+import { NumberComp } from "../Number";
 import { truncate } from "../utils/stringsAndNumbers";
 import { useReadVault, useWatchVault } from "../Vault/ContractContext";
 import { useVaultAssetToken } from "../Vault/hooks/useVaultAsset";
@@ -27,12 +27,15 @@ const useVaultTruncated = () => {
 
   const currentAum = isLoading
     ? 0
-    : formatUnits(aumResult.data!, assetTokenResult.data?.decimals);
+    : formatUnits(aumResult.data!, assetTokenResult.data?.decimals!);
 
   const aumCap = isLoading
     ? 0
-    : formatUnits(aumCapResult.data!, assetTokenResult.data?.decimals);
-  const epoch = isLoading ? 0 : BigNumber.from(epochResult.data).toNumber();
+    : formatUnits(aumCapResult.data!, assetTokenResult.data?.decimals!);
+  const epoch = isLoading ? 0 : Number(epochResult.data);
+
+  console.log("letsgo", Number(epochResult.data))
+  // console.log(epochResult)
 
   return {
     isLoading,
@@ -59,8 +62,8 @@ export const VaultTruncated = () => {
           Epoch: {epoch}
         </Badge>
         <Text variant="medium">
-          <Number>{truncate(commify(+currentAum), 2)}</Number>/
-          <Number>{truncate(commify(aumCap), 2)}</Number> USDC
+          <NumberComp>{truncate(commify(+currentAum), 2)} /</NumberComp>
+          <NumberComp>{truncate(commify(aumCap), 2)} USDC</NumberComp> 
         </Text>
       </Flex>
     </>

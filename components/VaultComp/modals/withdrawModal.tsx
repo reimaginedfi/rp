@@ -26,7 +26,8 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { commify, formatUnits } from "ethers/lib/utils";
+import { commify } from "ethers/lib/utils";
+import { formatUnits } from 'viem';
 import {
   useNetwork,
   useWaitForTransaction,
@@ -206,13 +207,13 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   };
 
   useEffect(() => {
-    if (parseInt(user.data?.epochToRedeem) !== 0 && parseInt(user.data?.epochToRedeem) <= parseInt(epoch!.data?._hex)) {
+    if (Number(user.data?.[4]) !== 0 && Number(user.data?.[4]) <= Number(epoch!.data)) {
       setWithdrawActive(true);
     }
   }, [user, epoch, withdrawable]);
 
   const hasUnlockedShares =
-    parseInt(user?.data?.sharesToRedeem) > 0 && !withdrawActive;
+    Number(user?.data?.[3]) > 0 && !withdrawActive;
 
   const exceedsHoldings =
     user?.data && +amount > Number(user.data?.[2])
@@ -335,7 +336,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         alignSelf="start"
                       >
                         <b>VT Tokens:</b>{" "}
-                        {formatUnits(user.data?.vaultShares ?? 0, 6)} VT{" "}
+                        {formatUnits(user.data?.[2] ?? 0, 6)} VT{" "}
                         <Tooltip
                           hasArrow
                           label="Total VT token balance (locked and unlocked tokens)."
@@ -351,7 +352,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         alignSelf="start"
                       >
                         Unlocked Balance:{" "}
-                        {formatUnits(user.data?.sharesToRedeem ?? 0, 6)} VT{" "}
+                        {formatUnits(user.data?.[3] ?? 0, 6)} VT{" "}
                         <Tooltip
                           hasArrow
                           label="Balance available for withdrawal at epoch below."
@@ -366,7 +367,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         mr={2}
                         alignSelf="start"
                       >
-                        EPOCH to withdraw: {parseInt(user.data?.epochToRedeem)}{" "}
+                        EPOCH to withdraw: {Number(user.data?.[4])}{" "}
                         <Tooltip
                           hasArrow
                           label="Can only withdraw at this epoch."
@@ -378,7 +379,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                     </VStack>
                     <Button
                       onClick={() =>
-                        setAmount(formatUnits(user.data?.vaultShares ?? 0, 6))
+                        setAmount(formatUnits(user.data?.[2] ?? 0, 6))
                       }
                       variant={"tertiary"}
                       p={4}
@@ -412,7 +413,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                 <Button
                   w="100%"
                   disabled={
-                    parseInt(user.data?.vaultShares) === 0 || exceedsHoldings || hasUnlockedShares
+                    Number(user.data?.[2]) === 0 || exceedsHoldings || hasUnlockedShares
                   }
                   isLoading={
                     unlockingShares ||
@@ -429,7 +430,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
 
               <Stack spacing={2}>
                 {withdrawable &&
-                  parseInt(withdrawable![0]) !== 0 &&
+                  Number(withdrawable![0]) !== 0 &&
                   withdrawActive && (
                     <Stack spacing="0.5rem">
                       <Flex

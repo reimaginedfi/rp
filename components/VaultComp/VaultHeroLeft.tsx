@@ -14,8 +14,8 @@ import {
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { BigNumber } from "ethers";
-import { commify, formatUnits } from "ethers/lib/utils";
+import { commify } from "ethers/lib/utils";
+import { formatUnits } from 'viem';
 import moment from "moment";
 import { useContext, useEffect } from "react";
 import { useBlockNumber } from "wagmi";
@@ -35,17 +35,18 @@ export const VaultHeroLeft = () => {
     useCompleteAum();
 
   // VAULT CONTRACT - fetches current vault state
-  const vaultState = useVaultState(BigNumber.from(epoch.data ?? 0).toNumber());
+  const vaultState = useVaultState(BigInt(Number(epoch.data ?? 0)));
 
   // MANAGEMENT BLOCK -
-  const lastManagementBlock = BigNumber.from(
-    vaultState.data?.lastManagementBlock ?? 0
-  ).toNumber();
+  const lastManagementBlock = vaultState.data && Number(vaultState!.data[6])
 
   // CURRENT CHAIN BLOCK - to calculate against management block
   const blockNumber = useBlockNumber({
     chainId: 1
   });
+
+  const isManagementPhase = vaultState.data && Number(vaultState!.data[6]) > Number(blockNumber.data);
+
 
   useEffect(() => {
     const storeData = async () => {
@@ -70,7 +71,7 @@ export const VaultHeroLeft = () => {
             2
           );
           const amountAfter = truncate(
-            commify(formatUnits(previewValue, 0)),
+            commify(formatUnits(BigInt(previewValue), 0)),
             2
           );
 
@@ -115,7 +116,7 @@ export const VaultHeroLeft = () => {
       factor &&
       rawGains &&
       epoch &&
-      !(lastManagementBlock > (blockNumber.data ?? 0)) &&
+      !(isManagementPhase) &&
       !(aumCap.data?.toString() === "0.0")
     ) {
       storeData();
@@ -153,7 +154,7 @@ export const VaultHeroLeft = () => {
     );
   }
 
-  if (lastManagementBlock > (blockNumber.data ?? 0)) {
+  if (isManagementPhase) {
     return (
       <GridItem justifyContent={"center"}>
         <Badge colorScheme="orange" variant={"outline"}>
@@ -203,7 +204,7 @@ export const VaultHeroLeft = () => {
         <Skeleton isLoaded={!value.previewAum?.isValidating && !aum.isLoading}>
           <Tooltip
             label={`Projected AUM: ${commify(
-              formatUnits(previewValue, 0)
+              formatUnits(BigInt(previewValue), 0)
             )} USDC`}
             aria-label="A tooltip"
           >

@@ -31,8 +31,7 @@ import { useAccount, useContractRead, useBlockNumber } from "wagmi";
 import dynamic from "next/dynamic";
 import { ContractConfig } from "../../contracts";
 import { commify } from "ethers/lib/utils";
-import { BigNumber } from "ethers";
-import { Number } from "../Number";
+import { NumberComp } from "../Number";
 
 //Fetching stuff
 import millify from "millify";
@@ -107,17 +106,19 @@ const VaultComp = ({
   //   totalDeposited,
   // } = useVaultUser(contractConfig, address ?? "");
 
-  const vaultState: any = useVaultState(BigNumber.from(epoch ?? 0).toNumber());
+  const vaultState: any = useVaultState(BigInt(epoch ?? 0));
 
   // MANAGEMENT BLOCK -
-  const lastManagementBlock = BigNumber.from(
-    vaultState.data?.lastManagementBlock ?? 0
-  ).toNumber();
+  const lastManagementBlock = Number(
+    vaultState.data?.[6] ?? 0
+  )
 
   // CURRENT CHAIN BLOCK - to calculate against management block
   const blockNumber = useBlockNumber({
     watch: true,
   });
+
+  const isManagementPhase = vaultState.data && Number(vaultState!.data[6]) > Number(blockNumber.data);
 
   return (
     <>
@@ -158,7 +159,7 @@ const VaultComp = ({
                     <ChartsModal />
                   </GridItem>
 
-                  {lastManagementBlock > (blockNumber.data ?? 0) ? (
+                  {isManagementPhase ? (
                     <></>
                   ) : (
                     <>
@@ -221,13 +222,13 @@ const VaultComp = ({
 
                   <Tooltip label={`${commify(currentAum)} USDC`}>
                     <Text variant="medium">
-                      <Number>{millify(+currentAum)}</Number>
+                      <NumberComp>{millify(+currentAum)}</NumberComp>
                     </Text>
                   </Tooltip>
                   <Text variant="medium"> / </Text>
                   <Tooltip label={`${commify(aumCap)} USDC`}>
                     <Text variant="medium">
-                      <Number>{millify(+aumCap)}</Number>
+                      <NumberComp>{millify(+aumCap)}</NumberComp>
                     </Text>
                   </Tooltip>
 
@@ -236,8 +237,8 @@ const VaultComp = ({
 
                 <Flex px="1rem">
                   <ProgressBar
-                    partial={parseInt(currentAum)}
-                    total={parseInt(aumCap)}
+                    partial={Number(currentAum)}
+                    total={Number(aumCap)}
                     remaining={pendingDeposit}
                   />
                 </Flex>
@@ -262,7 +263,7 @@ const VaultComp = ({
                   <Spacer />
                   <Tooltip label={`${commify(pendingDeposit)} USDC`}>
                     <Text variant="medium">
-                      <Number>{millify(+pendingDeposit)}</Number> USDC
+                      <NumberComp>{millify(+pendingDeposit)}</NumberComp> USDC
                     </Text>
                   </Tooltip>
                 </Flex>
