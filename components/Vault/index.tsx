@@ -29,7 +29,7 @@ export const Vault = ({
 
   // FETCHES PENDING DEPOSIT AMOUNT
   const pendingDeposit = formatUnits(
-    BigInt(vaultState!.data?.[1]) ?? BigInt(0),
+    BigInt(vaultState.data?.[1]) ?? BigInt(0),
     assetToken.data?.decimals!
   );
 
