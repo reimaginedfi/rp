@@ -1,6 +1,6 @@
 import { useAddRecentTransaction } from "@rainbow-me/rainbowkit";
-import { BigNumber, constants } from "ethers";
-import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
+import { commify  } from "ethers/lib/utils";
+import { formatUnits, parseUnits } from 'viem'
 import {
   erc20ABI,
   useAccount,
@@ -15,6 +15,8 @@ import { useContractConfig } from "../Vault/ContractContext";
 import { noSpecialCharacters } from "../utils/stringsAndNumbers";
 import { useEffect } from "react";
 import vaultContractInterface from "../../abi/vault.abi.json";
+
+import { truncate } from "../utils/stringsAndNumbers";
 
 // export const useVault = (addressOrName: string) => {
 //   const vault = useMemo(() => {
@@ -114,7 +116,7 @@ export const useVaultUser = (
     address: "0x00000008786611c72a00909bd8d398b1be195be3",
     abi: vaultContractInterface,
     functionName: "previewRedeem",
-    args: [user.data?.vaultShares],
+    args: [user.data?.[2]!],
   });
 
   const hasPendingDeposit: any = useContractRead({
@@ -149,7 +151,7 @@ export const useVaultUser = (
 
 export const useVaultDeposit = (
   contractConfig: ContractConfig,
-  depositAmount: string,
+  depositAmount: number,
   _for?: string
 ) => {
   const { assetToken } = useVaultMeta(contractConfig);
@@ -163,11 +165,16 @@ export const useVaultDeposit = (
     args: [address as `0x${string}` ?? ""],
     watch: true,
   });
+  // console.log(assetToken.data?.address)
+  // console.log(balance && Number(balance!.toString()))
 
   const balanceDisplay = formatUnits(
-    balance ?? 0,
+    balance ?? BigInt(0),
     assetToken.data?.decimals ?? 0
   );
+
+  // console.log(balanceDisplay)
+
 
   const { data: allowance } = useContractRead({
     address: assetToken.data?.address as `0x${string}` ?? "",
@@ -177,14 +184,10 @@ export const useVaultDeposit = (
     watch: true,
   });
 
-  const isApproved =
-    BigNumber.isBigNumber(allowance) &&
-    allowance.gte(
-      parseUnits(
-        noSpecialCharacters(depositAmount),
-        assetToken.data?.decimals
-      ) ?? "0"
-    );
+  const isApproved = allowance! >= parseUnits(noSpecialCharacters(depositAmount.toString()), assetToken.data?.decimals!);
+
+    // console.log(allowance && Number(allowance!.toString()))
+    // console.log(isApproved)
 
   const {
     data: approveData,
@@ -199,13 +202,13 @@ export const useVaultDeposit = (
     // mode: "recklesslyUnprepared",
     args: [
       contractConfig?.address,
-      BigInt(parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals).toNumber()),
+      BigInt(Math.trunc(depositAmount)),
     ],
     onSuccess(data: any, variables: any, context: any) {
       addRecentTransaction({
         hash: data?.hash,
         description: `Approve REFI Pro to spend ${commify(
-          noSpecialCharacters(depositAmount)
+          noSpecialCharacters(depositAmount.toString())
         )} USDC`,
         confirmations: 1,
       });
@@ -249,14 +252,14 @@ export const useVaultDeposit = (
     ...contractConfig,
     functionName: "deposit",
     args: [
-      parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals),
+      parseUnits(noSpecialCharacters(depositAmount.toString()), assetToken.data?.decimals!),
     ],
 
     onSuccess(data: any, variables: any, context: any) {
       addRecentTransaction({
         hash: data?.hash,
         description: `Deposit ${commify(
-          noSpecialCharacters(depositAmount)
+          noSpecialCharacters(depositAmount.toString())
         )} USDC`,
         confirmations: 1,
       });
@@ -275,7 +278,7 @@ export const useVaultDeposit = (
     ...contractConfig,
     functionName: "deposit",
     args: [
-      parseUnits(noSpecialCharacters(depositAmount), assetToken.data?.decimals),
+      parseUnits(noSpecialCharacters(depositAmount.toString()), assetToken.data?.decimals!),
       _for,
     ],
     // mode: "recklesslyUnprepared",
@@ -341,13 +344,19 @@ export const useVaultWithdraw = (
     data: unlockData,
   } = useContractWrite({  ...contractConfig,
     functionName: "unlock",
-    args: [parseUnits(unlockAmount ? unlockAmount : "0", 6)]});
+    args: [
+      BigInt(Math.trunc(unlockAmount ? Number(unlockAmount) : 0)),
+    ]});
 
   const withdrawable: any = useContractRead({
     ...contractConfig,
     functionName: "getWithdrawalAmount",
     args: [address ?? ""],
   });
+
+  // console.log("LETSGO", withdrawable)
+
+  // console.log(userHasPendingDeposit);
 
   // const { config: withdrawConfig } = usePrepareContractWrite({
   //   ...contractConfig,
@@ -411,7 +420,7 @@ export const useVaultWithdraw = (
   };
 };
 
-export const useVaultState = (epoch = 0) => {
+export const useVaultState = (epoch: bigint) => {
   const contractConfig = useContractConfig();
   const vaultState: any = useContractRead({
     ...contractConfig,

@@ -17,7 +17,8 @@ import {
   useDisclosure,
   useToast
 } from "@chakra-ui/react";
-import { commify, parseUnits } from "ethers/lib/utils";
+import { commify } from "ethers/lib/utils";
+import { parseUnits } from 'viem';
 import { useEffect, useState } from "react";
 import {
   useAccount,
@@ -75,7 +76,9 @@ export const DepositButton = () => {
     storeAssetStatus,
     depositData,
     approveData,
-  } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount);
+  } = useVaultDeposit(contractConfig, amount === "" ? 0 : Number(amount));
+
+  // console.log(Math.trunc(Number(amount)))
 
   const [depositSuccess, setDepositSuccess] = useState<string>("");
   const [approvalSuccess, setApprovalSuccess] = useState<string>("");
@@ -276,18 +279,6 @@ export const DepositButton = () => {
       `Minimum deposit is 25,000 USDC`) ||
     (+amount > +balanceDisplay && "Exceeds wallet balance") ||
     "";
-
-  // TODO: get this value from config contract
-  // ${
-  //   minimumDeposit.data
-  //     ? commify(
-  //         ~~formatUnits(
-  //           BigNumber.from(minimumDeposit!.data!._hex!).toNumber(),
-  //           6
-  //         )
-  //       )
-  //     : "25,000"
-  // }
 
   return (
     <>

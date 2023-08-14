@@ -18,7 +18,6 @@ import {
   AlertDescription,
   Button,
 } from "@chakra-ui/react";
-import { BigNumber } from "ethers";
 import { useAccount } from "wagmi";
 import { useVaultUser } from "../../hooks/useVault";
 import { useContractConfig, useWatchVault } from "../../Vault/ContractContext";
@@ -117,25 +116,25 @@ export default function UserStatsAccordion({
   // vault tokens balance: userResult.data[2]
   // total value: pd + vt * totalAssets / totalSupply
   const totalValue = isLoading
-    ? BigNumber.from(0)
+    ? 0
     : user.data?.[0] !== 0
-    ? BigNumber.from(user.data?.[2] ?? 0)
-        .mul(totalAssets.data!)
-        .div(totalSupply.data!)
-        .add(user.data?.[0] ?? 0)
-    : BigNumber.from(0);
+    ? (Number(user.data?.[2] ?? 0)
+         * Number(totalAssets.data!)
+         / Number(totalSupply.data!)
+         + Number(user.data?.[0] ?? 0))
+    : 0;
 
   const { factor } = useCompleteAum();
 
-  const unrealizedBN = totalValue.toNumber() * factor;
+  const unrealizedBN = totalValue * factor;
 
   const unrealized = (unrealizedBN / 1000000).toFixed(2);
 
-  const value = BigNumber.from(sharesValue?.data?._hex! ?? 0);
+  const value = Number(sharesValue?.data ?? 0);
 
-  const totalValueVT = (value.toNumber() * factor) / 1000000;
+  const totalValueVT = (value * factor) / 1000000;
 
-  const pnlVT = totalValueVT - value.toNumber() / 1000000;
+  const pnlVT = totalValueVT - value / 1000000;
 
   // console.log(unrealized, unrealizedBN, value, totalValueVT.toFixed(2), pnlVT);
   // console.log(formatUnits(totalValue, 6))
@@ -338,7 +337,7 @@ export default function UserStatsAccordion({
                       {isLoadingData ? (
                         <Spinner />
                       ) : unrealizedBN ? (
-                        (+unrealized - totalValue.toNumber() / 1000000).toFixed(
+                        (+unrealized - totalValue / 1000000).toFixed(
                           2
                         )
                       ) : (

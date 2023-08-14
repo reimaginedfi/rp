@@ -105,26 +105,6 @@ export const TokenInput: React.FC<TokenInputProps> = ({
           {errorMessage}
         </Text>
       )}
-      {/* {+amount > +balanceDisplay && (
-        <Text fontSize="xs" color={"red"}>
-          Exceeds wallet balance
-        </Text>
-      )}
-
-      {(!meetsMinimum || (!depositAllowed && amount !== "")) && (
-        <Text fontSize="xs" color={"red"}>
-          Minimum deposit is{" "}
-          {minimumDeposit.data
-            ? commify(
-                ~~formatUnits(
-                  BigNumber.from(minimumDeposit!.data!._hex!).toNumber(),
-                  6
-                )
-              )
-            : "25,000"}{" "}
-          USDC
-        </Text>
-      )} */}
     </Stack>
   );
 };

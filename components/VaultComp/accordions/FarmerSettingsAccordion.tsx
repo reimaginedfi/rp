@@ -36,8 +36,8 @@ import {
   useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
-import { BigNumber } from "ethers";
-import { commify, formatUnits, parseUnits } from "ethers/lib/utils";
+import { commify } from "ethers/lib/utils";
+import { formatUnits, parseUnits } from 'viem';
 import { truncate } from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useContractWrite } from "wagmi";
@@ -49,7 +49,7 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
   const { colorMode } = useColorMode();
   const meta = useVaultMeta(contractConfig);
 
-  console.log(meta);
+  // console.log(meta);
 
   const aumCapModal = useDisclosure();
   const startVaultModal = useDisclosure();
@@ -63,7 +63,7 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
     {
       ...contractConfig,
       functionName: "updateAumCap",
-      args: [parseUnits(aumCap ?? 0, meta.assetToken.data?.decimals)],
+      args: [parseUnits(aumCap ?? 0, meta.assetToken.data?.decimals!)],
       mode: "recklesslyUnprepared",
     }
   );
@@ -71,10 +71,8 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
   const minVaultCap = useMemo(() => {
     return truncate(
       formatUnits(
-        BigNumber.from(meta.aumCap.data ?? "0")
-          .sub(meta.maxDeposit.data ?? "0")
-          .toString() ?? "0",
-        meta.assetToken.data?.decimals
+       BigInt(Number(meta.aumCap.data ?? "0") - Number(meta.maxDeposit.data ?? "0")) ?? BigInt(0),
+        meta.assetToken.data?.decimals!
       )
     );
   }, [meta.aumCap.data, meta.assetToken.data, meta.maxDeposit.data]);
@@ -187,8 +185,8 @@ export const FarmerSettingsAccordion = ({ contractConfig }: any) => {
                 <Text variant="medium">
                   {commify(
                     formatUnits(
-                      meta.aumCap.data?.toString() ?? "0",
-                      meta.assetToken.data?.decimals
+                      BigInt(meta.aumCap.data?.toString() ?? "0"),
+                      meta.assetToken.data?.decimals!
                     )
                   )}{" "}
                   USDC

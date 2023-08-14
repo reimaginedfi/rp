@@ -68,7 +68,7 @@ export default function DepositForModal({
     storeAssetStatus,
     depositData,
     depositFor,
-  } = useVaultDeposit(contractConfig, amount === "" ? "0" : amount, _for);
+  } = useVaultDeposit(contractConfig, amount === "" ? 0 : Number(amount), _for);
 
   const { totalDeposited } = useVaultUser(address ?? "");
 

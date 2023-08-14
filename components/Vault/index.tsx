@@ -1,6 +1,6 @@
 import { useToast } from "@chakra-ui/react";
-import { BigNumber } from "ethers";
-import { commify, formatUnits } from "ethers/lib/utils";
+import { commify } from "ethers/lib/utils";
+import { formatUnits } from 'viem';
 import { useContractEvent, useContractRead } from "wagmi";
 
 import { ContractConfig } from "../../contracts";
@@ -23,14 +23,14 @@ export const Vault = ({
   const vaultState: any = useContractRead({
     ...contractConfig,
     functionName: "vaultStates",
-    args: [BigNumber.from(epoch.data ?? 0)],
+    args: [(epoch.data ?? 0)],
     watch: true,
   });
 
   // FETCHES PENDING DEPOSIT AMOUNT
   const pendingDeposit = formatUnits(
-    vaultState.data?.assetsToDeposit ?? 0,
-    assetToken.data?.decimals
+    BigInt(vaultState.data?.[1]) ?? BigInt(0),
+    assetToken.data?.decimals!
   );
 
   const toast = useToast();
@@ -51,13 +51,16 @@ export const Vault = ({
     },
   });
 
+  // console.log(aum.data)
+  // console.log(Number(epoch.data ?? 0) ?? 0)
+
   return (
     // <PortalContext.Provider value={portalRef}>
     <Contract.Provider value={contractConfig}>
       <VaultComp
         currentAum={formatUnits(aum.data ?? 0, assetToken.data?.decimals ?? 0)}
         aumCap={formatUnits(aumCap.data ?? 0, assetToken.data?.decimals ?? 0)}
-        epoch={BigNumber.from(epoch.data ?? 0).toNumber() ?? 0}
+        epoch={Number(epoch.data ?? 0) ?? 0}
         pendingDeposit={pendingDeposit}
         contractConfig={contractConfig}
       />

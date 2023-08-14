@@ -1,11 +1,10 @@
-import { BigNumber } from "ethers";
 import useSWR from "swr";
 import { useVaultMeta } from "../../hooks/useVault";
 import { useContractConfig } from "../ContractContext";
 import { VaultData } from "../../../pages";
 import { useContext } from "react";
 // import { truncate } from "../../utils/stringsAndNumbers";
-import { formatUnits } from "ethers/lib/utils";
+import { formatUnits } from "viem";
 
 export const usePreviewAum = () => {
   const swr = useSWR("/api/aum", async () => {
@@ -21,25 +20,23 @@ export const useCompleteAum = () => {
 
 const value = useContext(VaultData);
 
-
   // const previewAum = JSON.parse(_previewAum);
   const previewAum = value!.totalAum > value!.totalBalance ? value!.totalAum : value!.totalBalance;
   const contractConfig = useContractConfig();
   const { aum, epoch, aumCap } = useVaultMeta(contractConfig);
-  // const previewValue = BigNumber.from(previewAum.data?.total_usdc_value ?? 0);
-  const previewValue = BigNumber.from(Math.trunc(previewAum) ?? 0);
-  const aumValue = BigNumber.from(aum.data ?? 0);
+  const previewValue = Math.trunc(previewAum) ?? 0;
+  const aumValue: bigint = aum.data ?? BigInt(0);
 
-  const rawGains = !aumValue.isZero()
+  const rawGains = !(Number(aumValue) === 0)
     ? previewAum - +formatUnits(aumValue, 6)
-    : BigNumber.from(0);
+    : 0;
 
   // const isAumLoading = !aum.data || !previewAum.data;
 
-  const factor = aumValue.isZero()
+  const factor = (Number(aumValue) === 0)
     ? 1
     : previewAum / +formatUnits(aumValue, 6) +
-      previewValue.mod(aumValue).toNumber() / aumValue.toNumber();
+     (previewValue / Number(aumValue)) / Number(aumValue);
 
   return {
     aum,
