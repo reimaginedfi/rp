@@ -29,7 +29,7 @@ export const Vault = ({
 
   // FETCHES PENDING DEPOSIT AMOUNT
   const pendingDeposit = formatUnits(
-    BigInt(vaultState.data?.[1]) ?? BigInt(0),
+    vaultState!.data?.[1] ?? BigInt(0),
     assetToken.data?.decimals!
   );
 
@@ -58,9 +58,9 @@ export const Vault = ({
     // <PortalContext.Provider value={portalRef}>
     <Contract.Provider value={contractConfig}>
       <VaultComp
-        currentAum={formatUnits(aum.data ?? 0, assetToken.data?.decimals ?? 0)}
-        aumCap={formatUnits(aumCap.data ?? 0, assetToken.data?.decimals ?? 0)}
-        epoch={Number(epoch.data ?? 0) ?? 0}
+        currentAum={formatUnits(aum!.data ?? 0, assetToken.data?.decimals ?? 0)}
+        aumCap={formatUnits(aumCap!.data ?? 0, assetToken.data?.decimals ?? 0)}
+        epoch={Number(epoch!.data ?? 0) ?? 0}
         pendingDeposit={pendingDeposit}
         contractConfig={contractConfig}
       />

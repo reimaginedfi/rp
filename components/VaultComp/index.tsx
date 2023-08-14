@@ -293,12 +293,12 @@ const VaultComp = ({
 
                 {/* <UserStatsAccordion previewAum={(value as any).previewAum} /> */}
                 {/* <VaultAssetsAccordion /> */}
-                <VaultDetailsAccordion contractConfig={contractConfig} currentAum={currentAum} aumCap={aumCap} />
+                {/* <VaultDetailsAccordion contractConfig={contractConfig} currentAum={currentAum} aumCap={aumCap} /> */}
                 {farmer.data && farmer.data.toString() === address && (
                   <FarmerSettingsAccordion contractConfig={contractConfig} />
                  )}
                 {/* <VaultActivityAccordion contractConfig={contractConfig} /> */}
-                <VaultPerformanceAccordion />
+                {/* <VaultPerformanceAccordion /> */}
               </AccordionPanel>
             </>
           )}
