@@ -70,7 +70,7 @@ export default function DepositForModal({
     depositFor,
   } = useVaultDeposit(contractConfig, amount === "" ? 0 : Number(amount), _for);
 
-  const { totalDeposited } = useVaultUser(address ?? "");
+  const { totalDeposited } = useVaultUser(contractConfig, address ?? "");
 
   const toast = useToast();
 

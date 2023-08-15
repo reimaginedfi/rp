@@ -69,13 +69,13 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     claimData,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
 
-  const {hasPendingDeposit, updatePendingDeposit} = useVaultUser(address!);
+  const {hasPendingDeposit, updatePendingDeposit} = useVaultUser(contractConfig, address!);
 
   const withdrawalFeeAmount: any = useContractRead({
     ...contractConfig,
     functionName: "getWithdrawalFee",
     watch: true,
-    args: [withdrawable && withdrawable[0], address],
+    args: [user.data?.[3], address],
   });
 
   const withdrawalFee = useContractRead({
@@ -216,9 +216,14 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     Number(user?.data?.[3]) > 0 && !withdrawActive;
 
   const exceedsHoldings =
-    user?.data && +amount > Number(user.data?.[2])
+    user?.data && +amount > Number(user.data?.[2]);
 
-  const needToClaim =  Number(user.data?.[2]) === 0 && hasPendingDeposit.data
+  const needToClaim =  Number(user.data?.[2]) === 0 && hasPendingDeposit.data;
+
+  console.log('fee', withdrawalFeeAmount)
+  console.log('withdrawable', Number(withdrawable.data?.[0]))
+  console.log('epoch', Number(user.data?.[4]))
+  console.log('shares', Number(user.data?.[3]))
   
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
@@ -413,7 +418,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                 <Button
                   w="100%"
                   disabled={
-                    Number(user.data?.[2]) === 0 || exceedsHoldings || hasUnlockedShares
+                    Number(formatUnits(user.data?.[2], 6)) === 0 || exceedsHoldings || hasUnlockedShares
                   }
                   isLoading={
                     unlockingShares ||
@@ -448,8 +453,9 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                           alignSelf="center"
                         >
                           {commify(
-                            truncate(formatUnits(withdrawable![0], 6), 2)
-                          )}{" "}
+                            truncate(
+                             formatUnits(withdrawable.data?.[0] !== 0 ? withdrawable.data?.[0] : user.data?.[3], 6)
+                             , 2))}{" "}
                           USDC
                         </Text>
                       </Flex>
@@ -463,7 +469,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         <Flex alignItems="center" gap={2}>
                           <Text>
                             {withdrawalFeeAmount.data
-                              ? +formatUnits(withdrawalFeeAmount?.data!, 6)
+                              ? withdrawalFeeAmount?.data!
                               : 0}{" "}
                             USDC
                           </Text>
@@ -485,11 +491,11 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         <Flex alignItems="center" gap={2}>
                           <Text>
                             {" "}
-                            {withdrawable &&
+                            {/* {withdrawable &&
                               commify(
                                 truncate(
                                   (
-                                    +formatUnits(withdrawable![0], 6) -
+                                    Number(withdrawable![0]) -
                                     (withdrawalFeeAmount.data
                                       ? +formatUnits(
                                           withdrawalFeeAmount?.data!,
@@ -499,7 +505,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                                   ).toString(),
                                   2
                                 )
-                              )}{" "}
+                              )}{" "} */}
+                              {Number(withdrawable![0] - withdrawalFeeAmount ? withdrawalFeeAmount.data : 0)}{" "}
                             USDC
                           </Text>
                           <Tooltip
@@ -523,10 +530,10 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         variant="primary"
                       >
                         Withdraw{" "}
-                        {withdrawable &&
-                          commify(
-                            truncate(formatUnits(withdrawable![0], 6), 2)
-                          )}{" "}
+                        {commify(
+                            truncate(
+                              Number(withdrawable.data?.[0]) !== 0 ? Number(withdrawable.data?.[0]).toString() : Number(user.data?.[3]).toString()
+                             , 2))}{" "}
                         USDC
                       </Button>
                     </Stack>
