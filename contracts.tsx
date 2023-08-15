@@ -40,7 +40,7 @@ export const vaults: ContractsMap[] = [
     {
       id: 1,
       name: "USDC RP Vault",
-      address: "0x63bBB71B68c76B78243d0a4AA463D34536788A15",
+      address: "0x00000008786611c72a00909bd8d398b1be195be3",
       abi: vaultContractInterface,
     },
     // {
