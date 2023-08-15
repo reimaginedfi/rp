@@ -24,7 +24,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { commify } from "ethers/lib/utils";
-import { parseUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import { useState } from "react";
 import {
   useContractRead,
@@ -54,7 +54,7 @@ export const EndEpochModal = ({
     args: [aumBN],
   });
 
-  // console.log(preview)
+  console.log(preview)
 
   const progressEpoch = useContractWrite({
     ...contractConfig,
@@ -98,6 +98,8 @@ export const EndEpochModal = ({
       }
     },
   });
+
+  // console.log(formatUnits(preview.data?.[1], 6))
 
   return (
     <>
@@ -147,10 +149,10 @@ export const EndEpochModal = ({
                 {preview.data && (
                   <AlertDescription>
                     This will send{" "}
-                    {                      truncate(commify(
-                          Number(preview.data?.[1]).toString()), 2
-                    )}{" "}
-                    USDC {preview.data?.[2] ? "to" : "from"}{" "}
+                    {                      truncate(commify( 
+                          formatUnits(preview.data?.[1], 6)), 2)}
+                    {" "}
+                    USDC {preview.data?.[0] ? "to" : "from"}{" "}
                     farmer address. You have enough balance to end the epoch.
                   </AlertDescription>
                 )}

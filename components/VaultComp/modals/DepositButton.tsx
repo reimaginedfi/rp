@@ -78,7 +78,7 @@ export const DepositButton = () => {
     approveData,
   } = useVaultDeposit(contractConfig, amount === "" ? 0 : Number(amount));
 
-  // console.log(Math.trunc(Number(amount)))
+  // console.log(Number(amount))
 
   const [depositSuccess, setDepositSuccess] = useState<string>("");
   const [approvalSuccess, setApprovalSuccess] = useState<string>("");
@@ -126,8 +126,6 @@ export const DepositButton = () => {
       setContractConfig(contract);
     });
   }, [chain, vaults]);
-
-  // const { totalDeposited } = useVaultUser(address ?? "");
 
   useEffect(() => {
     console.log("storeAssetError: ", storeAssetError);

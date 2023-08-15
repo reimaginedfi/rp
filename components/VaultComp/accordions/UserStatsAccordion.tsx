@@ -43,9 +43,9 @@ export default function UserStatsAccordion({
     hasPendingDeposit,
     updatePendingDeposit,
     totalDeposited,
-  } = useVaultUser(address ?? "");
+  } = useVaultUser(contractConfig, address ?? "");
 
-  // console.log(user)
+  console.log(user)
   // console.log(sharesValue)
   // console.log(hasPendingDeposit)
   // console.log(updatePendingDeposit)

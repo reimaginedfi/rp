@@ -97,13 +97,13 @@ type User = {
 }
 
 export const useVaultUser = (
-  // contractConfig: ContractConfig,
+  contractConfig: ContractConfig,
   vaultUserAddress: string
 ) => {
   // console.log(contractConfig)
 
   const user: any = useContractRead({
-    address: "0x00000008786611c72a00909bd8d398b1be195be3",
+    address: contractConfig?.address,
     abi: vaultContractInterface,
     functionName: "vaultUsers",
     watch: true,
@@ -113,14 +113,14 @@ export const useVaultUser = (
   // console.log(user)
 
   const sharesValue: any = useContractRead({
-    address: "0x00000008786611c72a00909bd8d398b1be195be3",
+    address: contractConfig?.address,
     abi: vaultContractInterface,
     functionName: "previewRedeem",
     args: [user.data?.[2]!],
   });
 
   const hasPendingDeposit: any = useContractRead({
-    address: "0x00000008786611c72a00909bd8d398b1be195be3",
+    address: contractConfig?.address,
     abi: vaultContractInterface,
     functionName: "userHasPendingDeposit",
     args: [vaultUserAddress],
@@ -128,7 +128,7 @@ export const useVaultUser = (
   });
 
   const updatePendingDeposit = useContractWrite({
-    address: "0x00000008786611c72a00909bd8d398b1be195be3",
+    address: contractConfig?.address,
     abi: vaultContractInterface,
     functionName: "updatePendingDepositState",
     args: [vaultUserAddress],
@@ -136,6 +136,14 @@ export const useVaultUser = (
   });
 
   const totalDeposited = user.data && Number(user.data[0]) === 0 ? Number(user.data[0]) : 0;
+
+  const hasPendingWithdrawal: any = useContractRead({
+    address: contractConfig?.address,
+    abi: vaultContractInterface,
+    functionName: "userHasPendingWithdrawal",
+    args: [vaultUserAddress],
+    watch: true,
+  });
 
   return {
     user,
@@ -145,7 +153,8 @@ export const useVaultUser = (
       hasPendingDeposit.data || 
       Number(user.data?.[1]) === 0 ? 0 : Number(user.data?.[1]),
     totalDeposited,
-    updatePendingDeposit
+    updatePendingDeposit,
+    hasPendingWithdrawal
   };
 };
 
@@ -175,7 +184,6 @@ export const useVaultDeposit = (
 
   // console.log(balanceDisplay)
 
-
   const { data: allowance } = useContractRead({
     address: assetToken.data?.address as `0x${string}` ?? "",
     abi: erc20ABI,
@@ -184,10 +192,11 @@ export const useVaultDeposit = (
     watch: true,
   });
 
-  const isApproved = allowance! >= parseUnits(noSpecialCharacters(depositAmount.toString()), assetToken.data?.decimals!);
+  const isApproved = Number(allowance!) >= Number(parseUnits(noSpecialCharacters(depositAmount.toString()), assetToken.data?.decimals!));
 
-    // console.log(allowance && Number(allowance!.toString()))
-    // console.log(isApproved)
+    // console.log(assetToken.data?.address)
+    // console.log(Number(allowance));
+    // console.log(Number(parseUnits(noSpecialCharacters(depositAmount.toString()), assetToken.data?.decimals!)))
 
   const {
     data: approveData,
@@ -202,7 +211,7 @@ export const useVaultDeposit = (
     // mode: "recklesslyUnprepared",
     args: [
       contractConfig?.address,
-      BigInt(Math.trunc(depositAmount)),
+      parseUnits(noSpecialCharacters(depositAmount.toString()), assetToken.data?.decimals!),
     ],
     onSuccess(data: any, variables: any, context: any) {
       addRecentTransaction({
@@ -317,14 +326,12 @@ export const useVaultWithdraw = (
   const { address } = useAccount();
   const { assetToken } = useVaultMeta(contractConfig);
 
-  const userHasPendingRedeem: any = useContractRead({
+  const hasPendingWithdrawal: any = useContractRead({
     ...contractConfig,
     functionName: "userHasPendingWithdrawal",
     watch: true,
     args: [address ?? ""],
   });
-
-  const hasPendingWithdrawal = userHasPendingRedeem.data;
 
   const userHasPendingDeposit: any = useContractRead({
     ...contractConfig,
@@ -333,7 +340,7 @@ export const useVaultWithdraw = (
     args: [address ?? ""],
   });
 
-  const { user } = useVaultUser(address ?? "");
+  const { user } = useVaultUser(contractConfig, address ?? "");
 
   const {
     write: unlockShares,
@@ -414,7 +421,6 @@ export const useVaultWithdraw = (
     claimStatus,
     unlockingStatus,
     userHasPendingDeposit,
-    userHasPendingRedeem,
     claimData,
     unlockData,
   };
