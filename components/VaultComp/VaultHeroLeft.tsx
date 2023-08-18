@@ -47,6 +47,7 @@ export const VaultHeroLeft = () => {
 
   const isManagementPhase = vaultState.data && Number(vaultState!.data[6]) > Number(blockNumber.data);
 
+  // console.log("YES", previewValue)
 
   useEffect(() => {
     const storeData = async () => {
