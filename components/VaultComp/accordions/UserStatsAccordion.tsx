@@ -142,7 +142,7 @@ export default function UserStatsAccordion({
   // console.log(factor)
   // console.log(totalValue.toNumber())
 
-  console.log('USERSSS', hasPendingDeposit)
+  // console.log('USERSSS', hasPendingDeposit)
 
   return (
     <Accordion borderRadius="1rem" mt="1rem" allowToggle border="none">
