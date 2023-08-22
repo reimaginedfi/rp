@@ -34,7 +34,7 @@ const useVaultTruncated = () => {
     : formatUnits(aumCapResult.data!, assetTokenResult.data?.decimals!);
   const epoch = isLoading ? 0 : Number(epochResult.data);
 
-  console.log("letsgo", Number(epochResult.data))
+  // console.log("letsgo", Number(epochResult.data))
   // console.log(epochResult)
 
   return {
