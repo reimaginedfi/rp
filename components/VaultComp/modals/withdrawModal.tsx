@@ -69,6 +69,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     claimData,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
 
+  console.log('pending, hasPendingWithdrawal', hasPendingWithdrawal)
+
   const {hasPendingDeposit, updatePendingDeposit} = useVaultUser(contractConfig, address!);
 
   const withdrawalFeeAmount: any = useContractRead({
@@ -220,10 +222,12 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
 
   const needToClaim =  Number(user.data?.[2]) === 0 && hasPendingDeposit.data;
 
-  console.log('fee', withdrawalFeeAmount)
-  console.log('withdrawable', Number(withdrawable.data?.[0]))
-  console.log('epoch', Number(user.data?.[4]))
-  console.log('shares', Number(user.data?.[3]))
+  // console.log('fee', withdrawalFeeAmount)
+  // console.log('withdrawable', Number(withdrawable.data?.[0]))
+  // console.log('epoch', Number(user.data?.[4]))
+  // console.log('shares', Number(user.data?.[3]))
+
+  // console.log('user', user)
   
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
@@ -332,8 +336,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                       </NumberInput>
                     </Flex>
                   </Flex>
-                  <Flex justify={"space-between"} w="full">
-                    <VStack w="full" alignSelf="start">
+                  <Flex justify={"space-between"} w="full" >
+                    <VStack w="full" alignSelf="start" mb="1rem">
                       <Text
                         variant="extralarge"
                         fontSize="medium"
@@ -341,7 +345,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         alignSelf="start"
                       >
                         <b>VT Tokens:</b>{" "}
-                        {formatUnits(user.data?.[2] ?? 0, 6)} VT{" "}
+                        {truncate(commify(formatUnits(user.data?.[2] ?? 0, 6)), 2)} VT{" "}
                         <Tooltip
                           hasArrow
                           label="Total VT token balance (locked and unlocked tokens)."
@@ -357,7 +361,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         alignSelf="start"
                       >
                         Unlocked Balance:{" "}
-                        {formatUnits(user.data?.[3] ?? 0, 6)} VT{" "}
+                        {commify(formatUnits(user.data?.[3] ?? 0, 0))} VT{" "}
                         <Tooltip
                           hasArrow
                           label="Balance available for withdrawal at epoch below."
@@ -414,11 +418,11 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                 </Alert>
               )}
 
-              {!hasPendingWithdrawal && (
+              {!hasUnlockedShares && Number(formatUnits(user!.data?.[2] ?? 0, 6)) >= 1 ? (
                 <Button
                   w="100%"
                   disabled={
-                    Number(formatUnits(user.data?.[2], 6)) === 0 || exceedsHoldings || hasUnlockedShares
+                    Number(formatUnits(user.data?.[2] ?? 0, 6)) === 0 || exceedsHoldings || hasUnlockedShares
                   }
                   isLoading={
                     unlockingShares ||
@@ -431,7 +435,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                 >
                   Unlock {commify(amount!)} VT
                 </Button>
-              )}
+              ): null}
 
               <Stack spacing={2}>
                 {withdrawable &&

@@ -10,7 +10,7 @@ import {
   useToken,
   useWaitForTransaction,
 } from "wagmi";
-import { ContractConfig } from "../../contracts";
+import { ContractsMap } from "../../contracts";
 import { useContractConfig } from "../Vault/ContractContext";
 import { noSpecialCharacters } from "../utils/stringsAndNumbers";
 import { useEffect } from "react";
@@ -28,9 +28,9 @@ import { truncate } from "../utils/stringsAndNumbers";
 //   return { vault };
 // };
 
-export const useVaultMeta = (contractConfig: ContractConfig) => {
+export const useVaultMeta = (contractConfig: ContractsMap) => {
   const asset: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "asset",
   });
 
@@ -38,39 +38,39 @@ export const useVaultMeta = (contractConfig: ContractConfig) => {
     address: asset.data?.toString() as `0x${string}`,
   });
   const aum: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "aum",
     watch: true,
   });
   const epoch: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "epoch",
     watch: true,
   });
   const farmer: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "farmer",
   });
 
   const aumCap: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "aumCap",
     watch: true,
   });
 
   const vaultName: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "name",
   });
 
   const storedFee: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "storedFee",
     watch: true,
   });
 
   const maxDeposit: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "getMaxDeposit",
     watch: true,
   });
@@ -97,7 +97,7 @@ type User = {
 }
 
 export const useVaultUser = (
-  contractConfig: ContractConfig,
+  contractConfig: ContractsMap,
   vaultUserAddress: string
 ) => {
   // console.log(contractConfig)
@@ -159,7 +159,7 @@ export const useVaultUser = (
 };
 
 export const useVaultDeposit = (
-  contractConfig: ContractConfig,
+  contractConfig: ContractsMap,
   depositAmount: number,
   _for?: string
 ) => {
@@ -188,7 +188,7 @@ export const useVaultDeposit = (
     address: assetToken.data?.address as `0x${string}` ?? "",
     abi: erc20ABI,
     functionName: "allowance",
-    args: [address as `0x${string}`, contractConfig?.address],
+    args: [address as `0x${string}`, contractConfig?.address as `0x${string}`],
     watch: true,
   });
 
@@ -210,7 +210,7 @@ export const useVaultDeposit = (
     functionName: "approve",
     // mode: "recklesslyUnprepared",
     args: [
-      contractConfig?.address,
+      contractConfig?.address as `0x${string}` ?? "",
       parseUnits(noSpecialCharacters(depositAmount.toString()), assetToken.data?.decimals!),
     ],
     onSuccess(data: any, variables: any, context: any) {
@@ -245,7 +245,7 @@ export const useVaultDeposit = (
     address: assetToken.data?.address as `0x${string}` ?? "",
     abi: erc20ABI,
     functionName: "approve",
-    args: [contractConfig?.address, maxUint256],
+    args: [contractConfig?.address as `0x${string}`, maxUint256],
     // mode: "recklesslyUnprepared",
   });
 
@@ -258,7 +258,7 @@ export const useVaultDeposit = (
     status,
     error,
   } = useContractWrite({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "deposit",
     args: [
       parseUnits(noSpecialCharacters(depositAmount.toString()), assetToken.data?.decimals!),
@@ -284,7 +284,7 @@ export const useVaultDeposit = (
   });
 
   const depositFor = useContractWrite({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "deposit",
     args: [
       parseUnits(noSpecialCharacters(depositAmount.toString()), assetToken.data?.decimals!),
@@ -317,7 +317,7 @@ export const useVaultDeposit = (
 };
 
 export const useVaultWithdraw = (
-  contractConfig: ContractConfig,
+  contractConfig: ContractsMap,
   unlockAmount: string
 ) => {
   useEffect(() => {
@@ -327,14 +327,14 @@ export const useVaultWithdraw = (
   const { assetToken } = useVaultMeta(contractConfig);
 
   const hasPendingWithdrawal: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "userHasPendingWithdrawal",
     watch: true,
     args: [address ?? ""],
   });
 
   const userHasPendingDeposit: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "userHasPendingDeposit",
     watch: true,
     args: [address ?? ""],
@@ -349,14 +349,14 @@ export const useVaultWithdraw = (
     isSuccess: unlockingSuccess,
     status: unlockingStatus,
     data: unlockData,
-  } = useContractWrite({  ...contractConfig,
+  } = useContractWrite({  ...contractConfig as any,
     functionName: "unlock",
     args: [
       BigInt(Math.trunc(unlockAmount ? Number(unlockAmount) : 0)),
     ]});
 
   const withdrawable: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "getWithdrawalAmount",
     args: [address ?? ""],
   });
@@ -381,7 +381,7 @@ export const useVaultWithdraw = (
     status: claimStatus,
     data: claimData,
   } = useContractWrite({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "withdraw",
     gas: BigInt(500000),
     // mode: "recklesslyUnprepared",
@@ -429,7 +429,7 @@ export const useVaultWithdraw = (
 export const useVaultState = (epoch: bigint) => {
   const contractConfig = useContractConfig();
   const vaultState: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "vaultStates",
     args: [epoch],
   });

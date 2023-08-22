@@ -29,7 +29,7 @@ import { InfoOutlineIcon } from "@chakra-ui/icons";
 //Tools
 import { useAccount, useContractRead, useBlockNumber } from "wagmi";
 import dynamic from "next/dynamic";
-import { ContractConfig } from "../../contracts";
+import { ContractsMap } from "../../contracts";
 import { commify } from "ethers/lib/utils";
 import { NumberComp } from "../Number";
 
@@ -61,7 +61,7 @@ type VaultProps = {
   aumCap: string;
   epoch: number | undefined;
   pendingDeposit: string;
-  contractConfig: ContractConfig;
+  contractConfig: ContractsMap;
 };
 
 const FarmerSettingsAccordion = dynamic(

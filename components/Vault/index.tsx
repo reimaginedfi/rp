@@ -3,7 +3,7 @@ import { commify } from "ethers/lib/utils";
 import { formatUnits } from 'viem';
 import { useContractEvent, useContractRead } from "wagmi";
 
-import { ContractConfig } from "../../contracts";
+import { ContractsMap } from "../../contracts";
 import { useVaultMeta } from "../hooks/useVault";
 import { truncate } from "../utils/stringsAndNumbers";
 import VaultComp from "../VaultComp";
@@ -12,7 +12,7 @@ import { Contract } from "./ContractContext";
 export const Vault = ({
   contractConfig
 }: {
-  contractConfig: ContractConfig;
+  contractConfig: ContractsMap;
 }) => {
 
   //VAULT META DATA - used to display vault info
@@ -21,7 +21,7 @@ export const Vault = ({
 
   //VAULT CONTRACT - fetches current vault state
   const vaultState: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "vaultStates",
     args: [(epoch.data ?? 0)],
     watch: true,
@@ -35,7 +35,7 @@ export const Vault = ({
 
   const toast = useToast();
   useContractEvent({
-    ...contractConfig,
+    ...contractConfig as any,
     eventName: "UserDeposit",
     listener: (event) => {
       console.log(event);
@@ -43,7 +43,7 @@ export const Vault = ({
         status: "success",
         title: "Someone just deposited",
         description: `Address ${event[0]} deposited ${commify(
-          truncate(formatUnits(event[1], 6), 2)
+          truncate(formatUnits(event[1] as any, 6), 2)
         )} USDC`,
         duration: 9000,
         isClosable: true,

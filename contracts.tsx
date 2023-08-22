@@ -4,13 +4,14 @@ import type { GetContractArgs } from "@wagmi/core";
 import vaultContractInterface from "./abi/vault.abi.json";
 import configContractInterface from "./abi/vaultconfig.abi.json";
 
-export type ContractConfig = GetContractArgs;
+// export type ContractConfig = GetContractArgs;
 
-interface ContractsMap {
+export interface ContractsMap {
   id: number;
   name?: string;
-  address: string;
+  address: `0x${string}`;
   abi: any;
+  token?: `0x${string}`;
 }
 
 // export const vaults: ContractsMap[] = [
@@ -42,12 +43,14 @@ export const vaults: ContractsMap[] = [
       name: "USDC RP Vault",
       address: "0x00000008786611c72a00909bd8d398b1be195be3",
       abi: vaultContractInterface,
+      token: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     },
     // {
     //   id: 2,
     //   name: "Mock USDC RP Vault",
-    //   addressOrName: "0x63bBB71B68c76B78243d0a4AA463D34536788A15",
-    //   contractInterface: vaultContractInterface.abi,
+    //   address: "0x63bBB71B68c76B78243d0a4AA463D34536788A15",
+    //   abi: vaultContractInterface,
+    //   token: "0x24eB7F255a9FE448940234bF74d95C8925ebd753",
     // }
   ]
 

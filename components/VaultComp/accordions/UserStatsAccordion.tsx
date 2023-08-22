@@ -24,6 +24,7 @@ import { useContractConfig, useWatchVault } from "../../Vault/ContractContext";
 import { useCompleteAum } from "../../Vault/hooks/usePreviewAum";
 import { useVaultAssetToken } from "../../Vault/hooks/useVaultAsset";
 import { commify } from "ethers/lib/utils";
+import { formatUnits } from 'viem'
 import { truncate } from "../../utils/stringsAndNumbers";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
@@ -45,7 +46,7 @@ export default function UserStatsAccordion({
     totalDeposited,
   } = useVaultUser(contractConfig, address ?? "");
 
-  console.log(user)
+  // console.log(user)
   // console.log(sharesValue)
   // console.log(hasPendingDeposit)
   // console.log(updatePendingDeposit)
@@ -64,7 +65,7 @@ export default function UserStatsAccordion({
     const txnDetails = async () => {
       setIsLoadingData(true);
       const data = await fetch(
-        `https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&address=${address}&page=1&offset=100&startblock=0&endblock=27025780&sort=desc&apikey=39AQRIGRBAERBCDM7TUGXNYJN6MYXZ34BR`,
+        `https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=${contractConfig.token}&address=${address}&page=1&offset=100&startblock=0&endblock=27025780&sort=desc&apikey=39AQRIGRBAERBCDM7TUGXNYJN6MYXZ34BR`,
         {
           method: "GET",
           headers: {
@@ -80,14 +81,14 @@ export default function UserStatsAccordion({
       await result.result.forEach((txn: any) => {
           if (
             txn.to.toString().toLowerCase() ==
-            "0x00000008786611c72a00909bd8d398b1be195be3".toLowerCase()
+            contractConfig.address.toLowerCase()
           ) {
             depositedUSDC += +txn.value / 1000000;
           }
 
         if (
           txn.from.toString().toLowerCase() ==
-          "0x00000008786611c72a00909bd8d398b1be195be3".toLowerCase()
+          contractConfig.address.toLowerCase()
         ) {
           withdrawnUSDC += +txn.value / 1000000;
         }
@@ -140,6 +141,8 @@ export default function UserStatsAccordion({
   // console.log(formatUnits(totalValue, 6))
   // console.log(factor)
   // console.log(totalValue.toNumber())
+
+  console.log('USERSSS', hasPendingDeposit)
 
   return (
     <Accordion borderRadius="1rem" mt="1rem" allowToggle border="none">
@@ -276,7 +279,7 @@ export default function UserStatsAccordion({
                       ) : (
                         user.data &&
                           truncate(
-                            commify(user?.data[3])!.toString(),
+                            commify(formatUnits(user?.data[2], 6))!.toString(),
                             2
                           )
                         )
@@ -388,7 +391,7 @@ export default function UserStatsAccordion({
                       ) : unrealizedBN ? (
                         commify(unrealized)
                       ) : (
-                        totalValueVT && commify(totalValueVT.toFixed(2))
+                        totalValueVT && +commify(totalValueVT.toFixed(2))
                       )}
                     </Heading>
                     <Text textAlign={"center"} mt={-2} mb={4}>

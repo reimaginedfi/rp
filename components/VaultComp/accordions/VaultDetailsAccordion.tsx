@@ -19,12 +19,12 @@ import { truncate } from "../../utils/stringsAndNumbers";
 import { useContractRead } from "wagmi";
 import { useVaultMeta } from "../../hooks/useVault";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { ContractConfig } from "../../../contracts";
+import { ContractsMap } from "../../../contracts";
 
 type VaultProps = {
   currentAum: string;
   aumCap: string;
-  contractConfig: ContractConfig;
+  contractConfig: ContractsMap;
 };
 
 export default function VaultDetailsAccordion({
@@ -34,7 +34,7 @@ export default function VaultDetailsAccordion({
   const { colorMode } = useColorMode();
 
   const feeReceiver: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "feeDistributor",
     watch: true,
   });

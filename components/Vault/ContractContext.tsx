@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import { useContractRead } from "wagmi";
-import { ContractConfig } from "../../contracts";
+import { ContractsMap } from "../../contracts";
 
 export type ReadVaultOpts = Omit<
   Parameters<typeof useContractRead>[0],
@@ -11,7 +11,7 @@ export type WatchVaultOpts = Omit<
   "functionName" | "addressOrName" | "contractInterface" | "watch"
 >;
 
-export const Contract = createContext(null as ContractConfig | null);
+export const Contract = createContext(null as ContractsMap | null);
 
 export const useContractConfig = () => {
   const contractConfig = useContext(Contract);
@@ -24,7 +24,7 @@ export const useContractConfig = () => {
 export const useReadVault = (functionName: string, opts?: ReadVaultOpts) => {
   const contractConfig = useContractConfig();
   const readResult: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     ...opts,
     functionName,
   });
@@ -34,7 +34,7 @@ export const useReadVault = (functionName: string, opts?: ReadVaultOpts) => {
 export const useWatchVault = (functionName: string, opts?: WatchVaultOpts) => {
   const contractConfig = useContractConfig();
   const readResult: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     ...opts,
     functionName,
     watch: true,

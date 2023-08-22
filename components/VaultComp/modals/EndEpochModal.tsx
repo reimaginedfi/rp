@@ -31,7 +31,7 @@ import {
   useContractWrite,
   useWaitForTransaction,
 } from "wagmi";
-import { ContractConfig } from "../../../contracts";
+import { ContractsMap } from "../../../contracts";
 import { useVaultMeta } from "../../hooks/useVault";
 import { truncate } from "../../utils/stringsAndNumbers";
 import getErrorMessage from "../../utils/errors";
@@ -42,14 +42,14 @@ export const EndEpochModal = ({
   contractConfig,
 }: {
   disclosure: UseDisclosureReturn;
-  contractConfig: ContractConfig;
+  contractConfig: ContractsMap;
 }) => {
   const toast = useToast();
   const { epoch } = useVaultMeta(contractConfig);
   const [aumString, setAumString] = useState("0.0");
   const aumBN = parseUnits(Math.trunc(Number(aumString)).toString(), 6);
   const preview: any = useContractRead({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "previewProgress",
     args: [aumBN],
   });
@@ -57,7 +57,7 @@ export const EndEpochModal = ({
   console.log(preview)
 
   const progressEpoch = useContractWrite({
-    ...contractConfig,
+    ...contractConfig as any,
     functionName: "progressEpoch",
     args: [aumBN],
     onMutate: (variables: any) => {
