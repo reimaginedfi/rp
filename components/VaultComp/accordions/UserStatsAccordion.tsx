@@ -37,6 +37,7 @@ export default function UserStatsAccordion({
 }) {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
+  // const address = "0xA216208daB8AEbA66080129Db856F4A84F0f809a"
   const contractConfig = useContractConfig();
   const {
     user,
@@ -65,7 +66,7 @@ export default function UserStatsAccordion({
     const txnDetails = async () => {
       setIsLoadingData(true);
       const data = await fetch(
-        `https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=${contractConfig.token}&address=${address}&page=1&offset=100&startblock=0&endblock=27025780&sort=desc&apikey=39AQRIGRBAERBCDM7TUGXNYJN6MYXZ34BR`,
+        `https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=${contractConfig.token}&address=${address}&page=1&offset=500&startblock=0&endblock=27025780&sort=desc&apikey=39AQRIGRBAERBCDM7TUGXNYJN6MYXZ34BR`,
         {
           method: "GET",
           headers: {
@@ -83,6 +84,8 @@ export default function UserStatsAccordion({
             txn.to.toString().toLowerCase() ==
             contractConfig.address.toLowerCase()
           ) {
+            // console.log('happenin13231323213123g')
+
             depositedUSDC += +txn.value / 1000000;
           }
 
@@ -93,7 +96,6 @@ export default function UserStatsAccordion({
           withdrawnUSDC += +txn.value / 1000000;
         }
       });
-
       setDespositedUsdc(depositedUSDC);
       setWithdrawnUsdc(withdrawnUSDC);
       setIsLoadingData(false);
@@ -144,6 +146,9 @@ export default function UserStatsAccordion({
 
   // console.log('USERSSS', hasPendingDeposit)
 
+  // console.log('USERSSS', totalDeposited)
+  // console.log('2222', depositedUsdc)
+
   return (
     <Accordion borderRadius="1rem" mt="1rem" allowToggle border="none">
       <AccordionItem border="none">
@@ -167,7 +172,7 @@ export default function UserStatsAccordion({
           borderRadius="1rem"
           bg={accordionBg}
         >
-          {!isLoadingData && depositedUsdc === 0 ? (
+          {!isLoadingData && depositedUsdc === 0 && +formatUnits(user.data[2], 6) < 1 ? (
             <Flex m="auto" w="75%" direction="column">
               <Text my="1rem" variant={"large"} textAlign="center">
                 You have not made a deposit yet
@@ -220,7 +225,7 @@ export default function UserStatsAccordion({
                           2
                         )
                       ) : (
-                        commify(depositedUsdc)
+                        truncate(commify(depositedUsdc), 2)
                       )}
                     </Heading>
                     <Text textAlign={"center"} mt={-2} mb={4}>
