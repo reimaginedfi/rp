@@ -47,14 +47,14 @@ export const EndEpochModal = ({
   const toast = useToast();
   const { epoch } = useVaultMeta(contractConfig);
   const [aumString, setAumString] = useState("0.0");
-  const aumBN = parseUnits(Math.trunc(Number(aumString)).toString(), 6);
+  const aumBN = parseUnits(Number(aumString).toString(), 6);
   const preview: any = useContractRead({
     ...contractConfig as any,
     functionName: "previewProgress",
     args: [aumBN],
   });
 
-  console.log(preview)
+  console.log(preview.data)
 
   const progressEpoch = useContractWrite({
     ...contractConfig as any,
@@ -150,7 +150,7 @@ export const EndEpochModal = ({
                   <AlertDescription>
                     This will send{" "}
                     {                      truncate(commify( 
-                          formatUnits(preview.data?.[1], 6)), 2)}
+                          Number(preview.data?.[1])), 2)}
                     {" "}
                     USDC {preview.data?.[0] ? "to" : "from"}{" "}
                     farmer address. You have enough balance to end the epoch.
