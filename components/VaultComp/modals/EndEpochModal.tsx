@@ -99,7 +99,7 @@ export const EndEpochModal = ({
     },
   });
 
-  console.log(formatUnits(preview!.data?.[1], 6))
+  // console.log(formatUnits(preview!.data?.[1], 6))
 
   return (
     <>
