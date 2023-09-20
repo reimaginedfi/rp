@@ -99,7 +99,7 @@ export const EndEpochModal = ({
     },
   });
 
-  // console.log(Number(preview!.data?.[1]))
+  console.log(formatUnits(preview!.data?.[1], 6))
 
   return (
     <>
@@ -150,7 +150,7 @@ export const EndEpochModal = ({
                   <AlertDescription>
                     This will send{" "}
                     {                      truncate(commify( 
-                          preview.data?.[1]), 2)}
+                          formatUnits(preview.data?.[1], 6)), 2)}
                     {" "}
                     {" "}
                     USDC {preview.data?.[0] ? "to" : "from"}{" "}
