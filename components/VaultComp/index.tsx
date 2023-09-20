@@ -79,10 +79,10 @@ const VaultComp = ({
   contractConfig,
 }: VaultProps) => {
   const { colorMode } = useColorMode();
-  const { address } = useAccount();
+  // const { address } = useAccount();
 
 
-  // const address = "0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7"
+  const address = "0x4457Df4a5bcCF796662b6374D5947c881Cc83AC7"
 
   const [totalAumLabel, setIsTotalAumLabel] = useState<boolean>(false);
   const [totalDeposited, setCurrentDepositsLabel] = useState<boolean>(false);

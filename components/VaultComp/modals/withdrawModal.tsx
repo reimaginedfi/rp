@@ -27,7 +27,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { commify } from "ethers/lib/utils";
-import { formatUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import {
   useNetwork,
   useWaitForTransaction,
@@ -53,6 +53,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   const { chain } = useNetwork();
   const [contractConfig, setContractConfig] = useState<any>();
   const { address } = useAccount();
+  // const address = "0x0D069084ad2f05A4C2c5bcf1a80dB7d1c95730EC"
 
   const {
     hasPendingWithdrawal,
@@ -69,7 +70,9 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     claimData,
   } = useVaultWithdraw(contractConfig, amount === "" ? "0" : amount);
 
-  console.log('pending, hasPendingWithdrawal', hasPendingWithdrawal)
+  // // console.log("YOYO)YOYOYO", parseUnits(Math.trunc(Number(amount)).toString(), 6))
+  // const tuAmount = parseUnits(Math.trunc(Number(amount)).toString(), 6)
+  // console.log("YO!@#@!#!@", formatUnits(tuAmount, 6))
 
   const {hasPendingDeposit, updatePendingDeposit} = useVaultUser(contractConfig, address!);
 
@@ -80,12 +83,13 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
     args: [user.data?.[3], address],
   });
 
+  console.log(user)
+
   const withdrawalFee = useContractRead({
     ...contractConfig,
     functionName: "exitFeeBps",
     watch: true,
   });
-
 
   const [claimDataSuccess, setClaimDataSuccess] = useState<string>("");
   const [unlockDataSuccess, setUnlockDataSuccess] = useState<string>("");
@@ -227,7 +231,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
   // console.log('epoch', Number(user.data?.[4]))
   // console.log('shares', Number(user.data?.[3]))
 
-  // console.log('user', user)
+  console.log('user', user)
   
   return (
     <Modal isOpen={isOpen!} onClose={onClose!} isCentered>
@@ -361,7 +365,7 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         alignSelf="start"
                       >
                         Unlocked Balance:{" "}
-                        {commify(formatUnits(user.data?.[3] ?? 0, 0))} VT{" "}
+                        {commify(formatUnits(user.data?.[3] ?? 0, 6))} VT{" "}
                         <Tooltip
                           hasArrow
                           label="Balance available for withdrawal at epoch below."

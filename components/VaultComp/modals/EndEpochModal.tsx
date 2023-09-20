@@ -49,13 +49,15 @@ export const EndEpochModal = ({
   const [aumString, setAumString] = useState("0.0");
   const aumBN = parseUnits(Math.trunc(Number(aumString)).toString(), 6);
   const preview: any = useContractRead({
-    ...contractConfig as any,
+    ...contractConfig,
     functionName: "previewProgress",
     args: [aumBN],
   });
 
+  console.log(formatUnits(aumBN, 6));
+
   const progressEpoch = useContractWrite({
-    ...contractConfig as any,
+    ...contractConfig,
     functionName: "progressEpoch",
     args: [aumBN],
     onMutate: (variables: any) => {
@@ -148,7 +150,7 @@ export const EndEpochModal = ({
                   <AlertDescription>
                     This will send{" "}
                     {                      truncate(commify( 
-                          formatUnits(preview.data?.[1], 6)), 2)}
+                          preview.data?.[1]), 2)}
                     {" "}
                     {" "}
                     USDC {preview.data?.[0] ? "to" : "from"}{" "}

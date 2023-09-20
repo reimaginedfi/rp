@@ -324,6 +324,7 @@ export const useVaultWithdraw = (
     console.log("unlockAmount", unlockAmount);
   }, [unlockAmount]);
   const { address } = useAccount();
+  // const address = "0x0D069084ad2f05A4C2c5bcf1a80dB7d1c95730EC"
   const { assetToken } = useVaultMeta(contractConfig);
 
   const hasPendingWithdrawal: any = useContractRead({
@@ -352,7 +353,7 @@ export const useVaultWithdraw = (
   } = useContractWrite({  ...contractConfig as any,
     functionName: "unlock",
     args: [
-      BigInt(Math.trunc(unlockAmount ? Number(unlockAmount) : 0)),
+      parseUnits(Math.trunc(Number(unlockAmount)).toString(), 6),
     ]});
 
   const withdrawable: any = useContractRead({

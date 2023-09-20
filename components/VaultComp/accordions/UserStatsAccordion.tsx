@@ -37,7 +37,7 @@ export default function UserStatsAccordion({
 }) {
   const { colorMode } = useColorMode();
   const { address } = useAccount();
-  // const address = "0xA216208daB8AEbA66080129Db856F4A84F0f809a"
+  // const address = "0x0D069084ad2f05A4C2c5bcf1a80dB7d1c95730EC"
   const contractConfig = useContractConfig();
   const {
     user,
