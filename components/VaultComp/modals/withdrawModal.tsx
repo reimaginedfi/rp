@@ -540,8 +540,8 @@ export default function WithdrawModal({ isOpen, onClose }: ModalProps) {
                         Withdraw{" "}
                         {commify(
                             truncate(
-                              Number(withdrawable.data?.[0]) !== 0 ? Number(withdrawable.data?.[0]).toString() : Number(user.data?.[3]).toString()
-                             , 2))}{" "}
+                              formatUnits(withdrawable.data?.[0] !== 0 ? withdrawable.data?.[0] : user.data?.[3], 6)
+                              , 2))}{" "}
                         USDC
                       </Button>
                     </Stack>
