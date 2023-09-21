@@ -47,7 +47,7 @@ export const EndEpochModal = ({
   const toast = useToast();
   const { epoch } = useVaultMeta(contractConfig);
   const [aumString, setAumString] = useState("0.0");
-  const aumBN = parseUnits(Math.trunc(Number(aumString)).toString(), 6);
+  const aumBN = parseUnits(Math.trunc(Number(aumString)).toString() ?? "0", 6);
   const preview: any = useContractRead({
     ...contractConfig,
     functionName: "previewProgress",
@@ -99,7 +99,7 @@ export const EndEpochModal = ({
     },
   });
 
-  console.log(formatUnits(preview!.data?.[1], 6))
+  // console.log(formatUnits(preview!.data?.[1], 6))
 
   return (
     <>
