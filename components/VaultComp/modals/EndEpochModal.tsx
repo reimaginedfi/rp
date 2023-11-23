@@ -70,6 +70,8 @@ export const EndEpochModal = ({
 
   const progressEpoch = useContractWrite(progressConfig);
 
+  console.log(progressEpoch)
+
   // const progressEpoch = useContractWrite({
   //   ...contractConfig,
   //   functionName: "progressEpoch",
