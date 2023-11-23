@@ -27,9 +27,12 @@ import { commify } from "ethers/lib/utils";
 import { formatUnits, parseUnits } from 'viem';
 import { useState } from "react";
 import {
+  erc20ABI,
   useContractRead,
   useContractWrite,
   useWaitForTransaction,
+  usePrepareContractWrite,
+  useAccount
 } from "wagmi";
 import { ContractsMap } from "../../../contracts";
 import { useVaultMeta } from "../../hooks/useVault";
@@ -45,6 +48,7 @@ export const EndEpochModal = ({
   contractConfig: ContractsMap;
 }) => {
   const toast = useToast();
+  const { address } = useAccount()
   const { epoch } = useVaultMeta(contractConfig);
   const [aumString, setAumString] = useState("0.0");
   const aumBN = parseUnits(Math.trunc(Number(aumString)).toString() ?? "0", 6);
@@ -54,21 +58,30 @@ export const EndEpochModal = ({
     args: [aumBN],
   });
 
-  console.log(formatUnits(aumBN, 6));
-
-  const progressEpoch = useContractWrite({
+  const {
+    config: progressConfig,
+    data: prepareData,
+    error,
+  } = usePrepareContractWrite({
     ...contractConfig,
     functionName: "progressEpoch",
     args: [aumBN],
-    onMutate: (variables: any) => {
-      // console.log(variables);
-    },
-    // mode: "recklesslyUnprepared",
   });
+
+  const progressEpoch = useContractWrite(progressConfig);
+
+  // const progressEpoch = useContractWrite({
+  //   ...contractConfig,
+  //   functionName: "progressEpoch",
+  //   onMutate: (variables: any) => {
+  //     // console.log(variables);
+  //   },
+  //   // mode: "recklesslyUnprepared",
+  // });
 
   const handleEpoch = async () => {
     try {
-      await progressEpoch.write();
+      await progressEpoch.write
     } catch (error) {
       console.log(error)
       const errorMessage = getErrorMessage(error);
@@ -175,7 +188,7 @@ export const EndEpochModal = ({
                 colorScheme="red"
                 disabled={preview.isLoading || preview.isError || !epoch.data}
                 onClick={() => {
-                  handleEpoch();
+                  handleEpoch()
                 }}
               >
                 End Epoch {epoch.data?.toString()}
